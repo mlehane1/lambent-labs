@@ -1,0 +1,37 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg-deep:    #020814;
+  --bg-dark:    #041128;
+  --bg-card:    #071C4D;
+  --bg-card2:   #0A2C65;
+  --border:     #0C3479;
+  --border-mid: #1046A2;
+  --primary:    #1558CB;
+  --primary-lt: #2A70E9;
+  --primary-llt:#588FEE;
+  --accent:     #15CB88;
+  --accent-dim: #0e8a5c;
+  --text-hi:    #E7EEF9;
+  --text-mid:   #8AABE5;
+  --text-lo:    #4379D5;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg-deep);
+  color: var(--text-hi);
+  font-family: 'DM Sans', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-deep); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+a { text-decoration: none; }
+
+@keyframes pulse { 0%,100% { opacity:1 } 50% { opacity:0.4 } }
+@keyframes fadeInUp { from { opacity:0; transform:translateY(24px) } to { opacity:1; transform:translateY(0) } }
+@keyframes float { 0%,100% { transform:translateY(0) } 50% { transform:translateY(-10px) } }

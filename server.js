@@ -53,7 +53,16 @@ Generate a JSON response with EXACTLY this structure (no markdown, no code fence
   "technicalConsiderations": [
     {"title": "Consideration Title", "detail": "A realistic technical detail sentence about how this would be implemented for their specific use case"}
   ],
-  "ctaText": "A compelling call-to-action button text (3-5 words)"
+  "ctaText": "A compelling call-to-action button text (3-5 words)",
+  "secondaryCta": "A secondary action text (e.g. 'View Our Menu', 'See Our Work', 'Learn More')",
+  "layoutStyle": "bold|elegant|clean|warm",
+  "heroStyle": "gradient|split|centered|fullwidth",
+  "navStyle": "transparent|solid|minimal",
+  "testimonial": {"quote": "A realistic-sounding customer testimonial for this type of business", "author": "A realistic first name and last initial", "role": "Customer title like 'Regular Customer' or 'Client since 2023'"},
+  "stats": [
+    {"value": "A realistic metric", "label": "Short label"}
+  ],
+  "featureHighlight": "One standout feature or differentiator for the hero area (e.g. 'Free Delivery on Orders Over $30', 'No Contracts Ever', 'Licensed & Insured')"
 }
 
 Rules:
@@ -64,7 +73,12 @@ Rules:
 - For mobile: add platform strategy, push notifications, offline capability, app store
 - The recommendation must reference their SPECIFIC business and customers, not be generic
 - The tagline should feel custom to their brand, not a template
-- All text should be professional but approachable — not salesy or buzzwordy`
+- All text should be professional but approachable — not salesy or buzzwordy
+- layoutStyle: "bold" for fitness/sports/energy brands, "elegant" for professional services/luxury, "clean" for tech/saas/modern, "warm" for food/family/community businesses
+- heroStyle: "gradient" uses brand color gradient background, "split" puts text left and a colored block right, "centered" is minimal centered text on white, "fullwidth" is big bold text edge to edge
+- navStyle: "transparent" overlays on hero, "solid" is white with shadow, "minimal" is just logo and hamburger
+- stats should have exactly 3-4 items with realistic numbers for this specific industry (e.g. restaurant: "500+ Orders/Week", gym: "200+ Members")
+- The testimonial should sound authentic for this industry, not generic`
 
     const response = await client.messages.create({
       model: 'claude-haiku-4-5',

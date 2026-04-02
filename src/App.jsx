@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
 
 // ─── localStorage helpers ──────────────────────────────────────────────────────
 function loadSiteContent() {
@@ -448,7 +449,7 @@ export default function App() {
         </div>
 
         {/* Desktop nav */}
-        <div style={{ display: "flex", gap: "32px", alignItems: "center" }}>
+        <div style={{ display: "flex", gap: "28px", alignItems: "center" }}>
           {navLinks.map(s => (
             <a key={s} href={`#${s}`} onClick={() => setActiveSection(s)} style={{
               color: activeSection === s ? "var(--primary-lt)" : "var(--text-mid)",
@@ -456,6 +457,11 @@ export default function App() {
               textTransform: "capitalize", transition: "color 0.2s",
             }}>{s}</a>
           ))}
+          <Link to="/blog" style={{
+            color: "var(--text-mid)",
+            fontWeight: 500, fontSize: "0.88rem", letterSpacing: "0.04em",
+            transition: "color 0.2s",
+          }}>Blog</Link>
           <a href="#contact" style={{
             background: "linear-gradient(135deg, var(--primary), var(--accent))",
             color: "white", padding: "8px 20px", borderRadius: "8px",

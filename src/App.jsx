@@ -108,7 +108,7 @@ const FAQ_ITEMS = [
 const DEFAULT_CONTENT = {
   heroTagline: "Your app. Live in 2 weeks.",
   heroSub: "We build custom software, websites, and data tools faster and for less than you thought possible. No bloated timelines. No six-figure invoices. Just working software, deployed.",
-  contactEmail: "hello@lambentlabs.dev",
+  contactEmail: "lambentlabs247@gmail.com",
 };
 
 const ADMIN_PASSWORD = "lambent2024";

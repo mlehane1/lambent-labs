@@ -601,8 +601,8 @@ export default function SmallBusiness() {
                   style={body({ fontSize: "0.85rem", color: "#ff6b6b", textAlign: "center" })}
                 >
                   Something went wrong. Please try again or email us at{" "}
-                  <a href="mailto:hello@lambentlabs.dev" style={{ color: "var(--accent)" }}>
-                    hello@lambentlabs.dev
+                  <a href="mailto:lambentlabs247@gmail.com" style={{ color: "var(--accent)" }}>
+                    lambentlabs247@gmail.com
                   </a>
                 </p>
               )}

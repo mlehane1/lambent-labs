@@ -889,7 +889,7 @@ export default function WhiteGlove() {
                 }}
               >
                 Something went wrong. Please email us directly at
-                hello@lambentlabs.dev.
+                lambentlabs247@gmail.com.
               </div>
             )}
           </form>
@@ -903,10 +903,10 @@ export default function WhiteGlove() {
           >
             Or email us directly at{" "}
             <a
-              href="mailto:hello@lambentlabs.dev"
+              href="mailto:lambentlabs247@gmail.com"
               style={{ color: "var(--primary-lt)", textDecoration: "none" }}
             >
-              hello@lambentlabs.dev
+              lambentlabs247@gmail.com
             </a>
           </p>
         </div>

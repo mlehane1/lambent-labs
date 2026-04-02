@@ -651,8 +651,8 @@ export default function CaseManagement() {
                   }}
                 >
                   Something went wrong. Please try again or email us directly at{" "}
-                  <a href="mailto:hello@lambentlabs.dev" style={{ color: "var(--accent)" }}>
-                    hello@lambentlabs.dev
+                  <a href="mailto:lambentlabs247@gmail.com" style={{ color: "var(--accent)" }}>
+                    lambentlabs247@gmail.com
                   </a>
                 </p>
               )}

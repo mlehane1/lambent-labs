@@ -234,14 +234,14 @@ export default function Layout() {
               Contact
             </h4>
             <a
-              href="mailto:hello@lambentlabs.dev"
+              href="mailto:lambentlabs247@gmail.com"
               style={{
                 color: "var(--accent)",
                 textDecoration: "none",
                 fontSize: "0.85rem",
               }}
             >
-              hello@lambentlabs.dev
+              lambentlabs247@gmail.com
             </a>
           </div>
         </div>

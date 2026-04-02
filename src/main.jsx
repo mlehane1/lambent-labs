@@ -14,6 +14,7 @@ import AIAcceleratedDev from './pages/blog/AIAcceleratedDev.jsx'
 import FranchiseSoftwareSigns from './pages/blog/FranchiseSoftwareSigns.jsx'
 import HighCodeLowCodeAI from './pages/blog/HighCodeLowCodeAI.jsx'
 import Websites from './pages/Websites.jsx'
+import BuildPreview from './pages/BuildPreview.jsx'
 import './index.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
@@ -30,6 +31,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           <Route path="/solutions/white-glove" element={<WhiteGlove />} />
           <Route path="/solutions/franchise" element={<Franchise />} />
           <Route path="/solutions/websites" element={<Websites />} />
+          <Route path="/build" element={<BuildPreview />} />
           <Route path="/blog" element={<BlogIndex />} />
           <Route path="/blog/custom-software-cost" element={<CustomSoftwareCost />} />
           <Route path="/blog/build-vs-buy" element={<BuildVsBuy />} />

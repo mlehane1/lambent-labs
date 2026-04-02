@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Outlet } from "react-router-dom";
 
@@ -82,6 +83,7 @@ function Logo({ size = "default" }) {
 }
 
 export default function Layout() {
+  const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
   const currentPath = location.pathname;
 
@@ -115,7 +117,8 @@ export default function Layout() {
       >
         <Logo />
 
-        <div style={{ display: "flex", alignItems: "center", gap: "2rem" }}>
+        {/* Desktop */}
+        <div className="desktop-nav" style={{ display: "flex", alignItems: "center", gap: "2rem" }}>
           {navLinks.map((link) => (
             <NavLink
               key={link.to}
@@ -124,7 +127,6 @@ export default function Layout() {
               current={currentPath}
             />
           ))}
-
           <a
             href="/#contact"
             style={{
@@ -138,14 +140,55 @@ export default function Layout() {
               border: "none",
               textDecoration: "none",
               cursor: "pointer",
-              transition: "opacity 0.2s",
               whiteSpace: "nowrap",
             }}
           >
             Free Consultation
           </a>
         </div>
+
+        {/* Mobile hamburger */}
+        <button className="mobile-hamburger" onClick={() => setMobileOpen(!mobileOpen)} style={{
+          background: "none", border: "none", cursor: "pointer", padding: "8px",
+          display: "none", flexDirection: "column", gap: "5px",
+        }}>
+          <span style={{ display: "block", width: "22px", height: "2px", background: "var(--text-mid)",
+            transition: "all 0.3s", transform: mobileOpen ? "rotate(45deg) translate(5px, 5px)" : "none" }} />
+          <span style={{ display: "block", width: "22px", height: "2px", background: "var(--text-mid)",
+            transition: "all 0.3s", opacity: mobileOpen ? 0 : 1 }} />
+          <span style={{ display: "block", width: "22px", height: "2px", background: "var(--text-mid)",
+            transition: "all 0.3s", transform: mobileOpen ? "rotate(-45deg) translate(5px, -5px)" : "none" }} />
+        </button>
       </nav>
+
+      {mobileOpen && (
+        <div style={{
+          position: "fixed", top: "64px", left: 0, right: 0, bottom: 0,
+          background: "rgba(2,8,20,0.97)", backdropFilter: "blur(12px)",
+          zIndex: 999, padding: "24px 24px",
+          display: "flex", flexDirection: "column", gap: "8px",
+        }}>
+          {navLinks.map((link) => (
+            link.to.startsWith("/#") ? (
+              <a key={link.to} href={link.to} onClick={() => setMobileOpen(false)} style={{
+                color: "var(--text-mid)", fontWeight: 600, fontSize: "1.1rem",
+                padding: "12px 0", borderBottom: "1px solid var(--border)", textDecoration: "none",
+              }}>{link.label}</a>
+            ) : (
+              <Link key={link.to} to={link.to} onClick={() => setMobileOpen(false)} style={{
+                color: "var(--text-mid)", fontWeight: 600, fontSize: "1.1rem",
+                padding: "12px 0", borderBottom: "1px solid var(--border)", textDecoration: "none",
+              }}>{link.label}</Link>
+            )
+          ))}
+          <a href="/#contact" onClick={() => setMobileOpen(false)} style={{
+            background: "linear-gradient(135deg, var(--primary), var(--accent))",
+            color: "white", padding: "14px 24px", borderRadius: "10px",
+            fontWeight: 600, fontSize: "1rem", textAlign: "center", textDecoration: "none",
+            marginTop: "16px",
+          }}>Free Consultation</a>
+        </div>
+      )}
 
       {/* ─── Page Content ─── */}
       <main style={{ flex: 1 }}>

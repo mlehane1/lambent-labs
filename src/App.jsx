@@ -452,7 +452,7 @@ export default function App() {
         </div>
 
         {/* Desktop nav */}
-        <div style={{ display: "flex", gap: "28px", alignItems: "center" }}>
+        <div className="desktop-nav" style={{ display: "flex", gap: "28px", alignItems: "center" }}>
           {navLinks.map(s => (
             <a key={s} href={`#${s}`} onClick={() => setActiveSection(s)} style={{
               color: activeSection === s ? "var(--primary-lt)" : "var(--text-mid)",
@@ -471,7 +471,50 @@ export default function App() {
             fontWeight: 600, fontSize: "0.82rem", letterSpacing: "0.02em",
           }}>Preview Your Project</Link>
         </div>
+
+        {/* Mobile hamburger */}
+        <button className="mobile-hamburger" onClick={() => setMobileMenuOpen(!mobileMenuOpen)} style={{
+          background: "none", border: "none", cursor: "pointer", padding: "8px",
+          display: "none", flexDirection: "column", gap: "5px",
+        }}>
+          <span style={{ display: "block", width: "22px", height: "2px", background: "var(--text-mid)",
+            transition: "all 0.3s", transform: mobileMenuOpen ? "rotate(45deg) translate(5px, 5px)" : "none" }} />
+          <span style={{ display: "block", width: "22px", height: "2px", background: "var(--text-mid)",
+            transition: "all 0.3s", opacity: mobileMenuOpen ? 0 : 1 }} />
+          <span style={{ display: "block", width: "22px", height: "2px", background: "var(--text-mid)",
+            transition: "all 0.3s", transform: mobileMenuOpen ? "rotate(-45deg) translate(5px, -5px)" : "none" }} />
+        </button>
       </nav>
+
+      {/* Mobile menu overlay */}
+      {mobileMenuOpen && (
+        <div style={{
+          position: "fixed", top: "64px", left: 0, right: 0, bottom: 0,
+          background: "rgba(2,8,20,0.97)", backdropFilter: "blur(12px)",
+          zIndex: 399, padding: "24px 40px",
+          display: "flex", flexDirection: "column", gap: "8px",
+          animation: "fadeInUp 0.2s ease",
+        }}>
+          {navLinks.map(s => (
+            <a key={s} href={`#${s}`} onClick={() => { setActiveSection(s); setMobileMenuOpen(false); }} style={{
+              color: activeSection === s ? "var(--primary-lt)" : "var(--text-mid)",
+              fontWeight: 600, fontSize: "1.1rem", letterSpacing: "0.04em",
+              textTransform: "capitalize", padding: "12px 0",
+              borderBottom: "1px solid var(--border)",
+            }}>{s}</a>
+          ))}
+          <Link to="/blog" onClick={() => setMobileMenuOpen(false)} style={{
+            color: "var(--text-mid)", fontWeight: 600, fontSize: "1.1rem",
+            padding: "12px 0", borderBottom: "1px solid var(--border)",
+          }}>Blog</Link>
+          <Link to="/build" onClick={() => setMobileMenuOpen(false)} style={{
+            background: "linear-gradient(135deg, var(--primary), var(--accent))",
+            color: "white", padding: "14px 24px", borderRadius: "10px",
+            fontWeight: 600, fontSize: "1rem", textAlign: "center",
+            marginTop: "16px",
+          }}>Preview Your Project</Link>
+        </div>
+      )}
 
       {/* ── HERO ──────────────────────────────────────────────────────────────── */}
       <section id="home" style={{ position: "relative", overflow: "hidden", padding: "100px 40px 80px" }}>

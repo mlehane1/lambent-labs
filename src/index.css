@@ -35,3 +35,11 @@ a { text-decoration: none; }
 @keyframes pulse { 0%,100% { opacity:1 } 50% { opacity:0.4 } }
 @keyframes fadeInUp { from { opacity:0; transform:translateY(24px) } to { opacity:1; transform:translateY(0) } }
 @keyframes float { 0%,100% { transform:translateY(0) } 50% { transform:translateY(-10px) } }
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .desktop-nav { display: none !important; }
+  .mobile-hamburger { display: flex !important; }
+  nav { padding: 0 20px !important; }
+  section { padding-left: 20px !important; padding-right: 20px !important; }
+}

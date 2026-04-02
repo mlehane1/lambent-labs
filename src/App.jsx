@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
+import { sendLeadNotification } from "./leadNotify.js";
 
 // ─── localStorage helpers ──────────────────────────────────────────────────────
 function loadSiteContent() {
@@ -337,6 +338,7 @@ export default function App() {
 
       if (res.ok) {
         setCaptureStatus("success");
+        sendLeadNotification("Email Capture", captureEmail, "[Lead Magnet Download]", "Homepage — Guide Download");
         setCaptureEmail("");
         if (window.dataLayer) {
           window.dataLayer.push({ event: "form_submit", form_name: "email_capture" });
@@ -374,6 +376,7 @@ export default function App() {
 
       if (res.ok) {
         setContactStatus("success");
+        sendLeadNotification(contactName, contactEmail, contactMessage, "Homepage — Contact Form");
         setContactName("");
         setContactEmail("");
         setContactMessage("");

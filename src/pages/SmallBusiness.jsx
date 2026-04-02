@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { sendLeadNotification } from "../leadNotify.js";
 
 const SUPABASE_URL = "https://ltkapmacmylwfhufuozq.supabase.co";
 const SUPABASE_ANON_KEY =
@@ -130,6 +131,7 @@ export default function SmallBusiness() {
         }),
       });
       if (!res.ok) throw new Error("Failed");
+      sendLeadNotification(form.name, form.email, `[Small Business] ${form.message}`, "Landing Page — Small Business");
       setStatus("sent");
       setForm({ name: "", email: "", message: "" });
       if (window.dataLayer) {

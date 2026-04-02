@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { sendLeadNotification } from "../leadNotify.js";
 
 const SUPABASE_URL = "https://ltkapmacmylwfhufuozq.supabase.co";
 const SUPABASE_ANON_KEY =
@@ -110,6 +111,7 @@ export default function WhiteGlove() {
       });
 
       if (res.ok) {
+        sendLeadNotification(name, email, "[White Glove] " + message, "Landing Page — White Glove");
         setStatus("success");
         setName("");
         setEmail("");

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { sendLeadNotification } from "../leadNotify.js";
 
 const SUPABASE_URL = "https://ltkapmacmylwfhufuozq.supabase.co";
 const SUPABASE_ANON_KEY =
@@ -189,6 +190,7 @@ export default function Franchise() {
         });
       }
 
+      sendLeadNotification(formData.name, formData.email, `[Franchise] ${formData.message}`, "Landing Page — Franchise");
       setStatus("sent");
       setFormData({ name: "", email: "", message: "" });
     } catch {

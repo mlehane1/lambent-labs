@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { sendLeadNotification } from "../leadNotify.js";
 
 const SUPABASE_URL = "https://ltkapmacmylwfhufuozq.supabase.co";
 const SUPABASE_ANON_KEY =
@@ -138,6 +139,7 @@ export default function CaseManagement() {
       if (!res.ok) throw new Error("Failed");
       window.dataLayer = window.dataLayer || [];
       window.dataLayer.push({ event: "form_submit", form_name: "case_management" });
+      sendLeadNotification(form.name, form.email, `[Case Management] ${form.message}`, "Landing Page — Case Management");
       setStatus("sent");
       setForm({ name: "", email: "", message: "" });
     } catch {

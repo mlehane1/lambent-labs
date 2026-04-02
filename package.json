@@ -13,6 +13,7 @@
     "node": ">=18.0.0"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.82.0",
     "@emailjs/browser": "^4.4.1",
     "express": "^4.18.2",
     "react-router-dom": "^7.13.2"

@@ -284,6 +284,10 @@ export default function BuildPreview() {
   const [customers, setCustomers] = useState("");
   const [services, setServices] = useState("");
 
+  // AI-generated preview data
+  const [aiData, setAiData] = useState(null);
+  const [aiError, setAiError] = useState(false);
+
   // Contact form
   const [contactName, setContactName] = useState("");
   const [contactEmail, setContactEmail] = useState("");
@@ -328,21 +332,42 @@ export default function BuildPreview() {
     }
   }, [state]);
 
-  function handleGenerate(e) {
+  async function handleGenerate(e) {
     e.preventDefault();
+    setAiError(false);
     setFade(false);
-    setTimeout(() => {
-      setState("loading");
-      setFade(true);
-    }, 300);
-    setTimeout(() => {
-      setFade(false);
-      setTimeout(() => {
-        setState("preview");
-        setFade(true);
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      }, 300);
-    }, 1800);
+    await new Promise(r => setTimeout(r, 300));
+    setState("loading");
+    setFade(true);
+
+    try {
+      const res = await fetch("/api/generate-preview", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          businessName,
+          industry,
+          primaryColor,
+          accentColor,
+          description: needDescription,
+          customers,
+          services,
+        }),
+      });
+
+      if (!res.ok) throw new Error("API error");
+      const data = await res.json();
+      setAiData(data);
+    } catch {
+      setAiError(true);
+      // Fall back to template-based generation (existing logic still works without aiData)
+    }
+
+    setFade(false);
+    await new Promise(r => setTimeout(r, 300));
+    setState("preview");
+    setFade(true);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   function handleStartOver() {
@@ -395,14 +420,26 @@ export default function BuildPreview() {
     setContactSending(false);
   }
 
-  const classification = classifyProject(needDescription);
-  const servicesList = services
-    .split(/[,\n]+/)
-    .map((s) => s.trim())
-    .filter(Boolean);
-  const techItems = getTechItems(classification.key);
-  const tagline =
-    industryTaglines[industry] || industryTaglines["Other"];
+  const classification = aiData
+    ? { type: aiData.projectTypeLabel, price: aiData.estimatedRange, key: aiData.projectType }
+    : classifyProject(needDescription);
+  const servicesList = aiData
+    ? (aiData.serviceCards || []).map(s => s.name)
+    : services.split(/[,\n]+/).map((s) => s.trim()).filter(Boolean);
+  const serviceDescriptions = aiData
+    ? (aiData.serviceCards || []).reduce((acc, s) => { acc[s.name] = s.description; return acc; }, {})
+    : {};
+  const techItems = aiData
+    ? (aiData.technicalConsiderations || [])
+    : getTechItems(classification.key);
+  const tagline = aiData
+    ? aiData.tagline
+    : (industryTaglines[industry] || industryTaglines["Other"]);
+  const heroSub = aiData ? aiData.heroSubheadline : null;
+  const aboutBlurb = aiData ? aiData.aboutBlurb : null;
+  const recommendationText = aiData
+    ? aiData.recommendation
+    : generateExplanation(classification, needDescription, industry, customers);
   const fakeDomain =
     businessName
       .toLowerCase()
@@ -802,6 +839,22 @@ export default function BuildPreview() {
                 >
                   {tagline}
                 </p>
+                {heroSub && (
+                  <p
+                    style={{
+                      fontFamily: "'DM Sans', sans-serif",
+                      fontSize: "0.95rem",
+                      color: "rgba(255,255,255,0.6)",
+                      margin: "-1rem 0 2rem",
+                      maxWidth: 500,
+                      marginLeft: "auto",
+                      marginRight: "auto",
+                      lineHeight: 1.6,
+                    }}
+                  >
+                    {heroSub}
+                  </p>
+                )}
                 <span
                   style={{
                     display: "inline-block",
@@ -888,10 +941,24 @@ export default function BuildPreview() {
                           color: "#fff",
                           fontSize: "1rem",
                           margin: 0,
+                          fontWeight: 600,
                         }}
                       >
                         {svc}
                       </p>
+                      {serviceDescriptions[svc] && (
+                        <p
+                          style={{
+                            fontFamily: "'DM Sans', sans-serif",
+                            color: "rgba(255,255,255,0.6)",
+                            fontSize: "0.8rem",
+                            margin: "0.5rem 0 0",
+                            lineHeight: 1.5,
+                          }}
+                        >
+                          {serviceDescriptions[svc]}
+                        </p>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -1037,12 +1104,7 @@ export default function BuildPreview() {
             Estimated Investment: {classification.price}
           </p>
           <p style={body({ fontSize: "1rem", margin: 0 })}>
-            {generateExplanation(
-              classification,
-              needDescription,
-              industry,
-              customers
-            )}
+            {recommendationText}
           </p>
         </div>
       </div>

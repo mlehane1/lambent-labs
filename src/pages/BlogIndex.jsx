@@ -3,6 +3,15 @@ import { Link } from "react-router-dom";
 
 const posts = [
   {
+    title: "From High Code to Low Code to AI: The Full Circle",
+    slug: "/blog/high-code-low-code-ai",
+    excerpt:
+      "We went from writing Java by hand, to Mendix, and back to code with AI. Here's what we learned — and why model-driven platforms are uniquely positioned for what's next.",
+    tags: ["Strategy", "AI", "Low-Code", "Mendix"],
+    date: "Apr 2026",
+    readTime: "8 min read",
+  },
+  {
     title: "How Much Does Custom Software Actually Cost?",
     slug: "/blog/custom-software-cost",
     excerpt:

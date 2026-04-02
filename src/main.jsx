@@ -12,6 +12,7 @@ import CustomSoftwareCost from './pages/blog/CustomSoftwareCost.jsx'
 import BuildVsBuy from './pages/blog/BuildVsBuy.jsx'
 import AIAcceleratedDev from './pages/blog/AIAcceleratedDev.jsx'
 import FranchiseSoftwareSigns from './pages/blog/FranchiseSoftwareSigns.jsx'
+import HighCodeLowCodeAI from './pages/blog/HighCodeLowCodeAI.jsx'
 import './index.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
@@ -32,6 +33,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           <Route path="/blog/build-vs-buy" element={<BuildVsBuy />} />
           <Route path="/blog/ai-accelerated-development" element={<AIAcceleratedDev />} />
           <Route path="/blog/franchise-software-signs" element={<FranchiseSoftwareSigns />} />
+          <Route path="/blog/high-code-low-code-ai" element={<HighCodeLowCodeAI />} />
         </Route>
       </Routes>
     </BrowserRouter>

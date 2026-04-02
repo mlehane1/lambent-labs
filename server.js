@@ -71,7 +71,7 @@ Rules:
 - For websites: include SEO, responsive design, analytics, lead capture, content strategy, hosting
 - For web apps: add authentication, data architecture, API integration, notification system
 - For mobile: add platform strategy, push notifications, offline capability, app store
-- Each technicalConsideration MUST include 2-3 questions that are specific discovery questions we would ask this client during a consultation. These should be real, thoughtful questions that show we understand their business and need more detail to build the right solution. Examples: "Do you need customers to create accounts, or is guest checkout sufficient?", "Which POS system do you currently use so we can plan the integration?", "How many menu items change seasonally vs stay fixed year-round?"
+- Each technicalConsideration MUST include a "questions" array with 3-4 questions. IMPORTANT ordering: the first 1-2 questions should be obvious, common-sense questions anyone would ask ("Do you have a logo?", "What's your current website URL?", "How do customers contact you today?"). These are UNBLURRED and show the client we're approachable and practical. The last 2 questions should be deeper, more technical discovery questions that show real expertise ("Which POS system do you use so we can plan the integration?", "What's your average order volume during peak hours?"). These deeper ones get blurred to drive the consultation. Mark the obvious ones by starting them with "[visible] " prefix and the deeper ones with "[deep] " prefix.
 - The recommendation must reference their SPECIFIC business and customers, not be generic
 - The tagline should feel custom to their brand, not a template
 - All text should be professional but approachable — not salesy or buzzwordy

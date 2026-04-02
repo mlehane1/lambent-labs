@@ -1307,8 +1307,6 @@ export default function BuildPreview() {
                     marginTop: "0.75rem",
                     paddingTop: "0.75rem",
                     borderTop: "1px solid var(--border)",
-                    filter: "blur(4px)",
-                    userSelect: "none",
                   }}
                 >
                   <span
@@ -1320,12 +1318,14 @@ export default function BuildPreview() {
                       letterSpacing: "0.08em",
                       textTransform: "uppercase",
                       display: "block",
-                      marginBottom: "0.4rem",
+                      marginBottom: "0.5rem",
                     }}
                   >
                     Discovery Questions
                   </span>
                   {item.questions.map(function(q, qi) {
+                    var isVisible = q.startsWith("[visible] ");
+                    var text = q.replace(/^\[(visible|deep)\] /, "");
                     return (
                       <p
                         key={qi}
@@ -1333,13 +1333,15 @@ export default function BuildPreview() {
                           fontFamily: "'DM Sans', sans-serif",
                           fontSize: "0.78rem",
                           lineHeight: 1.5,
-                          color: "var(--text-mid)",
-                          margin: "0 0 0.3rem",
+                          color: isVisible ? "var(--text-mid)" : "var(--text-mid)",
+                          margin: "0 0 0.4rem",
                           paddingLeft: "0.75rem",
-                          borderLeft: "2px solid var(--primary)",
+                          borderLeft: isVisible ? "2px solid var(--accent)" : "2px solid var(--primary)",
+                          filter: isVisible ? "none" : "blur(4px)",
+                          userSelect: isVisible ? "auto" : "none",
                         }}
                       >
-                        {q}
+                        {text}
                       </p>
                     );
                   })}

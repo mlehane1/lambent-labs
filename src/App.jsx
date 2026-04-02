@@ -274,6 +274,11 @@ export default function App() {
   const [activeSection, setActiveSection] = useState("home");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  // Email capture (lead magnet)
+  const [captureEmail, setCaptureEmail] = useState("");
+  const [captureSubmitting, setCaptureSubmitting] = useState(false);
+  const [captureStatus, setCaptureStatus] = useState(null);
+
   // Contact form
   const [contactName, setContactName] = useState("");
   const [contactEmail, setContactEmail] = useState("");
@@ -309,6 +314,40 @@ export default function App() {
     setContent(c);
     saveSiteContent(c);
     setShowContentEditor(false);
+  };
+
+  // ── Supabase email capture (lead magnet) ──
+  const handleCaptureSubmit = async (e) => {
+    e.preventDefault();
+    setCaptureSubmitting(true);
+    setCaptureStatus(null);
+
+    try {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/leads`, {
+        method: "POST",
+        headers: {
+          "apikey": SUPABASE_ANON_KEY,
+          "Authorization": `Bearer ${SUPABASE_ANON_KEY}`,
+          "Content-Type": "application/json",
+          "Prefer": "return=minimal",
+        },
+        body: JSON.stringify({ name: "Email Capture", email: captureEmail, message: "[Lead Magnet Download]" }),
+      });
+
+      if (res.ok) {
+        setCaptureStatus("success");
+        setCaptureEmail("");
+        if (window.dataLayer) {
+          window.dataLayer.push({ event: "form_submit", form_name: "email_capture" });
+        }
+      } else {
+        setCaptureStatus("error");
+      }
+    } catch {
+      setCaptureStatus("error");
+    } finally {
+      setCaptureSubmitting(false);
+    }
   };
 
   // ── Supabase lead submission ──
@@ -618,6 +657,76 @@ export default function App() {
           {FAQ_ITEMS.map((item, i) => (
             <FAQItem key={i} item={item} />
           ))}
+        </div>
+      </section>
+
+      {/* ── EMAIL CAPTURE / LEAD MAGNET ──────────────────────────────────────── */}
+      <section style={{
+        padding: "60px 40px",
+        background: "linear-gradient(135deg, rgba(21,88,203,0.12) 0%, rgba(21,203,136,0.08) 100%)",
+        borderTop: "1px solid rgba(21,88,203,0.2)",
+        borderBottom: "1px solid rgba(21,203,136,0.2)",
+      }}>
+        <div style={{
+          maxWidth: "700px", margin: "0 auto", textAlign: "center",
+        }}>
+          <div style={{ fontSize: "2.5rem", marginBottom: "16px" }}>📋</div>
+          <h2 style={{
+            fontFamily: "'Outfit', sans-serif", fontWeight: 700,
+            fontSize: "clamp(1.4rem, 3vw, 1.8rem)", color: "var(--text-hi)",
+            margin: "0 0 12px", letterSpacing: "-0.02em",
+          }}>Free Guide: 5 Questions to Ask Before Hiring a Dev Shop</h2>
+          <p style={{ color: "var(--text-mid)", fontSize: "0.9rem", lineHeight: 1.7, marginBottom: "24px", maxWidth: "500px", margin: "0 auto 24px" }}>
+            Don't waste money on the wrong team. Get our free checklist — the same questions we'd ask if we were in your shoes.
+          </p>
+
+          {captureStatus === "success" ? (
+            <div style={{
+              padding: "16px 24px", borderRadius: "12px",
+              background: "rgba(21,203,136,0.15)", border: "1px solid rgba(21,203,136,0.3)",
+              color: "var(--accent)", fontSize: "0.95rem",
+            }}>
+              Check your inbox! (And your spam folder, just in case.)
+            </div>
+          ) : (
+            <form onSubmit={handleCaptureSubmit} style={{
+              display: "flex", gap: "12px", justifyContent: "center", flexWrap: "wrap",
+              maxWidth: "480px", margin: "0 auto",
+            }}>
+              <input
+                type="email"
+                required
+                value={captureEmail}
+                onChange={e => setCaptureEmail(e.target.value)}
+                placeholder="you@company.com"
+                style={{
+                  flex: "1 1 240px", padding: "14px 18px", borderRadius: "10px",
+                  background: "var(--bg-card)", border: "1px solid var(--border-mid)",
+                  color: "var(--text-hi)", fontSize: "0.9rem",
+                  fontFamily: "'DM Sans', sans-serif", outline: "none",
+                }}
+              />
+              <button type="submit" disabled={captureSubmitting} style={{
+                padding: "14px 28px", borderRadius: "10px",
+                background: captureSubmitting ? "var(--bg-card2)" : "linear-gradient(135deg, var(--primary), var(--accent))",
+                border: "none", color: "white", fontWeight: 600, fontSize: "0.9rem",
+                cursor: captureSubmitting ? "wait" : "pointer",
+                fontFamily: "'DM Sans', sans-serif",
+                boxShadow: captureSubmitting ? "none" : "0 4px 16px rgba(21,88,203,0.3)",
+                whiteSpace: "nowrap",
+              }}>
+                {captureSubmitting ? "Sending..." : "Get the Guide"}
+              </button>
+            </form>
+          )}
+          {captureStatus === "error" && (
+            <p style={{ color: "#F87171", fontSize: "0.82rem", marginTop: "12px" }}>
+              Something went wrong. Try again or email us directly.
+            </p>
+          )}
+          <p style={{ color: "var(--text-lo)", fontSize: "0.72rem", marginTop: "12px" }}>
+            No spam, ever. Just the guide.
+          </p>
         </div>
       </section>
 

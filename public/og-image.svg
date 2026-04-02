@@ -1,0 +1,20 @@
+<svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#020814"/>
+      <stop offset="100%" style="stop-color:#041128"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1558CB"/>
+      <stop offset="100%" style="stop-color:#15CB88"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect x="60" y="60" width="64" height="64" rx="14" fill="url(#accent)"/>
+  <text x="140" y="107" font-family="sans-serif" font-weight="700" font-size="36" fill="#E7EEF9">Lambent<tspan fill="#2A70E9">Labs</tspan></text>
+  <text x="60" y="260" font-family="sans-serif" font-weight="800" font-size="72" fill="#E7EEF9">Your app.</text>
+  <text x="60" y="350" font-family="sans-serif" font-weight="800" font-size="72" fill="#E7EEF9">Live in 2 weeks.</text>
+  <text x="60" y="420" font-family="sans-serif" font-weight="400" font-size="28" fill="#8AABE5">Custom software, SEO, and data solutions — faster and for less.</text>
+  <rect x="60" y="480" width="280" height="56" rx="12" fill="url(#accent)"/>
+  <text x="120" y="516" font-family="sans-serif" font-weight="600" font-size="20" fill="white">Get a Free Quote</text>
+</svg>

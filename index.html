@@ -4,13 +4,95 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Lambent Labs — Mendix app development by Marc Lehane & Jon Lamb" />
-    <title>Lambent Labs</title>
+
+    <!-- Primary SEO -->
+    <title>Lambent Labs | Custom Software Development — From Idea to Production in 2 Weeks</title>
+    <meta name="description" content="Lambent Labs builds custom web apps, internal tools, and data platforms faster and for less. Go from idea to production in as little as 2 weeks. Free consultation." />
+    <meta name="keywords" content="custom software development, web application development, rapid app development, affordable software, SEO services, data analytics, API integration, small business software, startup MVP, production in 2 weeks" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://lambentlabs.dev" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Lambent Labs | Custom Software — Idea to Production in 2 Weeks" />
+    <meta property="og:description" content="We build custom web apps, internal tools, and data platforms faster and for less. Get a free consultation today." />
+    <meta property="og:url" content="https://lambentlabs.dev" />
+    <meta property="og:site_name" content="Lambent Labs" />
+    <meta property="og:image" content="https://lambentlabs.dev/og-image.png" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Lambent Labs | Custom Software — Idea to Production in 2 Weeks" />
+    <meta name="twitter:description" content="Custom web apps, internal tools, and data platforms. Faster. Cheaper. Better." />
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ProfessionalService",
+      "name": "Lambent Labs",
+      "url": "https://lambentlabs.dev",
+      "description": "Custom software development studio specializing in rapid web application development, SEO, and data solutions.",
+      "areaServed": "US",
+      "serviceType": ["Custom Software Development", "Web Application Development", "SEO Services", "Data Analytics", "API Integration"],
+      "priceRange": "$$",
+      "knowsAbout": ["Web Development", "React", "Node.js", "Database Design", "SEO", "Data Analytics", "API Integration"],
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Software Development Services",
+        "itemListElement": [
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Rapid MVP Development",
+              "description": "Go from idea to production-ready application in as little as 2 weeks"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Custom Web Applications",
+              "description": "Full-stack web applications tailored to your business workflows"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "SEO & Digital Presence",
+              "description": "Search engine optimization, analytics setup, and conversion tracking"
+            }
+          }
+        ]
+      }
+    }
+    </script>
+
+    <!-- Google Tag Manager -->
+    <!-- Replace GTM-XXXXXXX with your GTM container ID (create one at tagmanager.google.com) -->
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+      new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+      'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+      })(window,document,'script','dataLayer','GTM-XXXXXXX');
+    </script>
+    <!-- End Google Tag Manager -->
+
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
   </head>
   <body>
+    <!-- Google Tag Manager (noscript fallback) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-XXXXXXX"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>

@@ -1,15 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 
 // ─── localStorage helpers ──────────────────────────────────────────────────────
-function loadApps() {
-  try {
-    const raw = localStorage.getItem("lambent-apps");
-    return raw ? JSON.parse(raw) : null;
-  } catch { return null; }
-}
-function saveApps(apps) {
-  try { localStorage.setItem("lambent-apps", JSON.stringify(apps)); } catch {}
-}
 function loadSiteContent() {
   try {
     const raw = localStorage.getItem("lambent-content");
@@ -21,67 +12,116 @@ function saveSiteContent(content) {
 }
 
 // ─── Default data ──────────────────────────────────────────────────────────────
-const DEFAULT_APPS = [
+const SERVICES = [
   {
     id: 1,
-    title: "Field Inspection Manager",
-    description: "A Mendix-powered mobile app for real-time field inspections, photo capture, and automated reporting workflows.",
-    tags: ["Mendix", "Mobile", "Workflow"],
-    status: "Live",
+    icon: "🚀",
+    title: "Rapid MVP Development",
+    description: "Go from napkin sketch to production app in as little as 2 weeks. We use modern tooling and AI-accelerated workflows to ship real software at startup speed — without the startup price tag.",
+    tags: ["React", "Node.js", "Full-Stack", "MVP"],
     color: "#1558CB",
-    link: "#",
-    icon: "🔍",
   },
   {
     id: 2,
-    title: "Asset Tracker Pro",
-    description: "Enterprise asset management platform built on Mendix with barcode scanning, GPS tracking, and lifecycle analytics.",
-    tags: ["Mendix", "Enterprise", "Analytics"],
-    status: "Live",
+    icon: "🌐",
+    title: "Custom Web Applications",
+    description: "Internal tools, client portals, dashboards, and workflow apps — tailored to how your business actually works. No cookie-cutter templates. No bloated platforms.",
+    tags: ["Web Apps", "Dashboards", "Portals", "APIs"],
     color: "#15CB88",
-    link: "#",
-    icon: "📦",
   },
   {
     id: 3,
-    title: "Client Portal",
-    description: "Secure self-service portal for clients to submit requests, track project status, and access documentation.",
-    tags: ["Mendix", "Portal", "TypeScript"],
-    status: "Beta",
+    icon: "📊",
+    title: "SEO & Digital Presence",
+    description: "Technical SEO audits, Google Analytics setup, conversion tracking, and content strategy. We make sure people find you — and that you know what they do when they get there.",
+    tags: ["SEO", "Analytics", "Google Ads", "Tracking"],
     color: "#588FEE",
-    link: "#",
-    icon: "🔐",
+  },
+  {
+    id: 4,
+    icon: "🔗",
+    title: "Data & API Integration",
+    description: "Connect your systems. We build custom integrations, ETL pipelines, and reporting layers that pull your data together into one clear picture.",
+    tags: ["Supabase", "REST APIs", "SQL", "Automation"],
+    color: "#E9812A",
+  },
+  {
+    id: 5,
+    icon: "📱",
+    title: "Ad Campaigns & Lead Gen",
+    description: "Google Ads, Meta Ads, TikTok — we set up your campaigns, install your tracking pixels, and build landing pages that convert. Data-driven from day one.",
+    tags: ["Google Ads", "Meta Ads", "Landing Pages", "Pixels"],
+    color: "#CB1558",
+  },
+  {
+    id: 6,
+    icon: "🛠️",
+    title: "Custom Query & Reporting",
+    description: "Need to slice your data a different way? We write custom SQL queries, build automated reports, and create dashboards so you can make decisions faster.",
+    tags: ["SQL", "Reporting", "Dashboards", "BI"],
+    color: "#8B5CF6",
+  },
+];
+
+const RESULTS = [
+  { metric: "2 weeks", label: "Average time to first deploy" },
+  { metric: "60%", label: "Less than traditional dev costs" },
+  { metric: "24hr", label: "Response time on all inquiries" },
+  { metric: "100%", label: "Custom — no templates, no lock-in" },
+];
+
+const PROCESS_STEPS = [
+  { step: "01", title: "Discovery Call", description: "Free 30-minute consultation. We learn your problem, you learn our approach. No pressure, no jargon." },
+  { step: "02", title: "Scope & Quote", description: "Within 48 hours you get a clear scope document and fixed-price quote. No surprises, no hourly billing games." },
+  { step: "03", title: "Build Sprint", description: "We build in focused 1-2 week sprints with daily progress updates. You see working software from day one." },
+  { step: "04", title: "Launch & Support", description: "We deploy to production, set up monitoring, and provide 30 days of post-launch support included." },
+];
+
+const FAQ_ITEMS = [
+  {
+    q: "How can you build so fast?",
+    a: "We leverage modern frameworks, AI-accelerated development workflows, and reusable architecture patterns. This isn't corner-cutting — it's using better tools. The same way a CNC machine doesn't make worse furniture than hand tools, it makes it faster.",
+  },
+  {
+    q: "What does '2 weeks to production' actually mean?",
+    a: "It means a working, deployed application that real users can access. The scope varies — a simple internal tool might be done in one week, a complex multi-user platform might take four. But our average first deploy is 2 weeks from kickoff.",
+  },
+  {
+    q: "How much does it cost?",
+    a: "Most projects fall between $2,000 and $15,000. We give fixed-price quotes after a free discovery call — no hourly billing, no scope creep surprises. You know the number before we write a line of code.",
+  },
+  {
+    q: "What technologies do you use?",
+    a: "React, Node.js, PostgreSQL, and Supabase are our core stack. We also work with Python, PHP, and can integrate with virtually any API or database. We pick the right tool for the job, not the trendy one.",
+  },
+  {
+    q: "Do you do ongoing maintenance?",
+    a: "Yes. Every project includes 30 days of post-launch support. After that, we offer affordable monthly maintenance plans or can hand off the codebase to your team with full documentation.",
+  },
+  {
+    q: "Can you help with SEO and marketing too?",
+    a: "Absolutely. We set up analytics, tracking pixels, Google Search Console, and can manage ad campaigns on Google, Meta, and TikTok. A beautiful app means nothing if nobody finds it.",
   },
 ];
 
 const DEFAULT_CONTENT = {
-  heroTagline: "We build software that actually works.",
-  heroSub: "Mendix-native applications crafted for real businesses, real workflows, and real results.",
-  aboutText: "Lambent Labs was founded by Marc Lehane and Jon Lamb — two developers who got tired of watching good ideas die in bad software. We specialize in low-code and custom application development on the Mendix platform, with deep expertise in Java, TypeScript, and React.",
-  marcBio: "Full-stack Mendix developer with a passion for clean architecture and user-centric design.",
-  jonBio: "Platform architect and integration specialist. If it has an API, Jon has connected it to something.",
+  heroTagline: "Your app. Live in 2 weeks.",
+  heroSub: "We build custom software, websites, and data tools faster and for less than you thought possible. No bloated timelines. No six-figure invoices. Just working software, deployed.",
   contactEmail: "hello@lambentlabs.dev",
 };
 
 const ADMIN_PASSWORD = "lambent2024";
 
 // ─── Icons ─────────────────────────────────────────────────────────────────────
-const PencilIcon = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-  </svg>
-);
-const TrashIcon = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-    <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/>
-    <path d="M10 11v6"/><path d="M14 11v6"/>
-    <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
-  </svg>
-);
 const CloseIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
     <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+  </svg>
+);
+const ChevronDown = ({ open }) => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"
+    style={{ transition: "transform 0.3s", transform: open ? "rotate(180deg)" : "rotate(0)" }}>
+    <polyline points="6 9 12 15 18 9" />
   </svg>
 );
 
@@ -112,7 +152,7 @@ function Modal({ title, onClose, children }) {
 }
 
 // ─── Field ─────────────────────────────────────────────────────────────────────
-function Field({ label, value, onChange, textarea, type = "text" }) {
+function Field({ label, value, onChange, textarea, type = "text", placeholder }) {
   const style = {
     width: "100%", background: "var(--bg-card2)", border: "1px solid var(--border-mid)",
     borderRadius: "8px", padding: "10px 14px", color: "var(--text-hi)",
@@ -127,14 +167,14 @@ function Field({ label, value, onChange, textarea, type = "text" }) {
         marginBottom: "6px", letterSpacing: "0.05em", textTransform: "uppercase"
       }}>{label}</label>
       {textarea
-        ? <textarea value={value} onChange={e => onChange(e.target.value)} style={style} />
-        : <input type={type} value={value} onChange={e => onChange(e.target.value)} style={style} />
+        ? <textarea value={value} onChange={e => onChange(e.target.value)} style={style} placeholder={placeholder} />
+        : <input type={type} value={value} onChange={e => onChange(e.target.value)} style={style} placeholder={placeholder} />
       }
     </div>
   );
 }
 
-// ─── Save Button ───────────────────────────────────────────────────────────────
+// ─── SaveBtn ───────────────────────────────────────────────────────────────────
 function SaveBtn({ onClick, children }) {
   return (
     <button onClick={onClick} style={{
@@ -147,113 +187,103 @@ function SaveBtn({ onClick, children }) {
   );
 }
 
-// ─── App Card ──────────────────────────────────────────────────────────────────
-function AppCard({ app, isAdmin, onEdit, onDelete }) {
+// ─── Service Card ──────────────────────────────────────────────────────────────
+function ServiceCard({ service }) {
   const [hovered, setHovered] = useState(false);
   return (
-    <div
+    <article
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
         background: hovered ? "var(--bg-card2)" : "var(--bg-card)",
-        border: `1px solid ${hovered ? app.color + "66" : "var(--border)"}`,
+        border: `1px solid ${hovered ? service.color + "66" : "var(--border)"}`,
         borderRadius: "16px", padding: "28px",
         transition: "all 0.25s ease",
         transform: hovered ? "translateY(-4px)" : "none",
-        boxShadow: hovered ? `0 12px 40px ${app.color}22` : "none",
-        position: "relative",
+        boxShadow: hovered ? `0 12px 40px ${service.color}22` : "none",
       }}
     >
-      {/* Status badge */}
-      <div style={{ position: "absolute", top: "20px", right: "20px" }}>
-        <span style={{
-          fontSize: "0.7rem", fontWeight: 600, letterSpacing: "0.08em",
-          padding: "3px 10px", borderRadius: "20px",
-          background: app.status === "Live" ? "rgba(10,44,101,0.8)" : "rgba(7,28,77,0.8)",
-          color: app.status === "Live" ? "var(--accent)" : "var(--primary-llt)",
-          border: `1px solid ${app.status === "Live" ? "rgba(21,203,136,0.3)" : "rgba(88,143,238,0.3)"}`,
-          textTransform: "uppercase",
-        }}>{app.status}</span>
-      </div>
-
-      {/* Icon */}
       <div style={{
         fontSize: "2.2rem", marginBottom: "16px",
-        background: app.color + "18", borderRadius: "12px",
+        background: service.color + "18", borderRadius: "12px",
         width: "56px", height: "56px", display: "flex", alignItems: "center", justifyContent: "center",
-      }}>{app.icon}</div>
+      }}>{service.icon}</div>
 
       <h3 style={{ margin: "0 0 10px 0", color: "var(--text-hi)", fontFamily: "'Outfit', sans-serif", fontSize: "1.1rem", fontWeight: 600 }}>
-        {app.title}
+        {service.title}
       </h3>
       <p style={{ margin: "0 0 18px 0", color: "var(--text-mid)", fontSize: "0.875rem", lineHeight: 1.6 }}>
-        {app.description}
+        {service.description}
       </p>
 
-      {/* Tags */}
-      <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginBottom: (isAdmin || (app.link && app.link !== "#")) ? "16px" : 0 }}>
-        {app.tags.map(tag => (
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+        {service.tags.map(tag => (
           <span key={tag} style={{
             fontSize: "0.72rem", padding: "3px 10px", borderRadius: "20px",
-            background: app.color + "18", color: app.color,
+            background: service.color + "18", color: service.color,
             fontWeight: 500, letterSpacing: "0.04em",
           }}>{tag}</span>
         ))}
       </div>
+    </article>
+  );
+}
 
-      {/* View link */}
-      {app.link && app.link !== "#" && (
-        <a href={app.link} target="_blank" rel="noopener noreferrer" style={{
-          display: "inline-flex", alignItems: "center", gap: "6px",
-          color: app.color, fontSize: "0.82rem", fontWeight: 500,
-        }}>
-          View App →
-        </a>
-      )}
-
-      {/* Admin controls */}
-      {isAdmin && (
-        <div style={{ display: "flex", gap: "8px", marginTop: "16px", paddingTop: "16px", borderTop: "1px solid var(--border)" }}>
-          <button onClick={() => onEdit(app)} style={{
-            display: "flex", alignItems: "center", gap: "6px",
-            background: "var(--bg-card2)", border: "1px solid var(--border-mid)",
-            color: "var(--text-mid)", borderRadius: "8px", padding: "6px 12px",
-            cursor: "pointer", fontSize: "0.8rem", fontFamily: "'DM Sans', sans-serif",
-          }}>
-            <PencilIcon /> Edit
-          </button>
-          <button onClick={() => onDelete(app.id)} style={{
-            display: "flex", alignItems: "center", gap: "6px",
-            background: "rgba(4,17,40,0.8)", border: "1px solid rgba(127,29,29,0.8)",
-            color: "#F87171", borderRadius: "8px", padding: "6px 12px",
-            cursor: "pointer", fontSize: "0.8rem", fontFamily: "'DM Sans', sans-serif",
-          }}>
-            <TrashIcon /> Delete
-          </button>
-        </div>
-      )}
+// ─── FAQ Item ──────────────────────────────────────────────────────────────────
+function FAQItem({ item }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div style={{
+      background: "var(--bg-card)", border: "1px solid var(--border)",
+      borderRadius: "12px", overflow: "hidden",
+      transition: "border-color 0.2s",
+      borderColor: open ? "var(--border-mid)" : "var(--border)",
+    }}>
+      <button onClick={() => setOpen(!open)} style={{
+        width: "100%", background: "none", border: "none", color: "var(--text-hi)",
+        padding: "20px 24px", display: "flex", justifyContent: "space-between", alignItems: "center",
+        cursor: "pointer", fontFamily: "'DM Sans', sans-serif", fontSize: "0.95rem",
+        fontWeight: 500, textAlign: "left",
+      }}>
+        {item.q}
+        <ChevronDown open={open} />
+      </button>
+      <div style={{
+        maxHeight: open ? "300px" : "0",
+        overflow: "hidden",
+        transition: "max-height 0.3s ease, padding 0.3s ease",
+        padding: open ? "0 24px 20px" : "0 24px",
+      }}>
+        <p style={{ color: "var(--text-mid)", fontSize: "0.875rem", lineHeight: 1.7, margin: 0 }}>
+          {item.a}
+        </p>
+      </div>
     </div>
   );
 }
 
 // ─── Main App ──────────────────────────────────────────────────────────────────
 export default function App() {
-  const [apps, setApps] = useState(() => loadApps() || DEFAULT_APPS);
   const [content, setContent] = useState(() => loadSiteContent() || DEFAULT_CONTENT);
   const [isAdmin, setIsAdmin] = useState(false);
   const [showAdminLogin, setShowAdminLogin] = useState(false);
   const [adminPassword, setAdminPassword] = useState("");
   const [loginError, setLoginError] = useState(false);
-  const [showAppEditor, setShowAppEditor] = useState(false);
-  const [editingApp, setEditingApp] = useState(null);
   const [showContentEditor, setShowContentEditor] = useState(false);
   const [editingContent, setEditingContent] = useState(null);
   const [activeSection, setActiveSection] = useState("home");
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // Contact form
+  const [contactName, setContactName] = useState("");
+  const [contactEmail, setContactEmail] = useState("");
+  const [contactMessage, setContactMessage] = useState("");
+  const [contactSubmitting, setContactSubmitting] = useState(false);
+  const [contactStatus, setContactStatus] = useState(null); // "success" | "error" | null
 
   const logoClickCount = useRef(0);
   const logoClickTimer = useRef(null);
 
-  // Secret admin trigger: click logo 5x rapidly
   const handleLogoClick = () => {
     logoClickCount.current += 1;
     clearTimeout(logoClickTimer.current);
@@ -275,33 +305,54 @@ export default function App() {
     }
   };
 
-  const handleSaveApp = (app) => {
-    const tags = typeof app.tags === "string"
-      ? app.tags.split(",").map(t => t.trim()).filter(Boolean)
-      : app.tags;
-    const updated = app.id
-      ? apps.map(a => a.id === app.id ? { ...app, tags } : a)
-      : [...apps, { ...app, tags, id: Date.now() }];
-    setApps(updated);
-    saveApps(updated);
-    setShowAppEditor(false);
-    setEditingApp(null);
-  };
-
-  const handleDeleteApp = (id) => {
-    if (!window.confirm("Delete this app?")) return;
-    const updated = apps.filter(a => a.id !== id);
-    setApps(updated);
-    saveApps(updated);
-  };
-
   const handleSaveContent = (c) => {
     setContent(c);
     saveSiteContent(c);
     setShowContentEditor(false);
   };
 
-  // ── Render ────────────────────────────────────────────────────────────────────
+  // ── Supabase lead submission ──
+  const SUPABASE_URL = "https://ltkapmacmylwfhufuozq.supabase.co";
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx0a2FwbWFjbXlsd2ZodWZ1b3pxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUxMzU4OTcsImV4cCI6MjA5MDcxMTg5N30.uNtnYOBwPcIOkX0Yba2U6EJyywbL-lhjRa4sEJ8tj1c";
+
+  const handleContactSubmit = async (e) => {
+    e.preventDefault();
+    setContactSubmitting(true);
+    setContactStatus(null);
+
+    try {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/leads`, {
+        method: "POST",
+        headers: {
+          "apikey": SUPABASE_ANON_KEY,
+          "Authorization": `Bearer ${SUPABASE_ANON_KEY}`,
+          "Content-Type": "application/json",
+          "Prefer": "return=minimal",
+        },
+        body: JSON.stringify({ name: contactName, email: contactEmail, message: contactMessage }),
+      });
+
+      if (res.ok) {
+        setContactStatus("success");
+        setContactName("");
+        setContactEmail("");
+        setContactMessage("");
+        // Push event to GTM dataLayer for conversion tracking
+        if (window.dataLayer) {
+          window.dataLayer.push({ event: "form_submit", form_name: "contact" });
+        }
+      } else {
+        setContactStatus("error");
+      }
+    } catch {
+      setContactStatus("error");
+    } finally {
+      setContactSubmitting(false);
+    }
+  };
+
+  const navLinks = ["home", "services", "process", "faq", "contact"];
+
   return (
     <div style={{ minHeight: "100vh" }}>
 
@@ -314,22 +365,14 @@ export default function App() {
           position: "sticky", top: 0, zIndex: 500,
         }}>
           <span style={{ color: "var(--accent)", fontSize: "0.8rem", fontWeight: 600, letterSpacing: "0.08em" }}>
-            ✦ ADMIN MODE ACTIVE
+            ADMIN MODE
           </span>
           <div style={{ display: "flex", gap: "12px" }}>
             <button onClick={() => { setEditingContent({ ...content }); setShowContentEditor(true); }} style={{
               background: "rgba(10,44,101,0.5)", border: "1px solid rgba(21,203,136,0.27)",
               color: "var(--accent)", borderRadius: "8px", padding: "4px 14px",
               fontSize: "0.78rem", cursor: "pointer", fontFamily: "'DM Sans', sans-serif",
-            }}>Edit Site Content</button>
-            <button onClick={() => {
-              setEditingApp({ title: "", description: "", tags: "", status: "Live", color: "#1558CB", link: "", icon: "🚀" });
-              setShowAppEditor(true);
-            }} style={{
-              background: "rgba(10,44,101,0.5)", border: "1px solid rgba(21,203,136,0.27)",
-              color: "var(--accent)", borderRadius: "8px", padding: "4px 14px",
-              fontSize: "0.78rem", cursor: "pointer", fontFamily: "'DM Sans', sans-serif",
-            }}>+ Add App</button>
+            }}>Edit Content</button>
             <button onClick={() => setIsAdmin(false)} style={{
               background: "none", border: "1px solid var(--border)", color: "var(--text-mid)",
               borderRadius: "8px", padding: "4px 14px", fontSize: "0.78rem", cursor: "pointer",
@@ -339,9 +382,9 @@ export default function App() {
         </div>
       )}
 
-      {/* Nav */}
+      {/* ── NAV ───────────────────────────────────────────────────────────────── */}
       <nav style={{
-        position: "sticky", top: 0, zIndex: 400,
+        position: "sticky", top: isAdmin ? undefined : 0, zIndex: 400,
         background: "rgba(2,8,20,0.92)", backdropFilter: "blur(12px)",
         borderBottom: "1px solid rgba(12,52,121,0.33)",
         padding: "0 40px", display: "flex", alignItems: "center",
@@ -365,20 +408,25 @@ export default function App() {
           </span>
         </div>
 
+        {/* Desktop nav */}
         <div style={{ display: "flex", gap: "32px", alignItems: "center" }}>
-          {["home", "apps", "about", "contact"].map(s => (
+          {navLinks.map(s => (
             <a key={s} href={`#${s}`} onClick={() => setActiveSection(s)} style={{
               color: activeSection === s ? "var(--primary-lt)" : "var(--text-mid)",
               fontWeight: 500, fontSize: "0.88rem", letterSpacing: "0.04em",
               textTransform: "capitalize", transition: "color 0.2s",
             }}>{s}</a>
           ))}
+          <a href="#contact" style={{
+            background: "linear-gradient(135deg, var(--primary), var(--accent))",
+            color: "white", padding: "8px 20px", borderRadius: "8px",
+            fontWeight: 600, fontSize: "0.82rem", letterSpacing: "0.02em",
+          }}>Free Consultation</a>
         </div>
       </nav>
 
       {/* ── HERO ──────────────────────────────────────────────────────────────── */}
       <section id="home" style={{ position: "relative", overflow: "hidden", padding: "100px 40px 80px" }}>
-        {/* Background grid */}
         <div style={{
           position: "absolute", inset: 0, zIndex: 0,
           backgroundImage: `
@@ -387,7 +435,6 @@ export default function App() {
           `,
           backgroundSize: "60px 60px",
         }} />
-        {/* Glow blobs */}
         <div style={{
           position: "absolute", top: "-100px", left: "50%",
           transform: "translateX(-50%)", width: "600px", height: "400px",
@@ -417,7 +464,7 @@ export default function App() {
               borderRadius: "50%", animation: "pulse 2s infinite",
               display: "inline-block",
             }} />
-            MENDIX · TYPESCRIPT · REACT · JAVA
+            CUSTOM SOFTWARE · SEO · DATA · INTEGRATIONS
           </div>
 
           <h1 style={{
@@ -430,111 +477,122 @@ export default function App() {
 
           <p style={{
             fontSize: "1.1rem", color: "var(--text-mid)",
-            maxWidth: "600px", margin: "0 auto 48px", lineHeight: 1.7,
+            maxWidth: "640px", margin: "0 auto 48px", lineHeight: 1.7,
           }}>
             {content.heroSub}
           </p>
 
           <div style={{ display: "flex", gap: "16px", justifyContent: "center", flexWrap: "wrap" }}>
-            <a href="#apps" style={{
+            <a href="#contact" style={{
               background: "linear-gradient(135deg, var(--primary), var(--accent))",
               color: "white", padding: "14px 32px", borderRadius: "12px",
               fontWeight: 600, fontSize: "0.95rem", letterSpacing: "0.02em",
               boxShadow: "0 4px 20px rgba(21,88,203,0.35)",
-            }}>View Our Apps</a>
-            <a href="#about" style={{
+            }}>Get a Free Quote</a>
+            <a href="#services" style={{
               background: "transparent", border: "1px solid var(--border)",
               color: "var(--text-mid)", padding: "14px 32px", borderRadius: "12px",
               fontWeight: 500, fontSize: "0.95rem",
-            }}>About Us</a>
+            }}>See What We Build</a>
           </div>
         </div>
       </section>
 
-      {/* ── APPS ──────────────────────────────────────────────────────────────── */}
-      <section id="apps" style={{ padding: "80px 40px", maxWidth: "1200px", margin: "0 auto" }}>
+      {/* ── RESULTS BAR ───────────────────────────────────────────────────────── */}
+      <section style={{
+        background: "var(--bg-dark)", borderTop: "1px solid rgba(12,52,121,0.2)",
+        borderBottom: "1px solid rgba(12,52,121,0.2)",
+        padding: "40px 40px",
+      }}>
+        <div style={{
+          maxWidth: "1000px", margin: "0 auto",
+          display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+          gap: "32px", textAlign: "center",
+        }}>
+          {RESULTS.map(r => (
+            <div key={r.label}>
+              <div style={{
+                fontFamily: "'Outfit', sans-serif", fontWeight: 800,
+                fontSize: "2rem", color: "var(--accent)",
+                marginBottom: "8px",
+              }}>{r.metric}</div>
+              <div style={{ color: "var(--text-mid)", fontSize: "0.85rem" }}>{r.label}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── SERVICES ──────────────────────────────────────────────────────────── */}
+      <section id="services" style={{ padding: "80px 40px", maxWidth: "1200px", margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: "56px" }}>
           <p style={{
             color: "var(--primary-lt)", fontSize: "0.8rem", fontWeight: 600,
             letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: "12px",
-          }}>What We've Built</p>
+          }}>What We Do</p>
           <h2 style={{
             fontFamily: "'Outfit', sans-serif", fontWeight: 700,
             fontSize: "clamp(1.8rem, 4vw, 2.6rem)", color: "var(--text-hi)",
-            margin: 0, letterSpacing: "-0.02em",
-          }}>Live Applications</h2>
+            margin: "0 0 16px", letterSpacing: "-0.02em",
+          }}>Software Development & Digital Services</h2>
+          <p style={{ color: "var(--text-mid)", maxWidth: "600px", margin: "0 auto", lineHeight: 1.7, fontSize: "0.95rem" }}>
+            From custom web apps to SEO and paid advertising — we handle the technical side so you can focus on your business.
+          </p>
         </div>
 
-        {apps.length === 0 ? (
-          <div style={{ textAlign: "center", color: "var(--text-lo)", padding: "80px 0" }}>
-            <div style={{ fontSize: "3rem", marginBottom: "16px" }}>🚀</div>
-            <p>{isAdmin ? 'Click "+ Add App" to get started.' : "Coming soon."}</p>
-          </div>
-        ) : (
-          <div style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))",
-            gap: "24px",
-          }}>
-            {apps.map(app => (
-              <AppCard key={app.id} app={app} isAdmin={isAdmin}
-                onEdit={a => {
-                  setEditingApp({ ...a, tags: Array.isArray(a.tags) ? a.tags.join(", ") : a.tags });
-                  setShowAppEditor(true);
-                }}
-                onDelete={handleDeleteApp}
-              />
-            ))}
-          </div>
-        )}
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fill, minmax(340px, 1fr))",
+          gap: "24px",
+        }}>
+          {SERVICES.map(service => (
+            <ServiceCard key={service.id} service={service} />
+          ))}
+        </div>
       </section>
 
-      {/* ── ABOUT ─────────────────────────────────────────────────────────────── */}
-      <section id="about" style={{
+      {/* ── PROCESS ───────────────────────────────────────────────────────────── */}
+      <section id="process" style={{
         padding: "80px 40px",
         background: "var(--bg-dark)",
         borderTop: "1px solid rgba(12,52,121,0.2)",
         borderBottom: "1px solid rgba(12,52,121,0.2)",
       }}>
-        <div style={{ maxWidth: "1000px", margin: "0 auto" }}>
+        <div style={{ maxWidth: "800px", margin: "0 auto" }}>
           <div style={{ textAlign: "center", marginBottom: "56px" }}>
             <p style={{
               color: "var(--primary-lt)", fontSize: "0.8rem", fontWeight: 600,
               letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: "12px",
-            }}>Who We Are</p>
+            }}>How It Works</p>
             <h2 style={{
               fontFamily: "'Outfit', sans-serif", fontWeight: 700,
               fontSize: "clamp(1.8rem, 4vw, 2.6rem)", color: "var(--text-hi)",
-              margin: "0 0 24px", letterSpacing: "-0.02em",
-            }}>The Team</h2>
-            <p style={{ color: "var(--text-mid)", maxWidth: "620px", margin: "0 auto", lineHeight: 1.8, fontSize: "0.95rem" }}>
-              {content.aboutText}
+              margin: "0 0 16px", letterSpacing: "-0.02em",
+            }}>From Idea to Production</h2>
+            <p style={{ color: "var(--text-mid)", maxWidth: "500px", margin: "0 auto", lineHeight: 1.7, fontSize: "0.95rem" }}>
+              A simple, transparent process. No mystery, no surprises.
             </p>
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px" }}>
-            {[
-              { name: "Marc Lehane", initial: "M", bio: content.marcBio, color: "#1558CB" },
-              { name: "Jon Lamb",    initial: "J", bio: content.jonBio,  color: "#15CB88" },
-            ].map(({ name, initial, bio, color }) => (
-              <div key={name} style={{
+          <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+            {PROCESS_STEPS.map((s, i) => (
+              <div key={s.step} style={{
+                display: "flex", gap: "24px", alignItems: "flex-start",
                 background: "var(--bg-card)", border: "1px solid var(--border)",
-                borderRadius: "16px", padding: "32px",
-                display: "flex", gap: "20px", alignItems: "flex-start",
+                borderRadius: "16px", padding: "28px",
               }}>
                 <div style={{
-                  width: "56px", height: "56px", borderRadius: "14px", flexShrink: 0,
-                  background: color + "28",
-                  border: `1px solid ${color}44`,
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                  fontFamily: "'Outfit', sans-serif", fontWeight: 700, fontSize: "1.4rem", color,
-                }}>{initial}</div>
+                  fontFamily: "'Outfit', sans-serif", fontWeight: 800,
+                  fontSize: "1.8rem", color: "var(--primary)", opacity: 0.6,
+                  minWidth: "48px",
+                }}>{s.step}</div>
                 <div>
                   <h3 style={{
-                    margin: "0 0 8px", fontFamily: "'Outfit', sans-serif",
-                    fontWeight: 600, color: "var(--text-hi)", fontSize: "1.05rem",
-                  }}>{name}</h3>
-                  <p style={{ margin: 0, color: "var(--text-mid)", fontSize: "0.875rem", lineHeight: 1.7 }}>{bio}</p>
+                    fontFamily: "'Outfit', sans-serif", fontWeight: 600,
+                    fontSize: "1.05rem", color: "var(--text-hi)", margin: "0 0 8px",
+                  }}>{s.title}</h3>
+                  <p style={{ color: "var(--text-mid)", fontSize: "0.875rem", lineHeight: 1.7, margin: 0 }}>
+                    {s.description}
+                  </p>
                 </div>
               </div>
             ))}
@@ -542,44 +600,160 @@ export default function App() {
         </div>
       </section>
 
-      {/* ── CONTACT ───────────────────────────────────────────────────────────── */}
-      <section id="contact" style={{ padding: "80px 40px" }}>
+      {/* ── FAQ ────────────────────────────────────────────────────────────────── */}
+      <section id="faq" style={{ padding: "80px 40px", maxWidth: "800px", margin: "0 auto" }}>
+        <div style={{ textAlign: "center", marginBottom: "56px" }}>
+          <p style={{
+            color: "var(--primary-lt)", fontSize: "0.8rem", fontWeight: 600,
+            letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: "12px",
+          }}>FAQ</p>
+          <h2 style={{
+            fontFamily: "'Outfit', sans-serif", fontWeight: 700,
+            fontSize: "clamp(1.8rem, 4vw, 2.6rem)", color: "var(--text-hi)",
+            margin: 0, letterSpacing: "-0.02em",
+          }}>Common Questions</h2>
+        </div>
+
+        <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+          {FAQ_ITEMS.map((item, i) => (
+            <FAQItem key={i} item={item} />
+          ))}
+        </div>
+      </section>
+
+      {/* ── CONTACT / LEAD CAPTURE ────────────────────────────────────────────── */}
+      <section id="contact" style={{
+        padding: "80px 40px",
+        background: "var(--bg-dark)",
+        borderTop: "1px solid rgba(12,52,121,0.2)",
+      }}>
         <div style={{ maxWidth: "600px", margin: "0 auto", textAlign: "center" }}>
           <p style={{
             color: "var(--primary-lt)", fontSize: "0.8rem", fontWeight: 600,
             letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: "12px",
-          }}>Get In Touch</p>
+          }}>Start Your Project</p>
           <h2 style={{
             fontFamily: "'Outfit', sans-serif", fontWeight: 700,
             fontSize: "clamp(1.8rem, 4vw, 2.4rem)", color: "var(--text-hi)",
-            margin: "0 0 20px", letterSpacing: "-0.02em",
-          }}>Let's build something great.</h2>
-          <p style={{ color: "var(--text-mid)", marginBottom: "36px", lineHeight: 1.7 }}>
-            Have a project in mind? We'd love to hear about it.
+            margin: "0 0 12px", letterSpacing: "-0.02em",
+          }}>Get a Free Consultation</h2>
+          <p style={{ color: "var(--text-mid)", marginBottom: "36px", lineHeight: 1.7, fontSize: "0.95rem" }}>
+            Tell us about your project and we'll get back to you within 24 hours with a no-obligation quote.
           </p>
-          <a href={`mailto:${content.contactEmail}`} style={{
-            display: "inline-block",
-            background: "linear-gradient(135deg, var(--primary), var(--accent))",
-            color: "white", padding: "16px 40px", borderRadius: "12px",
-            fontWeight: 600, fontSize: "0.95rem", letterSpacing: "0.02em",
-            boxShadow: "0 4px 20px rgba(21,88,203,0.35)",
+
+          <form onSubmit={handleContactSubmit} style={{
+            display: "flex", flexDirection: "column", gap: "16px", textAlign: "left",
           }}>
-            {content.contactEmail}
-          </a>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+              <Field label="Your Name" value={contactName} onChange={setContactName} placeholder="Jane Smith" />
+              <Field label="Your Email" value={contactEmail} onChange={setContactEmail} type="email" placeholder="jane@company.com" />
+            </div>
+            <Field label="Tell Us About Your Project" value={contactMessage} onChange={setContactMessage} textarea
+              placeholder="I need a web app that... / I want better SEO for... / I need to connect my systems..." />
+
+            <button type="submit" disabled={contactSubmitting} style={{
+              width: "100%",
+              background: contactSubmitting
+                ? "var(--bg-card2)"
+                : "linear-gradient(135deg, var(--primary), var(--accent))",
+              border: "none", color: "white", padding: "16px", borderRadius: "12px",
+              fontWeight: 600, fontSize: "1rem",
+              cursor: contactSubmitting ? "wait" : "pointer",
+              fontFamily: "'DM Sans', sans-serif",
+              boxShadow: contactSubmitting ? "none" : "0 4px 20px rgba(21,88,203,0.35)",
+              opacity: contactSubmitting ? 0.7 : 1,
+              transition: "all 0.2s",
+            }}>
+              {contactSubmitting ? "Sending..." : "Send Message"}
+            </button>
+
+            {contactStatus === "success" && (
+              <div style={{
+                marginTop: "16px", padding: "14px 20px", borderRadius: "10px",
+                background: "rgba(21,203,136,0.12)", border: "1px solid rgba(21,203,136,0.3)",
+                color: "var(--accent)", fontSize: "0.9rem", textAlign: "center",
+              }}>
+                Message sent! We'll get back to you within 24 hours.
+              </div>
+            )}
+            {contactStatus === "error" && (
+              <div style={{
+                marginTop: "16px", padding: "14px 20px", borderRadius: "10px",
+                background: "rgba(248,113,113,0.12)", border: "1px solid rgba(248,113,113,0.3)",
+                color: "#F87171", fontSize: "0.9rem", textAlign: "center",
+              }}>
+                Something went wrong. Please email us directly at {content.contactEmail}.
+              </div>
+            )}
+          </form>
+
+          <p style={{ color: "var(--text-lo)", fontSize: "0.78rem", marginTop: "16px" }}>
+            Or email us directly at{" "}
+            <a href={`mailto:${content.contactEmail}`} style={{ color: "var(--primary-lt)" }}>
+              {content.contactEmail}
+            </a>
+          </p>
         </div>
       </section>
 
-      {/* Footer */}
+      {/* ── FOOTER ────────────────────────────────────────────────────────────── */}
       <footer style={{
         borderTop: "1px solid rgba(12,52,121,0.2)",
-        padding: "24px 40px",
-        display: "flex", justifyContent: "space-between", alignItems: "center",
+        padding: "40px",
         color: "var(--text-lo)", fontSize: "0.8rem",
-        flexWrap: "wrap", gap: "8px",
       }}>
-        <span style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 600, color: "var(--primary-lt)" }}>◈ Lambent Labs</span>
-        <span>© {new Date().getFullYear()} Marc Lehane & Jon Lamb · All rights reserved</span>
-        <span style={{ fontSize: "0.72rem", opacity: 0.5 }}>Built on Mendix · TypeScript · React</span>
+        <div style={{
+          maxWidth: "1200px", margin: "0 auto",
+          display: "flex", justifyContent: "space-between", alignItems: "flex-start",
+          flexWrap: "wrap", gap: "32px",
+        }}>
+          <div>
+            <div style={{
+              display: "flex", alignItems: "center", gap: "10px", marginBottom: "12px",
+            }}>
+              <div style={{
+                width: "28px", height: "28px",
+                background: "linear-gradient(135deg, var(--primary), var(--accent))",
+                borderRadius: "8px", display: "flex", alignItems: "center",
+                justifyContent: "center", fontSize: "0.8rem", color: "white",
+              }}>◈</div>
+              <span style={{
+                fontFamily: "'Outfit', sans-serif", fontWeight: 700,
+                fontSize: "0.95rem", color: "var(--text-mid)",
+              }}>
+                Lambent<span style={{ color: "var(--primary-lt)" }}>Labs</span>
+              </span>
+            </div>
+            <p style={{ color: "var(--text-lo)", maxWidth: "300px", lineHeight: 1.6, fontSize: "0.78rem" }}>
+              Custom software development, SEO, and data solutions. Building better software, faster.
+            </p>
+          </div>
+
+          <div>
+            <h4 style={{ color: "var(--text-mid)", fontFamily: "'Outfit', sans-serif", fontSize: "0.85rem", marginBottom: "12px" }}>Services</h4>
+            <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+              {["MVP Development", "Web Applications", "SEO & Analytics", "API Integration", "Ad Campaigns", "Data & Reporting"].map(s => (
+                <a key={s} href="#services" style={{ color: "var(--text-lo)", fontSize: "0.78rem" }}>{s}</a>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <h4 style={{ color: "var(--text-mid)", fontFamily: "'Outfit', sans-serif", fontSize: "0.85rem", marginBottom: "12px" }}>Contact</h4>
+            <a href={`mailto:${content.contactEmail}`} style={{ color: "var(--primary-lt)", fontSize: "0.82rem" }}>
+              {content.contactEmail}
+            </a>
+          </div>
+        </div>
+
+        <div style={{
+          maxWidth: "1200px", margin: "24px auto 0",
+          paddingTop: "24px", borderTop: "1px solid rgba(12,52,121,0.15)",
+          display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: "8px",
+        }}>
+          <span>&copy; {new Date().getFullYear()} Lambent Labs. All rights reserved.</span>
+          <span style={{ fontSize: "0.72rem", opacity: 0.5 }}>React &middot; Node.js &middot; PostgreSQL</span>
+        </div>
       </footer>
 
       {/* ── MODALS ────────────────────────────────────────────────────────────── */}
@@ -596,26 +770,10 @@ export default function App() {
         </Modal>
       )}
 
-      {showAppEditor && editingApp && (
-        <Modal title={editingApp.id ? "Edit App" : "Add New App"} onClose={() => { setShowAppEditor(false); setEditingApp(null); }}>
-          <Field label="App Title" value={editingApp.title} onChange={v => setEditingApp(a => ({ ...a, title: v }))} />
-          <Field label="Description" value={editingApp.description} onChange={v => setEditingApp(a => ({ ...a, description: v }))} textarea />
-          <Field label="Tags (comma-separated)" value={typeof editingApp.tags === "string" ? editingApp.tags : editingApp.tags.join(", ")} onChange={v => setEditingApp(a => ({ ...a, tags: v }))} />
-          <Field label="Status (Live / Beta / Development)" value={editingApp.status} onChange={v => setEditingApp(a => ({ ...a, status: v }))} />
-          <Field label="Accent Color (hex)" value={editingApp.color} onChange={v => setEditingApp(a => ({ ...a, color: v }))} />
-          <Field label="Icon (emoji)" value={editingApp.icon} onChange={v => setEditingApp(a => ({ ...a, icon: v }))} />
-          <Field label="App URL (optional)" value={editingApp.link} onChange={v => setEditingApp(a => ({ ...a, link: v }))} />
-          <SaveBtn onClick={() => handleSaveApp(editingApp)}>Save App</SaveBtn>
-        </Modal>
-      )}
-
       {showContentEditor && editingContent && (
         <Modal title="Edit Site Content" onClose={() => setShowContentEditor(false)}>
           <Field label="Hero Tagline" value={editingContent.heroTagline} onChange={v => setEditingContent(c => ({ ...c, heroTagline: v }))} />
           <Field label="Hero Subtitle" value={editingContent.heroSub} onChange={v => setEditingContent(c => ({ ...c, heroSub: v }))} textarea />
-          <Field label="About Paragraph" value={editingContent.aboutText} onChange={v => setEditingContent(c => ({ ...c, aboutText: v }))} textarea />
-          <Field label="Marc's Bio" value={editingContent.marcBio} onChange={v => setEditingContent(c => ({ ...c, marcBio: v }))} textarea />
-          <Field label="Jon's Bio" value={editingContent.jonBio} onChange={v => setEditingContent(c => ({ ...c, jonBio: v }))} textarea />
           <Field label="Contact Email" value={editingContent.contactEmail} onChange={v => setEditingContent(c => ({ ...c, contactEmail: v }))} />
           <SaveBtn onClick={() => handleSaveContent(editingContent)}>Save Content</SaveBtn>
         </Modal>

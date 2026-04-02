@@ -77,12 +77,23 @@ Rules:
       return res.status(500).json({ error: 'No response from AI' })
     }
 
-    // Parse the JSON response
-    const generated = JSON.parse(textBlock.text)
-    res.json(generated)
+    // Parse the JSON response — strip markdown fences if present
+    let jsonText = textBlock.text.trim()
+    if (jsonText.startsWith('```')) {
+      jsonText = jsonText.replace(/^```(?:json)?\n?/, '').replace(/\n?```$/, '').trim()
+    }
+
+    try {
+      const generated = JSON.parse(jsonText)
+      res.json(generated)
+    } catch (parseErr) {
+      console.error('[generate-preview] JSON parse failed:', parseErr.message)
+      console.error('[generate-preview] Raw response:', jsonText.substring(0, 500))
+      res.status(500).json({ error: 'Failed to parse AI response' })
+    }
   } catch (err) {
-    console.error('[generate-preview]', err.message || err)
-    res.status(500).json({ error: 'Failed to generate preview' })
+    console.error('[generate-preview] API error:', err.status, err.message || err)
+    res.status(500).json({ error: 'Failed to generate preview', detail: err.message })
   }
 })
 

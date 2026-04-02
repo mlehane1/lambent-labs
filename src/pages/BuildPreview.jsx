@@ -287,6 +287,7 @@ export default function BuildPreview() {
   // AI-generated preview data
   const [aiData, setAiData] = useState(null);
   const [aiError, setAiError] = useState(false);
+  const aiDataRef = useRef(null);
 
   // Contact form
   const [contactName, setContactName] = useState("");
@@ -357,6 +358,7 @@ export default function BuildPreview() {
 
       if (!res.ok) throw new Error("API error");
       const data = await res.json();
+      aiDataRef.current = data;
       setAiData(data);
     } catch {
       setAiError(true);
@@ -420,25 +422,26 @@ export default function BuildPreview() {
     setContactSending(false);
   }
 
-  const classification = aiData
-    ? { type: aiData.projectTypeLabel, price: aiData.estimatedRange, key: aiData.projectType }
+  const ai = aiData || aiDataRef.current;
+  const classification = ai
+    ? { type: ai.projectTypeLabel, price: ai.estimatedRange, key: ai.projectType }
     : classifyProject(needDescription);
-  const servicesList = aiData
-    ? (aiData.serviceCards || []).map(s => s.name)
+  const servicesList = ai
+    ? (ai.serviceCards || []).map(s => s.name)
     : services.split(/[,\n]+/).map((s) => s.trim()).filter(Boolean);
-  const serviceDescriptions = aiData
-    ? (aiData.serviceCards || []).reduce((acc, s) => { acc[s.name] = s.description; return acc; }, {})
+  const serviceDescriptions = ai
+    ? (ai.serviceCards || []).reduce((acc, s) => { acc[s.name] = s.description; return acc; }, {})
     : {};
-  const techItems = aiData
-    ? (aiData.technicalConsiderations || [])
+  const techItems = ai
+    ? (ai.technicalConsiderations || [])
     : getTechItems(classification.key);
-  const tagline = aiData
-    ? aiData.tagline
+  const tagline = ai
+    ? ai.tagline
     : (industryTaglines[industry] || industryTaglines["Other"]);
-  const heroSub = aiData ? aiData.heroSubheadline : null;
-  const aboutBlurb = aiData ? aiData.aboutBlurb : null;
-  const recommendationText = aiData
-    ? aiData.recommendation
+  const heroSub = ai ? ai.heroSubheadline : null;
+  const aboutBlurb = ai ? ai.aboutBlurb : null;
+  const recommendationText = ai
+    ? ai.recommendation
     : generateExplanation(classification, needDescription, industry, customers);
   const fakeDomain =
     businessName

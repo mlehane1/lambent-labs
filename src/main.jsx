@@ -1,10 +1,39 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import App from './App.jsx'
+import Layout from './components/Layout.jsx'
+import CaseManagement from './pages/CaseManagement.jsx'
+import SmallBusiness from './pages/SmallBusiness.jsx'
+import WhiteGlove from './pages/WhiteGlove.jsx'
+import Franchise from './pages/Franchise.jsx'
+import BlogIndex from './pages/BlogIndex.jsx'
+import CustomSoftwareCost from './pages/blog/CustomSoftwareCost.jsx'
+import BuildVsBuy from './pages/blog/BuildVsBuy.jsx'
+import AIAcceleratedDev from './pages/blog/AIAcceleratedDev.jsx'
+import FranchiseSoftwareSigns from './pages/blog/FranchiseSoftwareSigns.jsx'
 import './index.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <App />
+    <BrowserRouter>
+      <Routes>
+        {/* Homepage keeps its own nav/footer */}
+        <Route path="/" element={<App />} />
+
+        {/* All other pages use shared Layout */}
+        <Route element={<Layout />}>
+          <Route path="/solutions/case-management" element={<CaseManagement />} />
+          <Route path="/solutions/small-business" element={<SmallBusiness />} />
+          <Route path="/solutions/white-glove" element={<WhiteGlove />} />
+          <Route path="/solutions/franchise" element={<Franchise />} />
+          <Route path="/blog" element={<BlogIndex />} />
+          <Route path="/blog/custom-software-cost" element={<CustomSoftwareCost />} />
+          <Route path="/blog/build-vs-buy" element={<BuildVsBuy />} />
+          <Route path="/blog/ai-accelerated-development" element={<AIAcceleratedDev />} />
+          <Route path="/blog/franchise-software-signs" element={<FranchiseSoftwareSigns />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   </React.StrictMode>
 )

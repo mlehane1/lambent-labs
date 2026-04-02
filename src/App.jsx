@@ -465,11 +465,11 @@ export default function App() {
             fontWeight: 500, fontSize: "0.88rem", letterSpacing: "0.04em",
             transition: "color 0.2s",
           }}>Blog</Link>
-          <a href="#contact" style={{
+          <Link to="/build" style={{
             background: "linear-gradient(135deg, var(--primary), var(--accent))",
             color: "white", padding: "8px 20px", borderRadius: "8px",
             fontWeight: 600, fontSize: "0.82rem", letterSpacing: "0.02em",
-          }}>Free Consultation</a>
+          }}>Preview Your Project</Link>
         </div>
       </nav>
 
@@ -531,12 +531,12 @@ export default function App() {
           </p>
 
           <div style={{ display: "flex", gap: "16px", justifyContent: "center", flexWrap: "wrap" }}>
-            <a href="#contact" style={{
+            <Link to="/build" style={{
               background: "linear-gradient(135deg, var(--primary), var(--accent))",
               color: "white", padding: "14px 32px", borderRadius: "12px",
               fontWeight: 600, fontSize: "0.95rem", letterSpacing: "0.02em",
               boxShadow: "0 4px 20px rgba(21,88,203,0.35)",
-            }}>Get a Free Quote</a>
+            }}>See Your Project Come to Life</Link>
             <a href="#services" style={{
               background: "transparent", border: "1px solid var(--border)",
               color: "var(--text-mid)", padding: "14px 32px", borderRadius: "12px",

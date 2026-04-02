@@ -233,6 +233,65 @@ export default function AIAcceleratedDev() {
             be time to get a new quote.
           </p>
 
+          {/* Further Reading */}
+          <h2 style={s.h2}>Further Reading</h2>
+          <p style={s.p}>
+            Want the data behind the claims? These reports dig into the real impact:
+          </p>
+          <ul style={{ ...s.body, paddingLeft: 24, marginBottom: 32 }}>
+            <li style={{ marginBottom: 12 }}>
+              <a href="https://www.infoq.com/news/2026/03/ai-dora-report/" target="_blank" rel="noopener noreferrer" style={{ color: "var(--primary-lt)" }}>
+                AI Is Amplifying Software Engineering Performance, Says the 2025 DORA Report
+              </a>{" "}
+              — InfoQ's coverage of the landmark DORA report on how AI affects delivery metrics.
+            </li>
+            <li style={{ marginBottom: 12 }}>
+              <a href="https://www.index.dev/blog/developer-productivity-statistics-with-ai-tools" target="_blank" rel="noopener noreferrer" style={{ color: "var(--primary-lt)" }}>
+                Top 100 Developer Productivity Statistics with AI Tools 2026
+              </a>{" "}
+              — Comprehensive data on how AI tools are changing developer output.
+            </li>
+            <li style={{ marginBottom: 12 }}>
+              <a href="https://devops.com/ai-in-software-development-productivity-at-the-cost-of-code-quality-2/" target="_blank" rel="noopener noreferrer" style={{ color: "var(--primary-lt)" }}>
+                AI in Software Development: Productivity at the Cost of Code Quality?
+              </a>{" "}
+              — DevOps.com's balanced take on the trade-offs of AI-assisted development.
+            </li>
+          </ul>
+
+          {/* Related on Our Blog */}
+          <div style={{
+            borderTop: "1px solid var(--border)",
+            paddingTop: 40,
+            marginTop: 40,
+          }}>
+            <h3 style={{ ...s.h2, fontSize: "1.3rem", marginTop: 0 }}>Related on Our Blog</h3>
+            <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+              <Link to="/blog/custom-software-cost" style={{
+                display: "block", padding: "20px 24px", borderRadius: 12,
+                background: "var(--bg-card)", border: "1px solid var(--border)",
+                color: "var(--text-hi)", fontFamily: "'Outfit', sans-serif",
+                fontWeight: 600, fontSize: "1rem",
+              }}>
+                How Much Does Custom Software Actually Cost?
+                <span style={{ display: "block", color: "var(--text-mid)", fontSize: "0.85rem", fontWeight: 400, fontFamily: "'DM Sans', sans-serif", marginTop: 4 }}>
+                  See the real pricing behind modern custom development.
+                </span>
+              </Link>
+              <Link to="/solutions/white-glove" style={{
+                display: "block", padding: "20px 24px", borderRadius: 12,
+                background: "var(--bg-card)", border: "1px solid var(--border)",
+                color: "var(--text-hi)", fontFamily: "'Outfit', sans-serif",
+                fontWeight: 600, fontSize: "1rem",
+              }}>
+                The White Glove Experience — We Handle Everything
+                <span style={{ display: "block", color: "var(--text-mid)", fontSize: "0.85rem", fontWeight: 400, fontFamily: "'DM Sans', sans-serif", marginTop: 4 }}>
+                  From requirements to deployment — you bring the idea, we handle the rest.
+                </span>
+              </Link>
+            </div>
+          </div>
+
           <div style={s.cta}>
             <h3 style={s.ctaTitle}>Curious what's possible for your business?</h3>
             <p style={s.ctaText}>

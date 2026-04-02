@@ -278,6 +278,82 @@ export default function FranchiseSoftwareSigns() {
             six-month project can now be scoped, built, and deployed in weeks.
           </p>
 
+          {/* Further Reading */}
+          <h2 style={s.h2}>Further Reading</h2>
+          <p style={s.p}>
+            More on franchise technology and operations standardization:
+          </p>
+          <ul style={{ ...s.body, paddingLeft: 24, marginBottom: 32 }}>
+            <li style={{ marginBottom: 12 }}>
+              <a href="https://franchisecreator.com/the-role-of-technology-in-modern-franchise-management-systems/" target="_blank" rel="noopener noreferrer" style={{ color: "var(--primary-lt)" }}>
+                The Role of Technology in Modern Franchise Management Systems
+              </a>{" "}
+              — How technology is reshaping franchise operations and brand consistency.
+            </li>
+            <li style={{ marginBottom: 12 }}>
+              <a href="https://www.getomnify.com/blog/why-franchise-businesses-outgrow-their-software-and-how-to-scale-smarter" target="_blank" rel="noopener noreferrer" style={{ color: "var(--primary-lt)" }}>
+                Why Franchise Businesses Outgrow Their Software (And How to Scale Smarter)
+              </a>{" "}
+              — Why the tools that got you to 5 locations won't get you to 50.
+            </li>
+            <li style={{ marginBottom: 12 }}>
+              <a href="https://sentrytechsolutions.com/blog/5-technology-mistakes-killing-your-franchise-expansion-plans" target="_blank" rel="noopener noreferrer" style={{ color: "var(--primary-lt)" }}>
+                5 Technology Mistakes Killing Your Franchise Expansion Plans
+              </a>{" "}
+              — Common tech pitfalls that slow franchise growth.
+            </li>
+            <li style={{ marginBottom: 12 }}>
+              <a href="https://www.claromentis.com/blog/must-have-franchise-software-features" target="_blank" rel="noopener noreferrer" style={{ color: "var(--primary-lt)" }}>
+                19 Must-Have Franchise Software Features
+              </a>{" "}
+              — A comprehensive checklist of what your franchise software should include.
+            </li>
+          </ul>
+
+          {/* Related on Our Blog */}
+          <div style={{
+            borderTop: "1px solid var(--border)",
+            paddingTop: 40,
+            marginTop: 40,
+          }}>
+            <h3 style={{ ...s.h2, fontSize: "1.3rem", marginTop: 0 }}>Related on Our Blog</h3>
+            <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+              <Link to="/blog/build-vs-buy" style={{
+                display: "block", padding: "20px 24px", borderRadius: 12,
+                background: "var(--bg-card)", border: "1px solid var(--border)",
+                color: "var(--text-hi)", fontFamily: "'Outfit', sans-serif",
+                fontWeight: 600, fontSize: "1rem",
+              }}>
+                Build vs Buy: When Off-the-Shelf Software Isn't Enough
+                <span style={{ display: "block", color: "var(--text-mid)", fontSize: "0.85rem", fontWeight: 400, fontFamily: "'DM Sans', sans-serif", marginTop: 4 }}>
+                  The framework for deciding when generic tools stop cutting it.
+                </span>
+              </Link>
+              <Link to="/blog/custom-software-cost" style={{
+                display: "block", padding: "20px 24px", borderRadius: 12,
+                background: "var(--bg-card)", border: "1px solid var(--border)",
+                color: "var(--text-hi)", fontFamily: "'Outfit', sans-serif",
+                fontWeight: 600, fontSize: "1rem",
+              }}>
+                How Much Does Custom Software Actually Cost?
+                <span style={{ display: "block", color: "var(--text-mid)", fontSize: "0.85rem", fontWeight: 400, fontFamily: "'DM Sans', sans-serif", marginTop: 4 }}>
+                  Real pricing for custom franchise and business software.
+                </span>
+              </Link>
+              <Link to="/solutions/franchise" style={{
+                display: "block", padding: "20px 24px", borderRadius: 12,
+                background: "var(--bg-card)", border: "1px solid var(--border)",
+                color: "var(--text-hi)", fontFamily: "'Outfit', sans-serif",
+                fontWeight: 600, fontSize: "1rem",
+              }}>
+                Our Franchise Solutions
+                <span style={{ display: "block", color: "var(--text-mid)", fontSize: "0.85rem", fontWeight: 400, fontFamily: "'DM Sans', sans-serif", marginTop: 4 }}>
+                  One system. Every location. Zero chaos.
+                </span>
+              </Link>
+            </div>
+          </div>
+
           <div style={s.cta}>
             <h3 style={s.ctaTitle}>Ready to streamline your franchise?</h3>
             <p style={s.ctaText}>
@@ -287,9 +363,6 @@ export default function FranchiseSoftwareSigns() {
             <div>
               <Link to="/#contact" style={s.ctaBtn}>
                 Get in Touch
-              </Link>
-              <Link to="/solutions/franchise" style={s.ctaBtnSecondary}>
-                Franchise Solutions
               </Link>
             </div>
           </div>

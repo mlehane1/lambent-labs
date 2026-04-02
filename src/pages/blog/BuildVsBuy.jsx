@@ -285,6 +285,65 @@ export default function BuildVsBuy() {
             </li>
           </ol>
 
+          {/* Further Reading */}
+          <h2 style={s.h2}>Further Reading</h2>
+          <p style={s.p}>
+            These resources go deeper on the build vs. buy decision:
+          </p>
+          <ul style={{ ...s.body, paddingLeft: 24, marginBottom: 32 }}>
+            <li style={{ marginBottom: 12 }}>
+              <a href="https://www.thoughtworks.com/content/dam/thoughtworks/documents/e-book/tw_ebook_build_vs_buy_2022.pdf" target="_blank" rel="noopener noreferrer" style={{ color: "var(--primary-lt)" }}>
+                Build vs. Buy: A Strategic Framework for Evaluating Third-Party Solutions
+              </a>{" "}
+              — ThoughtWorks' comprehensive e-book on making the decision systematically.
+            </li>
+            <li style={{ marginBottom: 12 }}>
+              <a href="https://www.cio.com/article/4056428/build-vs-buy-a-cios-journey-through-the-software-decision-maze.html" target="_blank" rel="noopener noreferrer" style={{ color: "var(--primary-lt)" }}>
+                Build vs. Buy: A CIO's Journey Through the Software Decision Maze
+              </a>{" "}
+              — CIO Magazine's perspective on navigating the decision at the executive level.
+            </li>
+            <li style={{ marginBottom: 12 }}>
+              <a href="https://www.betsol.com/blog/build-vs-buy-software-decision-framework/" target="_blank" rel="noopener noreferrer" style={{ color: "var(--primary-lt)" }}>
+                The Enterprise Build vs. Buy Decision Framework for Software
+              </a>{" "}
+              — A quantitative scoring approach for evaluating your options.
+            </li>
+          </ul>
+
+          {/* Related on Our Blog */}
+          <div style={{
+            borderTop: "1px solid var(--border)",
+            paddingTop: 40,
+            marginTop: 40,
+          }}>
+            <h3 style={{ ...s.h2, fontSize: "1.3rem", marginTop: 0 }}>Related on Our Blog</h3>
+            <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+              <Link to="/blog/custom-software-cost" style={{
+                display: "block", padding: "20px 24px", borderRadius: 12,
+                background: "var(--bg-card)", border: "1px solid var(--border)",
+                color: "var(--text-hi)", fontFamily: "'Outfit', sans-serif",
+                fontWeight: 600, fontSize: "1rem",
+              }}>
+                How Much Does Custom Software Actually Cost?
+                <span style={{ display: "block", color: "var(--text-mid)", fontSize: "0.85rem", fontWeight: 400, fontFamily: "'DM Sans', sans-serif", marginTop: 4 }}>
+                  The real numbers behind custom development — and why it's more affordable than you think.
+                </span>
+              </Link>
+              <Link to="/solutions/small-business" style={{
+                display: "block", padding: "20px 24px", borderRadius: 12,
+                background: "var(--bg-card)", border: "1px solid var(--border)",
+                color: "var(--text-hi)", fontFamily: "'Outfit', sans-serif",
+                fontWeight: 600, fontSize: "1rem",
+              }}>
+                Enterprise Software at Small Business Prices
+                <span style={{ display: "block", color: "var(--text-mid)", fontSize: "0.85rem", fontWeight: 400, fontFamily: "'DM Sans', sans-serif", marginTop: 4 }}>
+                  See how we deliver enterprise-grade tools without the enterprise price tag.
+                </span>
+              </Link>
+            </div>
+          </div>
+
           <div style={s.cta}>
             <h3 style={s.ctaTitle}>Not sure which path is right?</h3>
             <p style={s.ctaText}>

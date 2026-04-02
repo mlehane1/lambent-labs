@@ -309,6 +309,65 @@ export default function CustomSoftwareCost() {
             in months — not years — the math gets very clear very fast.
           </p>
 
+          {/* Further Reading */}
+          <h2 style={s.h2}>Further Reading</h2>
+          <p style={s.p}>
+            Want to dig deeper into software pricing? These resources offer additional perspectives:
+          </p>
+          <ul style={{ ...s.body, paddingLeft: 24, marginBottom: 32 }}>
+            <li style={{ marginBottom: 12 }}>
+              <a href="https://www.goodfirms.co/resources/custom-software-development-cost-survey" target="_blank" rel="noopener noreferrer" style={{ color: "var(--primary-lt)" }}>
+                Custom Software Development Cost Survey 2026
+              </a>{" "}
+              — GoodFirms' data-driven breakdown of what startups and SMEs are actually paying.
+            </li>
+            <li style={{ marginBottom: 12 }}>
+              <a href="https://clutch.co/developers/pricing" target="_blank" rel="noopener noreferrer" style={{ color: "var(--primary-lt)" }}>
+                Software Development Company Pricing Guide
+              </a>{" "}
+              — Clutch's comprehensive pricing survey across hundreds of development firms.
+            </li>
+            <li style={{ marginBottom: 12 }}>
+              <a href="https://keyholesoftware.com/cost-custom-software-development/" target="_blank" rel="noopener noreferrer" style={{ color: "var(--primary-lt)" }}>
+                Custom Software Development Cost: 2026 Pricing & Timeline Benchmarks
+              </a>{" "}
+              — Keyhole Software's guide to realistic timelines and budgets.
+            </li>
+          </ul>
+
+          {/* Related on Our Blog */}
+          <div style={{
+            borderTop: "1px solid var(--border)",
+            paddingTop: 40,
+            marginTop: 40,
+          }}>
+            <h3 style={{ ...s.h2, fontSize: "1.3rem", marginTop: 0 }}>Related on Our Blog</h3>
+            <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+              <Link to="/blog/build-vs-buy" style={{
+                display: "block", padding: "20px 24px", borderRadius: 12,
+                background: "var(--bg-card)", border: "1px solid var(--border)",
+                color: "var(--text-hi)", fontFamily: "'Outfit', sans-serif",
+                fontWeight: 600, fontSize: "1rem",
+              }}>
+                Build vs Buy: When Off-the-Shelf Software Isn't Enough
+                <span style={{ display: "block", color: "var(--text-mid)", fontSize: "0.85rem", fontWeight: 400, fontFamily: "'DM Sans', sans-serif", marginTop: 4 }}>
+                  How to decide whether buying or building is the right investment for your business.
+                </span>
+              </Link>
+              <Link to="/blog/ai-accelerated-development" style={{
+                display: "block", padding: "20px 24px", borderRadius: 12,
+                background: "var(--bg-card)", border: "1px solid var(--border)",
+                color: "var(--text-hi)", fontFamily: "'Outfit', sans-serif",
+                fontWeight: 600, fontSize: "1rem",
+              }}>
+                Why AI-Accelerated Development Changes Everything
+                <span style={{ display: "block", color: "var(--text-mid)", fontSize: "0.85rem", fontWeight: 400, fontFamily: "'DM Sans', sans-serif", marginTop: 4 }}>
+                  How modern tooling is making custom software faster and cheaper than ever.
+                </span>
+              </Link>
+            </div>
+          </div>
+
           <div style={s.cta}>
             <h3 style={s.ctaTitle}>Want a quote for your project?</h3>
             <p style={s.ctaText}>

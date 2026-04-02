@@ -1301,6 +1301,50 @@ export default function BuildPreview() {
               >
                 {item.detail}
               </p>
+              {item.questions && item.questions.length > 0 && (
+                <div
+                  style={{
+                    marginTop: "0.75rem",
+                    paddingTop: "0.75rem",
+                    borderTop: "1px solid var(--border)",
+                    filter: "blur(4px)",
+                    userSelect: "none",
+                  }}
+                >
+                  <span
+                    style={{
+                      fontFamily: "'Outfit', sans-serif",
+                      fontSize: "0.72rem",
+                      fontWeight: 600,
+                      color: "var(--accent)",
+                      letterSpacing: "0.08em",
+                      textTransform: "uppercase",
+                      display: "block",
+                      marginBottom: "0.4rem",
+                    }}
+                  >
+                    Discovery Questions
+                  </span>
+                  {item.questions.map(function(q, qi) {
+                    return (
+                      <p
+                        key={qi}
+                        style={{
+                          fontFamily: "'DM Sans', sans-serif",
+                          fontSize: "0.78rem",
+                          lineHeight: 1.5,
+                          color: "var(--text-mid)",
+                          margin: "0 0 0.3rem",
+                          paddingLeft: "0.75rem",
+                          borderLeft: "2px solid var(--primary)",
+                        }}
+                      >
+                        {q}
+                      </p>
+                    );
+                  })}
+                </div>
+              )}
             </div>
           ))}
         </div>

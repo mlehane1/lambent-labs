@@ -51,7 +51,7 @@ Generate a JSON response with EXACTLY this structure (no markdown, no code fence
   "estimatedRange": "$999/yr|$2K-$8K|$5K-$15K|$10K-$30K+|$3K-$12K",
   "recommendation": "2-3 sentences explaining why this project type is the right fit for what they described. Reference their specific business, customers, and needs. Be direct and specific, not generic.",
   "technicalConsiderations": [
-    {"title": "Consideration Title", "detail": "A realistic technical detail sentence about how this would be implemented for their specific use case"}
+    {"title": "Consideration Title", "detail": "A realistic technical detail sentence about how this would be implemented for their specific use case", "questions": ["A specific discovery question we would ask the client about this topic", "A second question drilling into their current setup or requirements"]}
   ],
   "ctaText": "A compelling call-to-action button text (3-5 words)",
   "secondaryCta": "A secondary action text (e.g. 'View Our Menu', 'See Our Work', 'Learn More')",
@@ -71,6 +71,7 @@ Rules:
 - For websites: include SEO, responsive design, analytics, lead capture, content strategy, hosting
 - For web apps: add authentication, data architecture, API integration, notification system
 - For mobile: add platform strategy, push notifications, offline capability, app store
+- Each technicalConsideration MUST include 2-3 questions that are specific discovery questions we would ask this client during a consultation. These should be real, thoughtful questions that show we understand their business and need more detail to build the right solution. Examples: "Do you need customers to create accounts, or is guest checkout sufficient?", "Which POS system do you currently use so we can plan the integration?", "How many menu items change seasonally vs stay fixed year-round?"
 - The recommendation must reference their SPECIFIC business and customers, not be generic
 - The tagline should feel custom to their brand, not a template
 - All text should be professional but approachable — not salesy or buzzwordy

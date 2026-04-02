@@ -391,7 +391,7 @@ export default function App() {
     }
   };
 
-  const navLinks = ["home", "services", "process", "faq", "contact"];
+  const navLinks = ["home", "about", "services", "process", "faq", "contact"];
 
   return (
     <div style={{ minHeight: "100vh" }}>
@@ -564,6 +564,146 @@ export default function App() {
               <div style={{ color: "var(--text-mid)", fontSize: "0.85rem" }}>{r.label}</div>
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* ── ABOUT / WHY US ───────────────────────────────────────────────────── */}
+      <section id="about" style={{ padding: "80px 40px" }}>
+        <div style={{ maxWidth: "1000px", margin: "0 auto" }}>
+          <div style={{ textAlign: "center", marginBottom: "56px" }}>
+            <p style={{
+              color: "var(--primary-lt)", fontSize: "0.8rem", fontWeight: 600,
+              letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: "12px",
+            }}>Why Lambent Labs</p>
+            <h2 style={{
+              fontFamily: "'Outfit', sans-serif", fontWeight: 700,
+              fontSize: "clamp(1.8rem, 4vw, 2.6rem)", color: "var(--text-hi)",
+              margin: "0 0 20px", letterSpacing: "-0.02em",
+            }}>We're not here to sell you software you don't need.</h2>
+          </div>
+
+          {/* Main narrative */}
+          <div style={{
+            maxWidth: "720px", margin: "0 auto 48px",
+            fontSize: "1.05rem", lineHeight: 1.85, color: "var(--text-mid)",
+            fontFamily: "'DM Sans', sans-serif",
+          }}>
+            <p style={{ marginBottom: "20px" }}>
+              We've spent years in the trenches — analyzing business processes, designing products, building custom software, and supporting the people who use it. That experience taught us something most dev shops won't tell you:
+            </p>
+            <p style={{
+              fontSize: "1.25rem", fontWeight: 600, color: "var(--text-hi)",
+              fontFamily: "'Outfit', sans-serif", lineHeight: 1.5,
+              borderLeft: "3px solid var(--accent)", paddingLeft: "20px",
+              margin: "32px 0",
+            }}>
+              Sometimes the right answer isn't custom software. Sometimes it's pointing you to an off-the-shelf product that already does what you need — and saving you the money.
+            </p>
+            <p style={{ marginBottom: "20px" }}>
+              We'd rather be honest than profitable on a single deal. If a COTS solution fits your workflow, we'll tell you. We'll even help you evaluate and implement it. Our goal is a long-term relationship built on trust, not a one-time invoice.
+            </p>
+            <p style={{ marginBottom: "20px" }}>
+              But here's the reality we all know: most off-the-shelf software forces <em>you</em> to fit into <em>its</em> workflow. It doesn't connect to the rest of your business. It doesn't flex when your processes change. And the "customization" they offer is really just picking from a menu of options someone else designed.
+            </p>
+            <p style={{ marginBottom: "0" }}>
+              <strong style={{ color: "var(--text-hi)" }}>That's why we exist.</strong> When off-the-shelf falls short — when you need software that fits your business instead of the other way around — that's where we come in.
+            </p>
+          </div>
+
+          {/* What we bring */}
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+            gap: "20px", marginBottom: "48px",
+          }}>
+            {[
+              {
+                icon: "🔍",
+                title: "Process Analysis",
+                desc: "We start by understanding how your business actually works — not how a software vendor thinks it should work. We map your workflows, identify bottlenecks, and find where technology can make the biggest impact.",
+                color: "#1558CB",
+              },
+              {
+                icon: "🎯",
+                title: "Honest Recommendations",
+                desc: "If an existing product solves your problem, we'll tell you. We'll help you evaluate options, negotiate with vendors, and implement the right solution — even if it means we don't write a line of code.",
+                color: "#15CB88",
+              },
+              {
+                icon: "🏗️",
+                title: "Custom When It Counts",
+                desc: "When off-the-shelf can't cut it — when you need systems that talk to each other, workflows that match your reality, and software that grows with you — we build exactly what you need. No more, no less.",
+                color: "#588FEE",
+              },
+              {
+                icon: "🎨",
+                title: "Product Design & UX",
+                desc: "Software nobody uses is software nobody needed. We design interfaces that make sense to the people who use them every day — not just the people who sign the check.",
+                color: "#E9812A",
+              },
+              {
+                icon: "🔗",
+                title: "Integration & Connection",
+                desc: "The biggest pain point we hear: 'None of our systems talk to each other.' We connect your tools, automate your data flow, and give you one clear picture instead of five disconnected ones.",
+                color: "#8B5CF6",
+              },
+              {
+                icon: "🤝",
+                title: "Ongoing Partnership",
+                desc: "We don't disappear after launch. We provide training, support, and ongoing development. Your business changes — your software should change with it.",
+                color: "#CB1558",
+              },
+            ].map(item => (
+              <div key={item.title} style={{
+                background: "var(--bg-card)", border: "1px solid var(--border)",
+                borderRadius: "16px", padding: "28px",
+              }}>
+                <div style={{
+                  fontSize: "2rem", marginBottom: "14px",
+                  background: item.color + "18", borderRadius: "12px",
+                  width: "52px", height: "52px", display: "flex",
+                  alignItems: "center", justifyContent: "center",
+                }}>{item.icon}</div>
+                <h3 style={{
+                  fontFamily: "'Outfit', sans-serif", fontWeight: 600,
+                  fontSize: "1.05rem", color: "var(--text-hi)", margin: "0 0 10px",
+                }}>{item.title}</h3>
+                <p style={{
+                  color: "var(--text-mid)", fontSize: "0.875rem",
+                  lineHeight: 1.65, margin: 0,
+                }}>{item.desc}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* The bottom line */}
+          <div style={{
+            background: "linear-gradient(135deg, rgba(21,88,203,0.1), rgba(21,203,136,0.06))",
+            border: "1px solid rgba(21,88,203,0.2)",
+            borderRadius: "16px", padding: "36px 40px",
+            textAlign: "center", maxWidth: "720px", margin: "0 auto",
+          }}>
+            <p style={{
+              fontFamily: "'Outfit', sans-serif", fontWeight: 700,
+              fontSize: "1.15rem", color: "var(--text-hi)", lineHeight: 1.6,
+              margin: "0 0 12px",
+            }}>
+              Our job isn't to build software. Our job is to solve your problem.
+            </p>
+            <p style={{
+              color: "var(--text-mid)", fontSize: "0.9rem", lineHeight: 1.7,
+              margin: "0 0 20px",
+            }}>
+              Sometimes that means custom code. Sometimes it means pointing you to the right vendor. Always it means understanding your business first.
+            </p>
+            <a href="#contact" style={{
+              display: "inline-block",
+              background: "linear-gradient(135deg, var(--primary), var(--accent))",
+              color: "white", padding: "12px 28px", borderRadius: "10px",
+              fontWeight: 600, fontSize: "0.9rem",
+              boxShadow: "0 4px 16px rgba(21,88,203,0.3)",
+            }}>Let's Talk About Your Business</a>
+          </div>
         </div>
       </section>
 

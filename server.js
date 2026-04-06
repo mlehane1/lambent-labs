@@ -98,12 +98,32 @@ app.use(express.static(join(__dirname, 'dist')))
 
 // ── Event tracking endpoint ──────────────────────────────────────────────────
 app.post('/api/track', async (req, res) => {
-  const sessionId = req.cookies?.visitor_session
-  if (!supabase) return res.status(503).json({ error: 'Tracking not configured — check SUPABASE_URL and SUPABASE_SERVICE_KEY env vars' })
-  if (!sessionId) return res.status(400).json({ error: 'No session cookie' })
+  if (!supabase) return res.status(503).json({ error: 'Tracking not configured' })
 
-  const { event_type, page_path, event_data } = req.body
+  const { session_id, event_type, page_path, event_data } = req.body
+  if (!session_id) return res.status(400).json({ error: 'Missing session_id' })
   if (!event_type) return res.status(400).json({ error: 'Missing event_type' })
+
+  // If this is the first event for this session, log the visitor too
+  const { count } = await supabase.from('visitors').select('id', { count: 'exact', head: true }).eq('session_id', session_id)
+  if (count === 0) {
+    const ip = (req.headers['x-forwarded-for'] || req.socket.remoteAddress || '').split(',')[0].trim()
+    const enriched = await enrichIP(ip)
+    const ed = event_data || {}
+    await supabase.from('visitors').insert({
+      session_id,
+      ip,
+      user_agent: req.headers['user-agent'] || null,
+      referrer: ed.referrer || req.headers['referer'] || null,
+      utm_source: ed.utm_source || null,
+      utm_medium: ed.utm_medium || null,
+      utm_campaign: ed.utm_campaign || null,
+      utm_content: ed.utm_content || null,
+      utm_term: ed.utm_term || null,
+      first_page: page_path,
+      ...enriched,
+    }).catch(err => console.error('[visitor-insert]', err.message))
+  }
 
   try {
     await supabase.from('visitor_events').insert({

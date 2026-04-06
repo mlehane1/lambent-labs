@@ -1,13 +1,22 @@
 // Lightweight visitor event tracker — all fire-and-forget
 const TRACK_URL = '/api/track'
 
+function getSessionId() {
+  let id = sessionStorage.getItem('visitor_sid')
+  if (!id) {
+    id = crypto.randomUUID()
+    sessionStorage.setItem('visitor_sid', id)
+  }
+  return id
+}
+
 async function track(eventType, data = {}) {
   try {
     await fetch(TRACK_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      credentials: 'same-origin',
       body: JSON.stringify({
+        session_id: getSessionId(),
         event_type: eventType,
         page_path: window.location.pathname,
         event_data: data,
@@ -17,7 +26,15 @@ async function track(eventType, data = {}) {
 }
 
 export function trackPageView() {
-  track('page_view', { referrer: document.referrer })
+  const params = new URLSearchParams(window.location.search)
+  track('page_view', {
+    referrer: document.referrer,
+    utm_source: params.get('utm_source'),
+    utm_medium: params.get('utm_medium'),
+    utm_campaign: params.get('utm_campaign'),
+    utm_content: params.get('utm_content'),
+    utm_term: params.get('utm_term'),
+  })
 }
 
 export function trackScrollDepth(depth) {

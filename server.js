@@ -1,6 +1,7 @@
 import express from 'express'
 import { fileURLToPath } from 'url'
 import { dirname, join } from 'path'
+import { readFileSync } from 'fs'
 import Anthropic from '@anthropic-ai/sdk'
 import cookieParser from 'cookie-parser'
 import { createClient } from '@supabase/supabase-js'
@@ -9,6 +10,34 @@ import { v4 as uuidv4 } from 'uuid'
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const app = express()
 const PORT = process.env.PORT || 3000
+const SITE_URL = 'https://doitbetter.up.railway.app'
+
+// Read the built HTML template once at startup
+let htmlTemplate = ''
+try { htmlTemplate = readFileSync(join(__dirname, 'dist', 'index.html'), 'utf-8') } catch {}
+
+function injectSEO(html, { title, description, url, type = 'article', structuredData }) {
+  let out = html
+  // Replace title
+  out = out.replace(/<title>[^<]*<\/title>/, `<title>${title}</title>`)
+  // Replace meta description
+  out = out.replace(/<meta name="description" content="[^"]*"/, `<meta name="description" content="${description}"`)
+  // Replace canonical
+  out = out.replace(/<link rel="canonical" href="[^"]*"/, `<link rel="canonical" href="${url}"`)
+  // Replace OG tags
+  out = out.replace(/<meta property="og:title" content="[^"]*"/, `<meta property="og:title" content="${title}"`)
+  out = out.replace(/<meta property="og:description" content="[^"]*"/, `<meta property="og:description" content="${description}"`)
+  out = out.replace(/<meta property="og:url" content="[^"]*"/, `<meta property="og:url" content="${url}"`)
+  out = out.replace(/<meta property="og:type" content="[^"]*"/, `<meta property="og:type" content="${type}"`)
+  // Replace Twitter tags
+  out = out.replace(/<meta name="twitter:title" content="[^"]*"/, `<meta name="twitter:title" content="${title}"`)
+  out = out.replace(/<meta name="twitter:description" content="[^"]*"/, `<meta name="twitter:description" content="${description}"`)
+  // Inject Article structured data before closing </head>
+  if (structuredData) {
+    out = out.replace('</head>', `<script type="application/ld+json">\n${JSON.stringify(structuredData)}\n</script>\n</head>`)
+  }
+  return out
+}
 
 // ── Supabase server client (service role — bypasses RLS) ─────────────────────
 const supabase = process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_KEY
@@ -433,9 +462,93 @@ Rules:
   }
 })
 
-// SPA fallback — send index.html for all routes
-app.get('*', (req, res) => {
-  res.sendFile(join(__dirname, 'dist', 'index.html'))
+// ── Dynamic sitemap ─────────────────────────────────────────────────────────
+app.get('/sitemap.xml', async (req, res) => {
+  const staticPages = [
+    '', '/solutions/case-management', '/solutions/small-business',
+    '/solutions/white-glove', '/solutions/franchise', '/solutions/websites',
+    '/build', '/blog',
+    '/blog/custom-software-cost', '/blog/build-vs-buy',
+    '/blog/ai-accelerated-development', '/blog/franchise-software-signs',
+    '/blog/high-code-low-code-ai', '/blog/ai-trust-gap',
+    '/blog/ai-cost-collapse', '/blog/ai-agents-guide',
+  ]
+
+  let dynamicSlugs = []
+  if (supabase) {
+    const { data } = await supabase.from('blog_posts')
+      .select('slug, updated_at').eq('status', 'published')
+    dynamicSlugs = (data || []).map(p => ({
+      path: `/blog/${p.slug}`,
+      updated: p.updated_at?.split('T')[0],
+    }))
+  }
+
+  const urls = staticPages.map(p => `  <url>
+    <loc>${SITE_URL}${p}/</loc>
+    <changefreq>${p === '' ? 'weekly' : p === '/blog' ? 'weekly' : 'monthly'}</changefreq>
+    <priority>${p === '' ? '1.0' : p.startsWith('/blog') ? '0.7' : '0.9'}</priority>
+  </url>`).join('\n')
+
+  const dynamicUrls = dynamicSlugs.map(p => `  <url>
+    <loc>${SITE_URL}${p.path}/</loc>
+    <lastmod>${p.updated || new Date().toISOString().split('T')[0]}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>`).join('\n')
+
+  res.set('Content-Type', 'application/xml')
+  res.send(`<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urls}
+${dynamicUrls}
+</urlset>`)
+})
+
+// ── SPA fallback with SEO injection for blog posts ──────────────────────────
+app.get('*', async (req, res) => {
+  const html = htmlTemplate || readFileSync(join(__dirname, 'dist', 'index.html'), 'utf-8')
+
+  // Dynamic blog post — inject real meta tags for crawlers
+  const blogMatch = req.path.match(/^\/blog\/([a-z0-9-]+)\/?$/)
+  if (blogMatch && supabase) {
+    const slug = blogMatch[1]
+    const { data: post } = await supabase.from('blog_posts')
+      .select('title, excerpt, meta_description, slug, published_at, content, tags')
+      .eq('slug', slug).eq('status', 'published').single()
+
+    if (post) {
+      const title = `${post.title} | doITbetter labs`
+      const description = post.meta_description || post.excerpt
+      const url = `${SITE_URL}/blog/${post.slug}`
+
+      // Extract plain text from first few content blocks for article body
+      const bodyText = (post.content || [])
+        .filter(b => b.type === 'paragraph')
+        .slice(0, 3)
+        .map(b => (b.text || '').replace(/<[^>]*>/g, ''))
+        .join(' ')
+
+      const structuredData = {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": post.title,
+        "description": description,
+        "url": url,
+        "datePublished": post.published_at,
+        "dateModified": post.published_at,
+        "author": { "@type": "Organization", "name": "doITbetter labs", "url": SITE_URL },
+        "publisher": { "@type": "Organization", "name": "doITbetter labs", "url": SITE_URL },
+        "mainEntityOfPage": url,
+        "keywords": (post.tags || []).join(', '),
+        "articleBody": bodyText.substring(0, 500),
+      }
+
+      return res.send(injectSEO(html, { title, description, url, structuredData }))
+    }
+  }
+
+  res.send(html)
 })
 
 app.listen(PORT, () => {

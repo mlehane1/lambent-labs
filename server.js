@@ -69,7 +69,8 @@ app.use(express.json())
 
 // Visitor logging middleware — runs on HTML page requests only
 app.use((req, res, next) => {
-  if (req.path.match(/\.(js|css|svg|png|jpg|jpeg|gif|ico|woff2?|ttf|map|json)$/) || req.path.startsWith('/api/')) {
+  const ua = req.headers['user-agent'] || ''
+  if (req.path.match(/\.(js|css|svg|png|jpg|jpeg|gif|ico|woff2?|ttf|map|json)$/) || req.path.startsWith('/api/') || /bot|crawler|spider|healthcheck|uptime|monitoring|pingdom|statuspage/i.test(ua)) {
     return next()
   }
 

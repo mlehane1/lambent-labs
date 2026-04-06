@@ -147,7 +147,7 @@ export default function Websites() {
 
   useEffect(() => {
     document.title =
-      "Professional Website Design — Built in a Week, Hosted for a Year | $999 | Lambent Labs";
+      "Professional Website Design — Built in a Week, Hosted for a Year | $999 | doITbetter labs";
     let meta = document.querySelector('meta[name="description"]');
     if (!meta) {
       meta = document.createElement("meta");
@@ -155,7 +155,7 @@ export default function Websites() {
       document.head.appendChild(meta);
     }
     meta.content =
-      "A custom-designed, SEO-optimized website built in one week and hosted for a full year. $999 all-in. No templates, no DIY builders, no hidden fees. Lambent Labs.";
+      "A custom-designed, SEO-optimized website built in one week and hosted for a full year. $999 all-in. No templates, no DIY builders, no hidden fees. doITbetter labs.";
   }, []);
 
   const handleSubmit = async (e) => {

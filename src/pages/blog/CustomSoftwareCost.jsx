@@ -126,7 +126,7 @@ const s = {
 export default function CustomSoftwareCost() {
   useEffect(() => {
     document.title =
-      "How Much Does Custom Software Actually Cost? | Lambent Labs";
+      "How Much Does Custom Software Actually Cost? | doITbetter labs";
     const meta = document.querySelector('meta[name="description"]');
     if (meta) {
       meta.setAttribute(

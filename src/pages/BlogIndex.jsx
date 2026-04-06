@@ -145,12 +145,12 @@ const styles = {
 
 export default function BlogIndex() {
   useEffect(() => {
-    document.title = "Blog | Lambent Labs — Software Development Insights";
+    document.title = "Blog | doITbetter labs — Software Development Insights";
     const meta = document.querySelector('meta[name="description"]');
     if (meta) {
       meta.setAttribute(
         "content",
-        "Insights on software development, technology, and building better businesses from Lambent Labs."
+        "Insights on software development, technology, and building better businesses from doITbetter labs."
       );
     }
   }, []);

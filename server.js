@@ -2,15 +2,123 @@ import express from 'express'
 import { fileURLToPath } from 'url'
 import { dirname, join } from 'path'
 import Anthropic from '@anthropic-ai/sdk'
+import cookieParser from 'cookie-parser'
+import { createClient } from '@supabase/supabase-js'
+import { v4 as uuidv4 } from 'uuid'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const app = express()
 const PORT = process.env.PORT || 3000
 
+// ── Supabase server client (service role — bypasses RLS) ─────────────────────
+const supabase = process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_KEY
+  ? createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY)
+  : null
+
+// ── IP enrichment cache (in-memory, 24hr TTL) ───────────────────────────────
+const ipCache = new Map()
+const IP_CACHE_TTL = 24 * 60 * 60 * 1000
+
+async function enrichIP(ip) {
+  if (!ip || ip === '127.0.0.1' || ip === '::1') return {}
+  const cached = ipCache.get(ip)
+  if (cached && Date.now() - cached.ts < IP_CACHE_TTL) return cached.data
+  try {
+    const token = process.env.IPINFO_TOKEN
+    if (!token) return {}
+    const res = await fetch(`https://ipinfo.io/${ip}?token=${token}`)
+    if (!res.ok) return {}
+    const data = await res.json()
+    const enriched = {
+      city: data.city || null,
+      region: data.region || null,
+      country: data.country || null,
+      company: data.org || null,
+      isp: data.org || null,
+    }
+    ipCache.set(ip, { data: enriched, ts: Date.now() })
+    return enriched
+  } catch { return {} }
+}
+
+async function logVisitor(sessionId, ip, req, query) {
+  if (!supabase) return
+  try {
+    const enriched = await enrichIP(ip)
+    await supabase.from('visitors').insert({
+      session_id: sessionId,
+      ip,
+      user_agent: req.headers['user-agent'] || null,
+      referrer: req.headers['referer'] || null,
+      utm_source: query.get('utm_source') || null,
+      utm_medium: query.get('utm_medium') || null,
+      utm_campaign: query.get('utm_campaign') || null,
+      utm_content: query.get('utm_content') || null,
+      utm_term: query.get('utm_term') || null,
+      first_page: req.path,
+      ...enriched,
+    })
+  } catch (err) {
+    console.error('[visitor-log]', err.message)
+  }
+}
+
+// ── Middleware ────────────────────────────────────────────────────────────────
+app.use(cookieParser())
 app.use(express.json())
+
+// Visitor logging middleware — runs on HTML page requests only
+app.use((req, res, next) => {
+  if (req.path.match(/\.(js|css|svg|png|jpg|jpeg|gif|ico|woff2?|ttf|map|json)$/) || req.path.startsWith('/api/')) {
+    return next()
+  }
+
+  let sessionId = req.cookies?.visitor_session
+  let isNewSession = false
+  if (!sessionId) {
+    sessionId = uuidv4()
+    isNewSession = true
+    res.cookie('visitor_session', sessionId, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+    })
+  }
+
+  if (isNewSession) {
+    const query = new URL(req.url, `http://${req.headers.host}`).searchParams
+    logVisitor(sessionId, (req.headers['x-forwarded-for'] || req.socket.remoteAddress || '').split(',')[0].trim(), req, query)
+  }
+
+  next()
+})
+
 app.use(express.static(join(__dirname, 'dist')))
 
-// ── Claude API endpoint for Build Preview ─────────────────────────────────────
+// ── Event tracking endpoint ──────────────────────────────────────────────────
+app.post('/api/track', async (req, res) => {
+  const sessionId = req.cookies?.visitor_session
+  if (!sessionId || !supabase) return res.status(400).json({ error: 'No session' })
+
+  const { event_type, page_path, event_data } = req.body
+  if (!event_type) return res.status(400).json({ error: 'Missing event_type' })
+
+  try {
+    await supabase.from('visitor_events').insert({
+      session_id: sessionId,
+      event_type,
+      page_path: page_path || null,
+      event_data: event_data || {},
+    })
+  } catch (err) {
+    console.error('[track]', err.message)
+  }
+
+  res.status(204).end()
+})
+
+// ── Claude API endpoint for Build Preview ────────────────────────────────────
 app.post('/api/generate-preview', async (req, res) => {
   const apiKey = process.env.ANTHROPIC_API_KEY
   if (!apiKey) {
@@ -118,5 +226,5 @@ app.get('*', (req, res) => {
 })
 
 app.listen(PORT, () => {
-  console.log(`Lambent Labs running on port ${PORT}`)
+  console.log(`doITbetter labs running on port ${PORT}`)
 })

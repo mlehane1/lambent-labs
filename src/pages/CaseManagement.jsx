@@ -107,7 +107,7 @@ export default function CaseManagement() {
   const [status, setStatus] = useState("idle"); // idle | sending | sent | error
 
   useEffect(() => {
-    document.title = "Custom Case Management Software | Lambent Labs";
+    document.title = "Custom Case Management Software | doITbetter labs";
     let meta = document.querySelector('meta[name="description"]');
     if (!meta) {
       meta = document.createElement("meta");
@@ -451,7 +451,7 @@ export default function CaseManagement() {
           }}
         >
           Why Teams Choose{" "}
-          <span style={gradientText}>Lambent Labs</span>
+          <span style={gradientText}>doITbetter labs</span>
         </h2>
 
         <div

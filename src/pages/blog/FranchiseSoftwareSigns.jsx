@@ -121,7 +121,7 @@ const s = {
 export default function FranchiseSoftwareSigns() {
   useEffect(() => {
     document.title =
-      "5 Signs Your Franchise Needs Custom Software | Lambent Labs";
+      "5 Signs Your Franchise Needs Custom Software | doITbetter labs";
     const meta = document.querySelector('meta[name="description"]');
     if (meta) {
       meta.setAttribute(

@@ -301,7 +301,7 @@ export default function BuildPreview() {
 
   useEffect(() => {
     document.title =
-      "Build Your Project \u2014 See a Live Preview | Lambent Labs";
+      "Build Your Project \u2014 See a Live Preview | doITbetter labs";
     const meta = document.querySelector('meta[name="description"]');
     if (meta) {
       meta.setAttribute(
@@ -1177,7 +1177,7 @@ export default function BuildPreview() {
                         userSelect: "none",
                       }}
                     >
-                      PREVIEW &mdash; LAMBENT LABS
+                      PREVIEW &mdash; doITbetter labs
                     </span>
                   );
                 })}

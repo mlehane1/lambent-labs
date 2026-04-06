@@ -11,7 +11,7 @@
   </defs>
   <rect width="1200" height="630" fill="url(#bg)"/>
   <rect x="60" y="60" width="64" height="64" rx="14" fill="url(#accent)"/>
-  <text x="140" y="107" font-family="sans-serif" font-weight="700" font-size="36" fill="#E7EEF9">Lambent<tspan fill="#2A70E9">Labs</tspan></text>
+  <text x="140" y="107" font-family="sans-serif" font-weight="700" font-size="36" fill="#E7EEF9">doITbetter<tspan fill="#2A70E9"> labs</tspan></text>
   <text x="60" y="260" font-family="sans-serif" font-weight="800" font-size="72" fill="#E7EEF9">Your app.</text>
   <text x="60" y="350" font-family="sans-serif" font-weight="800" font-size="72" fill="#E7EEF9">Live in 2 weeks.</text>
   <text x="60" y="420" font-family="sans-serif" font-weight="400" font-size="28" fill="#8AABE5">Custom software, SEO, and data solutions — faster and for less.</text>

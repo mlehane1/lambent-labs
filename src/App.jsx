@@ -1,16 +1,25 @@
 import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { sendLeadNotification } from "./leadNotify.js";
+import { trackFormStart, trackFormSubmit, trackCTAClick, trackScrollDepth } from "./tracker.js";
+import VisitorDashboard from "./components/VisitorDashboard.jsx";
 
 // ─── localStorage helpers ──────────────────────────────────────────────────────
 function loadSiteContent() {
   try {
-    const raw = localStorage.getItem("lambent-content");
+    let raw = localStorage.getItem("doitbetter-content");
+    if (!raw) {
+      raw = localStorage.getItem("lambent-content");
+      if (raw) {
+        localStorage.setItem("doitbetter-content", raw);
+        localStorage.removeItem("lambent-content");
+      }
+    }
     return raw ? JSON.parse(raw) : null;
   } catch { return null; }
 }
 function saveSiteContent(content) {
-  try { localStorage.setItem("lambent-content", JSON.stringify(content)); } catch {}
+  try { localStorage.setItem("doitbetter-content", JSON.stringify(content)); } catch {}
 }
 
 // ─── Default data ──────────────────────────────────────────────────────────────
@@ -112,7 +121,7 @@ const DEFAULT_CONTENT = {
   contactEmail: "lambentlabs247@gmail.com",
 };
 
-const ADMIN_PASSWORD = "lambent2024";
+const ADMIN_PASSWORD = "doitbetter2024";
 
 // ─── Icons ─────────────────────────────────────────────────────────────────────
 const CloseIcon = () => (
@@ -275,6 +284,7 @@ export default function App() {
   const [editingContent, setEditingContent] = useState(null);
   const [activeSection, setActiveSection] = useState("home");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [showVisitorDashboard, setShowVisitorDashboard] = useState(false);
 
   // Email capture (lead magnet)
   const [captureEmail, setCaptureEmail] = useState("");
@@ -321,6 +331,7 @@ export default function App() {
   // ── Supabase email capture (lead magnet) ──
   const handleCaptureSubmit = async (e) => {
     e.preventDefault();
+    trackFormSubmit("email_capture");
     setCaptureSubmitting(true);
     setCaptureStatus(null);
 
@@ -359,6 +370,7 @@ export default function App() {
 
   const handleContactSubmit = async (e) => {
     e.preventDefault();
+    trackFormSubmit("contact");
     setContactSubmitting(true);
     setContactStatus(null);
 
@@ -396,6 +408,22 @@ export default function App() {
 
   const navLinks = ["home", "about", "services", "process", "faq", "contact"];
 
+  // Scroll depth tracking (fires at 25%, 50%, 75%, 100%)
+  const scrollMilestones = useRef(new Set());
+  useEffect(() => {
+    const onScroll = () => {
+      const pct = Math.round((window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100);
+      for (const m of [25, 50, 75, 100]) {
+        if (pct >= m && !scrollMilestones.current.has(m)) {
+          scrollMilestones.current.add(m);
+          trackScrollDepth(m);
+        }
+      }
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
   return (
     <div style={{ minHeight: "100vh" }}>
 
@@ -411,6 +439,11 @@ export default function App() {
             ADMIN MODE
           </span>
           <div style={{ display: "flex", gap: "12px" }}>
+            <button onClick={() => setShowVisitorDashboard(true)} style={{
+              background: "rgba(10,44,101,0.5)", border: "1px solid rgba(21,203,136,0.27)",
+              color: "var(--accent)", borderRadius: "8px", padding: "4px 14px",
+              fontSize: "0.78rem", cursor: "pointer", fontFamily: "'DM Sans', sans-serif",
+            }}>Visitors</button>
             <button onClick={() => { setEditingContent({ ...content }); setShowContentEditor(true); }} style={{
               background: "rgba(10,44,101,0.5)", border: "1px solid rgba(21,203,136,0.27)",
               color: "var(--accent)", borderRadius: "8px", padding: "4px 14px",
@@ -447,7 +480,7 @@ export default function App() {
             fontFamily: "'Outfit', sans-serif", fontWeight: 700,
             fontSize: "1.1rem", color: "var(--text-hi)", letterSpacing: "0.02em",
           }}>
-            Lambent<span style={{ color: "var(--primary-lt)" }}>Labs</span>
+            doITbetter<span style={{ color: "var(--primary-lt)" }}> labs</span>
           </span>
         </div>
 
@@ -620,7 +653,7 @@ export default function App() {
             <p style={{
               color: "var(--primary-lt)", fontSize: "0.8rem", fontWeight: 600,
               letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: "12px",
-            }}>Why Lambent Labs</p>
+            }}>Why doITbetter labs</p>
             <h2 style={{
               fontFamily: "'Outfit', sans-serif", fontWeight: 700,
               fontSize: "clamp(1.8rem, 4vw, 2.6rem)", color: "var(--text-hi)",
@@ -1022,7 +1055,7 @@ export default function App() {
                 fontFamily: "'Outfit', sans-serif", fontWeight: 700,
                 fontSize: "0.95rem", color: "var(--text-mid)",
               }}>
-                Lambent<span style={{ color: "var(--primary-lt)" }}>Labs</span>
+                doITbetter<span style={{ color: "var(--primary-lt)" }}> labs</span>
               </span>
             </div>
             <p style={{ color: "var(--text-lo)", maxWidth: "300px", lineHeight: 1.6, fontSize: "0.78rem" }}>
@@ -1052,7 +1085,7 @@ export default function App() {
           paddingTop: "24px", borderTop: "1px solid rgba(12,52,121,0.15)",
           display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: "8px",
         }}>
-          <span>&copy; {new Date().getFullYear()} Lambent Labs. All rights reserved.</span>
+          <span>&copy; {new Date().getFullYear()} doITbetter labs. All rights reserved.</span>
           <span style={{ fontSize: "0.72rem", opacity: 0.5 }}>React &middot; Node.js &middot; PostgreSQL</span>
         </div>
       </footer>
@@ -1078,6 +1111,10 @@ export default function App() {
           <Field label="Contact Email" value={editingContent.contactEmail} onChange={v => setEditingContent(c => ({ ...c, contactEmail: v }))} />
           <SaveBtn onClick={() => handleSaveContent(editingContent)}>Save Content</SaveBtn>
         </Modal>
+      )}
+
+      {showVisitorDashboard && (
+        <VisitorDashboard onClose={() => setShowVisitorDashboard(false)} />
       )}
     </div>
   );

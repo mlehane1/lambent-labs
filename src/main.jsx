@@ -1,6 +1,7 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import ReactDOM from 'react-dom/client'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
+import { trackPageView } from './tracker.js'
 import App from './App.jsx'
 import Layout from './components/Layout.jsx'
 import CaseManagement from './pages/CaseManagement.jsx'
@@ -17,9 +18,16 @@ import Websites from './pages/Websites.jsx'
 import BuildPreview from './pages/BuildPreview.jsx'
 import './index.css'
 
+function PageViewTracker() {
+  const location = useLocation()
+  useEffect(() => { trackPageView() }, [location.pathname])
+  return null
+}
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <BrowserRouter>
+      <PageViewTracker />
       <Routes>
         {/* Homepage keeps its own nav/footer */}
         <Route path="/" element={<App />} />

@@ -106,7 +106,7 @@ const s = {
 export default function BuildVsBuy() {
   useEffect(() => {
     document.title =
-      "Build vs Buy: When Off-the-Shelf Software Isn't Enough | Lambent Labs";
+      "Build vs Buy: When Off-the-Shelf Software Isn't Enough | doITbetter labs";
     const meta = document.querySelector('meta[name="description"]');
     if (meta) {
       meta.setAttribute(

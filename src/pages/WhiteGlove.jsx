@@ -73,18 +73,18 @@ export default function WhiteGlove() {
   const [status, setStatus] = useState(null);
 
   useEffect(() => {
-    document.title = "White Glove Software Development | Lambent Labs";
+    document.title = "White Glove Software Development | doITbetter labs";
     const meta = document.querySelector('meta[name="description"]');
     if (meta) {
       meta.setAttribute(
         "content",
-        "End-to-end custom software development. From requirements gathering to deployment, training, and ongoing support \u2014 Lambent Labs handles everything so you don\u2019t have to."
+        "End-to-end custom software development. From requirements gathering to deployment, training, and ongoing support \u2014 doITbetter labs handles everything so you don\u2019t have to."
       );
     } else {
       const tag = document.createElement("meta");
       tag.name = "description";
       tag.content =
-        "End-to-end custom software development. From requirements gathering to deployment, training, and ongoing support \u2014 Lambent Labs handles everything so you don\u2019t have to.";
+        "End-to-end custom software development. From requirements gathering to deployment, training, and ongoing support \u2014 doITbetter labs handles everything so you don\u2019t have to.";
       document.head.appendChild(tag);
     }
   }, []);

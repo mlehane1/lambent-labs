@@ -88,7 +88,7 @@ const s = {
 export default function AIAcceleratedDev() {
   useEffect(() => {
     document.title =
-      "Why AI-Accelerated Development Changes Everything | Lambent Labs";
+      "Why AI-Accelerated Development Changes Everything | doITbetter labs";
     const meta = document.querySelector('meta[name="description"]');
     if (meta) {
       meta.setAttribute(

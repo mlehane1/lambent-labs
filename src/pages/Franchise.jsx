@@ -146,18 +146,18 @@ export default function Franchise() {
   const [status, setStatus] = useState("idle"); // idle | sending | sent | error
 
   useEffect(() => {
-    document.title = "Custom Franchise Software | Multi-Location Operations Platform | Lambent Labs";
+    document.title = "Custom Franchise Software | Multi-Location Operations Platform | doITbetter labs";
     const meta = document.querySelector('meta[name="description"]');
     if (meta) {
       meta.setAttribute(
         "content",
-        "Lambent Labs builds custom software for franchise owners and multi-location businesses. Centralized dashboards, standardized workflows, and seamless integrations — built to scale."
+        "doITbetter labs builds custom software for franchise owners and multi-location businesses. Centralized dashboards, standardized workflows, and seamless integrations — built to scale."
       );
     } else {
       const tag = document.createElement("meta");
       tag.name = "description";
       tag.content =
-        "Lambent Labs builds custom software for franchise owners and multi-location businesses. Centralized dashboards, standardized workflows, and seamless integrations — built to scale.";
+        "doITbetter labs builds custom software for franchise owners and multi-location businesses. Centralized dashboards, standardized workflows, and seamless integrations — built to scale.";
       document.head.appendChild(tag);
     }
   }, []);

@@ -1,5 +1,5 @@
 {
-  "name": "lambent-labs",
+  "name": "doitbetter-labs",
   "version": "1.0.0",
   "private": true,
   "type": "module",
@@ -15,8 +15,11 @@
   "dependencies": {
     "@anthropic-ai/sdk": "^0.82.0",
     "@emailjs/browser": "^4.4.1",
+    "@supabase/supabase-js": "^2.49.0",
+    "cookie-parser": "^1.4.6",
     "express": "^4.18.2",
-    "react-router-dom": "^7.13.2"
+    "react-router-dom": "^7.13.2",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.2.1",

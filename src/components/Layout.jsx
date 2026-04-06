@@ -76,7 +76,7 @@ function Logo({ size = "default" }) {
           letterSpacing: "-0.02em",
         }}
       >
-        LambentLabs
+        doITbetter<span style={{ color: "var(--accent)" }}> labs</span>
       </span>
     </Link>
   );
@@ -299,7 +299,7 @@ export default function Layout() {
             fontSize: "0.78rem",
           }}
         >
-          &copy; {new Date().getFullYear()} Lambent Labs. All rights reserved.
+          &copy; {new Date().getFullYear()} doITbetter labs. All rights reserved.
         </div>
       </footer>
     </div>

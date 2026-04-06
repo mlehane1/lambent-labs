@@ -102,7 +102,7 @@ export default function SmallBusiness() {
   const [status, setStatus] = useState("idle"); // idle | sending | sent | error
 
   useEffect(() => {
-    document.title = "Custom Software for Small Business | Lambent Labs";
+    document.title = "Custom Software for Small Business | doITbetter labs";
     let meta = document.querySelector('meta[name="description"]');
     if (!meta) {
       meta = document.createElement("meta");

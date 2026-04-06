@@ -183,7 +183,7 @@ const s = {
 export default function HighCodeLowCodeAI() {
   useEffect(() => {
     document.title =
-      "From High Code to Low Code to AI: The Full Circle of Software Development | Lambent Labs";
+      "From High Code to Low Code to AI: The Full Circle of Software Development | doITbetter labs";
     const meta = document.querySelector('meta[name="description"]');
     if (meta) {
       meta.setAttribute(

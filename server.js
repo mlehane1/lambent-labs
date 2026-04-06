@@ -99,7 +99,8 @@ app.use(express.static(join(__dirname, 'dist')))
 // ── Event tracking endpoint ──────────────────────────────────────────────────
 app.post('/api/track', async (req, res) => {
   const sessionId = req.cookies?.visitor_session
-  if (!sessionId || !supabase) return res.status(400).json({ error: 'No session' })
+  if (!supabase) return res.status(503).json({ error: 'Tracking not configured — check SUPABASE_URL and SUPABASE_SERVICE_KEY env vars' })
+  if (!sessionId) return res.status(400).json({ error: 'No session cookie' })
 
   const { event_type, page_path, event_data } = req.body
   if (!event_type) return res.status(400).json({ error: 'Missing event_type' })
@@ -227,4 +228,6 @@ app.get('*', (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`doITbetter labs running on port ${PORT}`)
+  console.log(`Visitor tracking: ${supabase ? 'ENABLED' : 'DISABLED (missing SUPABASE_URL or SUPABASE_SERVICE_KEY)'}`)
+  console.log(`IP enrichment: ${process.env.IPINFO_TOKEN ? 'ENABLED' : 'DISABLED (missing IPINFO_TOKEN)'}`)
 })

@@ -8,6 +8,6 @@ Platforms like Mendix don't just survive the AI era. They might be uniquely posi
 
 I wrote about the full journey — three eras of software development and where it's all heading:
 
-https://doitbetter-production.up.railway.app/blog/high-code-low-code-ai
+https://doitbetter.up.railway.app/blog/high-code-low-code-ai
 
 #SoftwareDevelopment #AI #LowCode #Mendix #StartupLife

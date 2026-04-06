@@ -8,7 +8,7 @@ AI-accelerated development collapsed the timeline and the cost. The same work th
 
 If someone told you "custom software isn't in your budget" — it might be time to get a new quote.
 
-We wrote about the full evolution: https://doitbetter-production.up.railway.app/blog/high-code-low-code-ai
+We wrote about the full evolution: https://doitbetter.up.railway.app/blog/high-code-low-code-ai
 
 Free consultation if you want to explore what's possible → lambentlabs247@gmail.com
 

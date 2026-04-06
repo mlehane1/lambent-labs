@@ -8,4 +8,4 @@ Same quality. Same features. 10x faster. 10x cheaper.
 
 The winners are the businesses that realize this first.
 
-https://doitbetter-production.up.railway.app/blog/high-code-low-code-ai
+https://doitbetter.up.railway.app/blog/high-code-low-code-ai

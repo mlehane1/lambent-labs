@@ -18,6 +18,7 @@ import AITrustGap from './pages/blog/AITrustGap.jsx'
 import AICostCollapse from './pages/blog/AICostCollapse.jsx'
 import AIAgentsGuide from './pages/blog/AIAgentsGuide.jsx'
 import DynamicBlogPost from './pages/DynamicBlogPost.jsx'
+import AdsLanding from './pages/AdsLanding.jsx'
 import Websites from './pages/Websites.jsx'
 import BuildPreview from './pages/BuildPreview.jsx'
 import './index.css'
@@ -44,6 +45,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           <Route path="/solutions/franchise" element={<Franchise />} />
           <Route path="/solutions/websites" element={<Websites />} />
           <Route path="/build" element={<BuildPreview />} />
+          <Route path="/get-quote" element={<AdsLanding />} />
           <Route path="/blog" element={<BlogIndex />} />
           <Route path="/blog/custom-software-cost" element={<CustomSoftwareCost />} />
           <Route path="/blog/build-vs-buy" element={<BuildVsBuy />} />

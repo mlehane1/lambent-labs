@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { sendLeadNotification } from "./leadNotify.js";
-import { trackFormStart, trackFormSubmit, trackCTAClick, trackScrollDepth } from "./tracker.js";
+import { trackFormStart, trackFormSubmit, trackCTAClick, trackScrollDepth, getStoredUTMs } from "./tracker.js";
 import VisitorDashboard from "./components/VisitorDashboard.jsx";
 import BlogAdmin from "./components/BlogAdmin.jsx";
 
@@ -354,7 +354,7 @@ export default function App() {
         sendLeadNotification("Email Capture", captureEmail, "[Lead Magnet Download]", "Homepage — Guide Download");
         setCaptureEmail("");
         if (window.dataLayer) {
-          window.dataLayer.push({ event: "form_submit", form_name: "email_capture" });
+          window.dataLayer.push({ event: "form_submit", form_name: "email_capture", conversion_value: 5, currency: "USD", ...getStoredUTMs() });
         }
       } else {
         setCaptureStatus("error");
@@ -396,7 +396,7 @@ export default function App() {
         setContactMessage("");
         // Push event to GTM dataLayer for conversion tracking
         if (window.dataLayer) {
-          window.dataLayer.push({ event: "form_submit", form_name: "contact" });
+          window.dataLayer.push({ event: "form_submit", form_name: "contact", conversion_value: 50, currency: "USD", ...getStoredUTMs() });
         }
       } else {
         setContactStatus("error");

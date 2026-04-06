@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { sendLeadNotification } from "../leadNotify.js";
-import { trackFormSubmit } from "../tracker.js";
+import { trackFormSubmit, getStoredUTMs } from "../tracker.js";
 
 const SUPABASE_URL = "https://ltkapmacmylwfhufuozq.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx0a2FwbWFjbXlsd2ZodWZ1b3pxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUxMzU4OTcsImV4cCI6MjA5MDcxMTg5N30.uNtnYOBwPcIOkX0Yba2U6EJyywbL-lhjRa4sEJ8tj1c";
@@ -38,7 +38,7 @@ export default function BlogLeadCapture({ source }) {
         sendLeadNotification("Blog Reader", email, `Blog lead from: ${source}`, `Blog — ${source}`);
         setEmail("");
         if (window.dataLayer) {
-          window.dataLayer.push({ event: "form_submit", form_name: "blog_lead_capture" });
+          window.dataLayer.push({ event: "form_submit", form_name: "blog_lead_capture", conversion_value: 10, currency: "USD", ...getStoredUTMs() });
         }
       } else {
         setStatus("error");

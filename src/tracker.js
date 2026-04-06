@@ -10,6 +10,23 @@ function getSessionId() {
   return id
 }
 
+// Persist UTMs in sessionStorage so they survive page navigation
+function captureUTMs() {
+  const params = new URLSearchParams(window.location.search)
+  const keys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'gclid']
+  keys.forEach(k => {
+    const v = params.get(k)
+    if (v) sessionStorage.setItem(k, v)
+  })
+}
+
+export function getStoredUTMs() {
+  const keys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'gclid']
+  const result = {}
+  keys.forEach(k => { result[k] = sessionStorage.getItem(k) || null })
+  return result
+}
+
 async function track(eventType, data = {}) {
   try {
     await fetch(TRACK_URL, {
@@ -26,14 +43,11 @@ async function track(eventType, data = {}) {
 }
 
 export function trackPageView() {
-  const params = new URLSearchParams(window.location.search)
+  captureUTMs()
+  const utms = getStoredUTMs()
   track('page_view', {
     referrer: document.referrer,
-    utm_source: params.get('utm_source'),
-    utm_medium: params.get('utm_medium'),
-    utm_campaign: params.get('utm_campaign'),
-    utm_content: params.get('utm_content'),
-    utm_term: params.get('utm_term'),
+    ...utms,
   })
 }
 

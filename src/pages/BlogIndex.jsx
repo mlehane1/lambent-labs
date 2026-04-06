@@ -3,6 +3,33 @@ import { Link } from "react-router-dom";
 
 const posts = [
   {
+    title: "76% of Americans Don't Trust AI. Here's What That Means for Your Business.",
+    slug: "/blog/ai-trust-gap",
+    excerpt:
+      "AI adoption is up but trust is down. The smart play: use AI to build faster behind the scenes while keeping humans in the loop where it counts.",
+    tags: ["AI", "Strategy", "Trust"],
+    date: "Apr 2026",
+    readTime: "5 min read",
+  },
+  {
+    title: "The $5 Million AI Model: Why Custom Software Is About to Get Cheaper",
+    slug: "/blog/ai-cost-collapse",
+    excerpt:
+      "AI costs are collapsing from both ends — open-source and commercial. Here's what that means for the price of your next project.",
+    tags: ["AI", "Pricing", "Development"],
+    date: "Apr 2026",
+    readTime: "5 min read",
+  },
+  {
+    title: "AI Agents Are Here. Here's What Small Businesses Need to Know.",
+    slug: "/blog/ai-agents-guide",
+    excerpt:
+      "AI agents aren't science fiction anymore. They're booking appointments, processing invoices, and managing workflows. Here's what to actually do about it.",
+    tags: ["AI", "Agents", "Operations"],
+    date: "Apr 2026",
+    readTime: "6 min read",
+  },
+  {
     title: "From High Code to Low Code to AI: The Full Circle",
     slug: "/blog/high-code-low-code-ai",
     excerpt:

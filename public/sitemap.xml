@@ -61,6 +61,21 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://doitbetter.up.railway.app/blog/ai-trust-gap</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://doitbetter.up.railway.app/blog/ai-cost-collapse</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://doitbetter.up.railway.app/blog/ai-agents-guide</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://doitbetter.up.railway.app/blog/high-code-low-code-ai</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>

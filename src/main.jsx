@@ -14,6 +14,9 @@ import BuildVsBuy from './pages/blog/BuildVsBuy.jsx'
 import AIAcceleratedDev from './pages/blog/AIAcceleratedDev.jsx'
 import FranchiseSoftwareSigns from './pages/blog/FranchiseSoftwareSigns.jsx'
 import HighCodeLowCodeAI from './pages/blog/HighCodeLowCodeAI.jsx'
+import AITrustGap from './pages/blog/AITrustGap.jsx'
+import AICostCollapse from './pages/blog/AICostCollapse.jsx'
+import AIAgentsGuide from './pages/blog/AIAgentsGuide.jsx'
 import Websites from './pages/Websites.jsx'
 import BuildPreview from './pages/BuildPreview.jsx'
 import './index.css'
@@ -46,6 +49,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           <Route path="/blog/ai-accelerated-development" element={<AIAcceleratedDev />} />
           <Route path="/blog/franchise-software-signs" element={<FranchiseSoftwareSigns />} />
           <Route path="/blog/high-code-low-code-ai" element={<HighCodeLowCodeAI />} />
+          <Route path="/blog/ai-trust-gap" element={<AITrustGap />} />
+          <Route path="/blog/ai-cost-collapse" element={<AICostCollapse />} />
+          <Route path="/blog/ai-agents-guide" element={<AIAgentsGuide />} />
         </Route>
       </Routes>
     </BrowserRouter>

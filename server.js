@@ -105,29 +105,33 @@ app.post('/api/track', async (req, res) => {
   if (!event_type) return res.status(400).json({ error: 'Missing event_type' })
 
   // If this is the first event for this session, log the visitor too
-  const { count } = await supabase.from('visitors').select('id', { count: 'exact', head: true }).eq('session_id', session_id)
-  if (count === 0) {
-    const ip = (req.headers['x-forwarded-for'] || req.socket.remoteAddress || '').split(',')[0].trim()
-    const enriched = await enrichIP(ip)
-    const ed = event_data || {}
-    await supabase.from('visitors').insert({
-      session_id,
-      ip,
-      user_agent: req.headers['user-agent'] || null,
-      referrer: ed.referrer || req.headers['referer'] || null,
-      utm_source: ed.utm_source || null,
-      utm_medium: ed.utm_medium || null,
-      utm_campaign: ed.utm_campaign || null,
-      utm_content: ed.utm_content || null,
-      utm_term: ed.utm_term || null,
-      first_page: page_path,
-      ...enriched,
-    }).catch(err => console.error('[visitor-insert]', err.message))
+  try {
+    const { count } = await supabase.from('visitors').select('id', { count: 'exact', head: true }).eq('session_id', session_id)
+    if (count === 0) {
+      const ip = (req.headers['x-forwarded-for'] || req.socket.remoteAddress || '').split(',')[0].trim()
+      const enriched = await enrichIP(ip)
+      const ed = event_data || {}
+      await supabase.from('visitors').insert({
+        session_id,
+        ip,
+        user_agent: req.headers['user-agent'] || null,
+        referrer: ed.referrer || req.headers['referer'] || null,
+        utm_source: ed.utm_source || null,
+        utm_medium: ed.utm_medium || null,
+        utm_campaign: ed.utm_campaign || null,
+        utm_content: ed.utm_content || null,
+        utm_term: ed.utm_term || null,
+        first_page: page_path,
+        ...enriched,
+      })
+    }
+  } catch (err) {
+    console.error('[visitor-check]', err.message)
   }
 
   try {
     await supabase.from('visitor_events').insert({
-      session_id: sessionId,
+      session_id,
       event_type,
       page_path: page_path || null,
       event_data: event_data || {},

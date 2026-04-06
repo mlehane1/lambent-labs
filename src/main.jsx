@@ -17,6 +17,7 @@ import HighCodeLowCodeAI from './pages/blog/HighCodeLowCodeAI.jsx'
 import AITrustGap from './pages/blog/AITrustGap.jsx'
 import AICostCollapse from './pages/blog/AICostCollapse.jsx'
 import AIAgentsGuide from './pages/blog/AIAgentsGuide.jsx'
+import DynamicBlogPost from './pages/DynamicBlogPost.jsx'
 import Websites from './pages/Websites.jsx'
 import BuildPreview from './pages/BuildPreview.jsx'
 import './index.css'
@@ -52,6 +53,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           <Route path="/blog/ai-trust-gap" element={<AITrustGap />} />
           <Route path="/blog/ai-cost-collapse" element={<AICostCollapse />} />
           <Route path="/blog/ai-agents-guide" element={<AIAgentsGuide />} />
+          <Route path="/blog/:slug" element={<DynamicBlogPost />} />
         </Route>
       </Routes>
     </BrowserRouter>

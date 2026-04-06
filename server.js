@@ -144,6 +144,193 @@ app.post('/api/track', async (req, res) => {
   res.status(204).end()
 })
 
+// ── Blog CMS Admin Auth ─────────────────────────────────────────────────────
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'doitbetter2024'
+
+function requireAdmin(req, res, next) {
+  if (req.headers['x-admin-password'] !== ADMIN_PASSWORD) {
+    return res.status(401).json({ error: 'Unauthorized' })
+  }
+  next()
+}
+
+// ── Blog API (public) ───────────────────────────────────────────────────────
+app.get('/api/blog', async (req, res) => {
+  if (!supabase) return res.json([])
+  const { data, error } = await supabase
+    .from('blog_posts')
+    .select('slug, title, excerpt, tags, read_time, published_at')
+    .eq('status', 'published')
+    .order('published_at', { ascending: false })
+  if (error) return res.status(500).json({ error: error.message })
+  res.json(data || [])
+})
+
+app.get('/api/blog/:slug', async (req, res) => {
+  if (!supabase) return res.status(503).json({ error: 'Not configured' })
+  const { data, error } = await supabase
+    .from('blog_posts')
+    .select('*')
+    .eq('slug', req.params.slug)
+    .eq('status', 'published')
+    .single()
+  if (error || !data) return res.status(404).json({ error: 'Post not found' })
+  res.json(data)
+})
+
+// ── Blog Admin API ──────────────────────────────────────────────────────────
+app.get('/api/admin/blog', requireAdmin, async (req, res) => {
+  if (!supabase) return res.json([])
+  const { data, error } = await supabase
+    .from('blog_posts')
+    .select('id, slug, title, status, excerpt, tags, read_time, published_at, created_at, updated_at')
+    .order('updated_at', { ascending: false })
+  if (error) return res.status(500).json({ error: error.message })
+  res.json(data || [])
+})
+
+app.post('/api/admin/blog', requireAdmin, async (req, res) => {
+  if (!supabase) return res.status(503).json({ error: 'Not configured' })
+  const { slug, title, excerpt, meta_description, content, tags, read_time, status } = req.body
+  const isPublished = status === 'published'
+  const { data, error } = await supabase.from('blog_posts').insert({
+    slug, title, excerpt, meta_description, content, tags,
+    read_time: read_time || '5 min read',
+    status: status || 'draft',
+    published_at: isPublished ? new Date().toISOString() : null,
+  }).select().single()
+  if (error) return res.status(400).json({ error: error.message })
+  res.json(data)
+})
+
+app.put('/api/admin/blog/:id', requireAdmin, async (req, res) => {
+  if (!supabase) return res.status(503).json({ error: 'Not configured' })
+  const updates = { ...req.body, updated_at: new Date().toISOString() }
+  if (updates.status === 'published' && !updates.published_at) {
+    updates.published_at = new Date().toISOString()
+  }
+  delete updates.id
+  delete updates.created_at
+  const { data, error } = await supabase.from('blog_posts')
+    .update(updates).eq('id', req.params.id).select().single()
+  if (error) return res.status(400).json({ error: error.message })
+  res.json(data)
+})
+
+app.delete('/api/admin/blog/:id', requireAdmin, async (req, res) => {
+  if (!supabase) return res.status(503).json({ error: 'Not configured' })
+  const { error } = await supabase.from('blog_posts').delete().eq('id', req.params.id)
+  if (error) return res.status(400).json({ error: error.message })
+  res.status(204).end()
+})
+
+// ── Blog AI Generation ──────────────────────────────────────────────────────
+app.post('/api/admin/blog/ai-generate', requireAdmin, async (req, res) => {
+  const apiKey = process.env.ANTHROPIC_API_KEY
+  if (!apiKey) return res.status(500).json({ error: 'API key not configured' })
+
+  const { topic } = req.body
+  if (!topic) return res.status(400).json({ error: 'Topic is required' })
+
+  try {
+    const client = new Anthropic({ apiKey })
+    const response = await client.messages.create({
+      model: 'claude-haiku-4-5',
+      max_tokens: 4000,
+      messages: [{ role: 'user', content: `You are a blog writer for doITbetter labs, a custom software development agency that uses AI-accelerated (Claude-enabled) workflows to build software faster and cheaper for small and mid-size businesses. The tone is direct, practical, no fluff — written for business owners, not developers.
+
+Write a complete blog post about: ${topic}
+
+The post should:
+- Be 800-1200 words
+- Have 4-5 sections with headings
+- Reference doITbetter labs and how our Claude-enabled development approach relates to the topic
+- Include a lead-capture block roughly 2/3 through the post
+- Be practical and actionable, not generic or salesy
+- Reference real companies, trends, or data points where relevant
+
+Return a JSON object with EXACTLY this structure (no markdown fences, just valid JSON):
+{
+  "title": "Compelling blog post title",
+  "slug": "url-friendly-slug",
+  "excerpt": "1-2 sentence summary for the blog index card",
+  "meta_description": "SEO meta description under 160 chars",
+  "tags": ["Tag1", "Tag2", "Tag3"],
+  "read_time": "5 min read",
+  "content": [
+    { "type": "paragraph", "text": "Opening paragraph text. Use <strong>bold</strong> and <em>italic</em> for emphasis." },
+    { "type": "heading", "text": "Section Heading" },
+    { "type": "paragraph", "text": "More text..." },
+    { "type": "highlight", "text": "A key stat or callout." },
+    { "type": "list", "items": ["Point one", "Point two", "Point three"] },
+    { "type": "lead-capture" },
+    { "type": "heading", "text": "Another Section" },
+    { "type": "paragraph", "text": "More content..." }
+  ]
+}
+
+Rules for content blocks:
+- "paragraph": text with optional inline HTML (<strong>, <em>, <a href="..." target="_blank" rel="noopener noreferrer">)
+- "heading": plain text, rendered as h2
+- "highlight": a key stat or important callout, rendered with accent color
+- "list": array of string items with optional inline HTML
+- "lead-capture": no text needed, renders an email capture form` }],
+    })
+
+    const textBlock = response.content.find(b => b.type === 'text')
+    if (!textBlock) return res.status(500).json({ error: 'No response from AI' })
+
+    let jsonText = textBlock.text.trim()
+    if (jsonText.startsWith('```')) {
+      jsonText = jsonText.replace(/^```(?:json)?\n?/, '').replace(/\n?```$/, '').trim()
+    }
+
+    const generated = JSON.parse(jsonText)
+    res.json(generated)
+  } catch (err) {
+    console.error('[blog-ai-generate]', err.message)
+    res.status(500).json({ error: 'Failed to generate blog post', detail: err.message })
+  }
+})
+
+app.post('/api/admin/blog/ai-edit', requireAdmin, async (req, res) => {
+  const apiKey = process.env.ANTHROPIC_API_KEY
+  if (!apiKey) return res.status(500).json({ error: 'API key not configured' })
+
+  const { content, instruction } = req.body
+  if (!content || !instruction) return res.status(400).json({ error: 'Content and instruction required' })
+
+  try {
+    const client = new Anthropic({ apiKey })
+    const response = await client.messages.create({
+      model: 'claude-haiku-4-5',
+      max_tokens: 4000,
+      messages: [{ role: 'user', content: `You are editing a blog post for doITbetter labs, a custom software development agency. The tone is direct, practical, no fluff — written for business owners.
+
+Here is the current blog post content as a JSON array of blocks:
+${JSON.stringify(content, null, 2)}
+
+Apply this edit instruction: ${instruction}
+
+Return ONLY the updated content array (same JSON block format), no explanation. Keep the same block types: paragraph, heading, highlight, list, lead-capture. Preserve any existing lead-capture blocks.` }],
+    })
+
+    const textBlock = response.content.find(b => b.type === 'text')
+    if (!textBlock) return res.status(500).json({ error: 'No response from AI' })
+
+    let jsonText = textBlock.text.trim()
+    if (jsonText.startsWith('```')) {
+      jsonText = jsonText.replace(/^```(?:json)?\n?/, '').replace(/\n?```$/, '').trim()
+    }
+
+    const updated = JSON.parse(jsonText)
+    res.json(updated)
+  } catch (err) {
+    console.error('[blog-ai-edit]', err.message)
+    res.status(500).json({ error: 'Failed to edit content', detail: err.message })
+  }
+})
+
 // ── Claude API endpoint for Build Preview ────────────────────────────────────
 app.post('/api/generate-preview', async (req, res) => {
   const apiKey = process.env.ANTHROPIC_API_KEY

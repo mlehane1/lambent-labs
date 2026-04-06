@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { sendLeadNotification } from "./leadNotify.js";
 import { trackFormStart, trackFormSubmit, trackCTAClick, trackScrollDepth } from "./tracker.js";
 import VisitorDashboard from "./components/VisitorDashboard.jsx";
+import BlogAdmin from "./components/BlogAdmin.jsx";
 
 // ─── localStorage helpers ──────────────────────────────────────────────────────
 function loadSiteContent() {
@@ -285,6 +286,7 @@ export default function App() {
   const [activeSection, setActiveSection] = useState("home");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showVisitorDashboard, setShowVisitorDashboard] = useState(false);
+  const [showBlogAdmin, setShowBlogAdmin] = useState(false);
 
   // Email capture (lead magnet)
   const [captureEmail, setCaptureEmail] = useState("");
@@ -444,6 +446,11 @@ export default function App() {
               color: "var(--accent)", borderRadius: "8px", padding: "4px 14px",
               fontSize: "0.78rem", cursor: "pointer", fontFamily: "'DM Sans', sans-serif",
             }}>Visitors</button>
+            <button onClick={() => setShowBlogAdmin(true)} style={{
+              background: "rgba(10,44,101,0.5)", border: "1px solid rgba(21,203,136,0.27)",
+              color: "var(--accent)", borderRadius: "8px", padding: "4px 14px",
+              fontSize: "0.78rem", cursor: "pointer", fontFamily: "'DM Sans', sans-serif",
+            }}>Blog</button>
             <button onClick={() => { setEditingContent({ ...content }); setShowContentEditor(true); }} style={{
               background: "rgba(10,44,101,0.5)", border: "1px solid rgba(21,203,136,0.27)",
               color: "var(--accent)", borderRadius: "8px", padding: "4px 14px",
@@ -1115,6 +1122,10 @@ export default function App() {
 
       {showVisitorDashboard && (
         <VisitorDashboard onClose={() => setShowVisitorDashboard(false)} />
+      )}
+
+      {showBlogAdmin && (
+        <BlogAdmin onClose={() => setShowBlogAdmin(false)} adminPassword={ADMIN_PASSWORD} />
       )}
     </div>
   );

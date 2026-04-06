@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 const posts = [
@@ -171,6 +171,30 @@ const styles = {
 };
 
 export default function BlogIndex() {
+  const [dynamicPosts, setDynamicPosts] = useState([]);
+
+  useEffect(() => {
+    fetch("/api/blog")
+      .then((r) => r.json())
+      .then((data) =>
+        setDynamicPosts(
+          (Array.isArray(data) ? data : []).map((p) => ({
+            title: p.title,
+            slug: `/blog/${p.slug}`,
+            excerpt: p.excerpt,
+            tags: p.tags || [],
+            date: p.published_at
+              ? new Date(p.published_at).toLocaleDateString("en-US", { month: "short", year: "numeric" })
+              : "Recent",
+            readTime: p.read_time,
+          }))
+        )
+      )
+      .catch(() => {});
+  }, []);
+
+  const allPosts = [...dynamicPosts, ...posts];
+
   useEffect(() => {
     document.title = "Blog | doITbetter labs — Software Development Insights";
     const meta = document.querySelector('meta[name="description"]');
@@ -194,7 +218,7 @@ export default function BlogIndex() {
         </header>
 
         <div style={styles.grid}>
-          {posts.map((post) => (
+          {allPosts.map((post) => (
             <Link
               key={post.slug}
               to={post.slug}

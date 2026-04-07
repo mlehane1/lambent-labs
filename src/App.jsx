@@ -834,14 +834,16 @@ export default function App() {
                   background: item.color + "18", borderRadius: "12px",
                   width: "52px", height: "52px", display: "flex",
                   alignItems: "center", justifyContent: "center",
+                  margin: "0 auto 14px",
                 }}>{item.icon}</div>
                 <h3 style={{
                   fontFamily: "'Outfit', sans-serif", fontWeight: 600,
                   fontSize: "1.05rem", color: "var(--text-hi)", margin: "0 0 10px",
+                  textAlign: "center",
                 }}>{item.title}</h3>
                 <p style={{
                   color: "var(--text-mid)", fontSize: "0.875rem",
-                  lineHeight: 1.65, margin: 0,
+                  lineHeight: 1.65, margin: 0, textAlign: "center",
                 }}>{item.desc}</p>
               </div>
             ))}

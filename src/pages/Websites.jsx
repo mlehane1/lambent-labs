@@ -893,7 +893,7 @@ export default function Websites() {
                 borderColor: "rgba(21,203,136,0.3)",
               })}
             >
-              <div style={{ fontSize: "2.5rem", marginBottom: "0.75rem" }}>
+              <div style={{ fontSize: "2.5rem", marginBottom: "0.75rem", textAlign: "center" }}>
                 ✓
               </div>
               <h3

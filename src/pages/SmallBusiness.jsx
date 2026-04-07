@@ -507,7 +507,7 @@ export default function SmallBusiness() {
                 ...card({ textAlign: "center", padding: "3rem 2rem", borderColor: "rgba(21,203,136,0.3)" }),
               }}
             >
-              <div style={{ fontSize: "2.5rem", marginBottom: "0.75rem" }}>✓</div>
+              <div style={{ fontSize: "2.5rem", marginBottom: "0.75rem", textAlign: "center" }}>✓</div>
               <h3
                 style={heading({ fontSize: "1.3rem", marginBottom: "0.5rem" })}
               >

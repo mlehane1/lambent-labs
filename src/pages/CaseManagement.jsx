@@ -424,7 +424,7 @@ export default function CaseManagement() {
                   padding: "1.75rem 1.25rem",
                 }}
               >
-                <div style={{ fontSize: "2rem", marginBottom: "0.6rem" }}>{ind.icon}</div>
+                <div style={{ fontSize: "2rem", marginBottom: "0.6rem", textAlign: "center" }}>{ind.icon}</div>
                 <h4
                   style={{
                     ...headingSm,

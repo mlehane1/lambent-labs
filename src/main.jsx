@@ -28,7 +28,13 @@ import './index.css'
 
 function PageViewTracker() {
   const location = useLocation()
-  useEffect(() => { trackPageView() }, [location.pathname])
+  useEffect(() => {
+    trackPageView()
+    // Scroll to top on route change (unless it's a hash link)
+    if (!location.hash) {
+      window.scrollTo(0, 0)
+    }
+  }, [location.pathname])
   return null
 }
 

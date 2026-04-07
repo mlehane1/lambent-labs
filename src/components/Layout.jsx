@@ -5,6 +5,17 @@ import { Outlet } from "react-router-dom";
 const navLinks = [
   { label: "Home", to: "/" },
   { label: "Services", to: "/#services" },
+  {
+    label: "Solutions",
+    children: [
+      { label: "$199 Websites", to: "/solutions/websites" },
+      { label: "Small Business", to: "/solutions/small-business" },
+      { label: "Case Management", to: "/solutions/case-management" },
+      { label: "Franchise", to: "/solutions/franchise" },
+      { label: "White-Glove", to: "/solutions/white-glove" },
+    ],
+  },
+  { label: "Build Preview", to: "/build" },
   { label: "Blog", to: "/blog" },
   { label: "Contact", to: "/#contact" },
 ];
@@ -84,6 +95,8 @@ function Logo({ size = "default" }) {
 
 export default function Layout() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [solutionsOpen, setSolutionsOpen] = useState(false);
+  const [mobileSolutionsOpen, setMobileSolutionsOpen] = useState(false);
   const location = useLocation();
   const currentPath = location.pathname;
 
@@ -119,14 +132,84 @@ export default function Layout() {
 
         {/* Desktop */}
         <div className="desktop-nav" style={{ display: "flex", alignItems: "center", gap: "2rem" }}>
-          {navLinks.map((link) => (
-            <NavLink
-              key={link.to}
-              to={link.to}
-              label={link.label}
-              current={currentPath}
-            />
-          ))}
+          {navLinks.map((link) =>
+            link.children ? (
+              <div
+                key={link.label}
+                style={{ position: "relative" }}
+                onMouseEnter={() => setSolutionsOpen(true)}
+                onMouseLeave={() => setSolutionsOpen(false)}
+              >
+                <button
+                  style={{
+                    color: currentPath.startsWith("/solutions") ? "var(--accent)" : "var(--text-mid)",
+                    background: "none",
+                    border: "none",
+                    fontSize: "0.9rem",
+                    fontFamily: "'DM Sans', sans-serif",
+                    fontWeight: 500,
+                    cursor: "pointer",
+                    letterSpacing: "0.01em",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.3rem",
+                    padding: 0,
+                  }}
+                >
+                  {link.label}
+                  <span style={{ fontSize: "0.6rem", transition: "transform 0.2s", transform: solutionsOpen ? "rotate(180deg)" : "none" }}>&#9660;</span>
+                </button>
+                {solutionsOpen && (
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: "100%",
+                      left: "50%",
+                      transform: "translateX(-50%)",
+                      paddingTop: 8,
+                      zIndex: 1001,
+                    }}
+                  >
+                    <div
+                      style={{
+                        background: "rgba(2,8,20,0.97)",
+                        border: "1px solid var(--border)",
+                        borderRadius: 10,
+                        padding: "8px 0",
+                        minWidth: 200,
+                        boxShadow: "0 8px 32px rgba(0,0,0,0.4)",
+                        backdropFilter: "blur(12px)",
+                      }}
+                    >
+                      {link.children.map((child) => (
+                        <Link
+                          key={child.to}
+                          to={child.to}
+                          onClick={() => setSolutionsOpen(false)}
+                          style={{
+                            display: "block",
+                            padding: "10px 20px",
+                            color: currentPath === child.to ? "var(--accent)" : "var(--text-mid)",
+                            textDecoration: "none",
+                            fontSize: "0.88rem",
+                            fontFamily: "'DM Sans', sans-serif",
+                            fontWeight: currentPath === child.to ? 600 : 400,
+                            transition: "background 0.15s",
+                          }}
+                          onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(21,88,203,0.1)"; }}
+                          onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
+                        >
+                          {child.label}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <NavLink key={link.to} to={link.to} label={link.label} current={currentPath} />
+            )
+          )}
           <a
             href="/#contact"
             style={{
@@ -168,8 +251,34 @@ export default function Layout() {
           zIndex: 999, padding: "24px 24px",
           display: "flex", flexDirection: "column", gap: "8px",
         }}>
-          {navLinks.map((link) => (
-            link.to.startsWith("/#") ? (
+          {navLinks.map((link) =>
+            link.children ? (
+              <div key={link.label}>
+                <button
+                  onClick={() => setMobileSolutionsOpen(!mobileSolutionsOpen)}
+                  style={{
+                    color: "var(--text-mid)", fontWeight: 600, fontSize: "1.1rem",
+                    padding: "12px 0", borderBottom: "1px solid var(--border)",
+                    background: "none", border: "none", borderBottom: "1px solid var(--border)",
+                    width: "100%", textAlign: "left", cursor: "pointer",
+                    display: "flex", alignItems: "center", justifyContent: "space-between",
+                  }}
+                >
+                  {link.label}
+                  <span style={{ fontSize: "0.7rem", transition: "transform 0.2s", transform: mobileSolutionsOpen ? "rotate(180deg)" : "none" }}>&#9660;</span>
+                </button>
+                {mobileSolutionsOpen && (
+                  <div style={{ paddingLeft: 16 }}>
+                    {link.children.map((child) => (
+                      <Link key={child.to} to={child.to} onClick={() => { setMobileOpen(false); setMobileSolutionsOpen(false); }} style={{
+                        color: currentPath === child.to ? "var(--accent)" : "var(--text-lo)", fontWeight: 500, fontSize: "1rem",
+                        padding: "10px 0", borderBottom: "1px solid var(--border)", textDecoration: "none", display: "block",
+                      }}>{child.label}</Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ) : link.to.startsWith("/#") ? (
               <a key={link.to} href={link.to} onClick={() => setMobileOpen(false)} style={{
                 color: "var(--text-mid)", fontWeight: 600, fontSize: "1.1rem",
                 padding: "12px 0", borderBottom: "1px solid var(--border)", textDecoration: "none",
@@ -180,7 +289,7 @@ export default function Layout() {
                 padding: "12px 0", borderBottom: "1px solid var(--border)", textDecoration: "none",
               }}>{link.label}</Link>
             )
-          ))}
+          )}
           <a href="/#contact" onClick={() => setMobileOpen(false)} style={{
             background: "linear-gradient(135deg, var(--primary), var(--accent))",
             color: "white", padding: "14px 24px", borderRadius: "10px",

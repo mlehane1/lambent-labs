@@ -395,12 +395,14 @@ app.get('/api/admin/blog', requireAdmin, async (req, res) => {
 
 app.post('/api/admin/blog', requireAdmin, async (req, res) => {
   if (!supabase) return res.status(503).json({ error: 'Not configured' })
-  const { slug, title, excerpt, meta_description, content, tags, read_time, status } = req.body
+  const { slug, title, excerpt, meta_description, content, tags, read_time, status, scheduled_at } = req.body
   const isPublished = status === 'published'
+  const isScheduled = status === 'scheduled' && scheduled_at
   const { data, error } = await supabase.from('blog_posts').insert({
     slug, title, excerpt, meta_description, content, tags,
     read_time: read_time || '5 min read',
-    status: status || 'draft',
+    status: isScheduled ? 'scheduled' : (status || 'draft'),
+    scheduled_at: isScheduled ? scheduled_at : null,
     published_at: isPublished ? new Date().toISOString() : null,
   }).select().single()
   if (error) return res.status(400).json({ error: error.message })
@@ -725,6 +727,31 @@ app.get('*', async (req, res) => {
 
   res.send(html)
 })
+
+// ── Scheduled post publisher (checks every 60s) ────────────────────────────
+async function publishScheduledPosts() {
+  if (!supabase) return
+  try {
+    const now = new Date().toISOString()
+    const { data: due } = await supabase
+      .from('blog_posts')
+      .select('id, title, slug')
+      .eq('status', 'scheduled')
+      .lte('scheduled_at', now)
+    if (!due || due.length === 0) return
+    for (const post of due) {
+      await supabase.from('blog_posts').update({
+        status: 'published',
+        published_at: now,
+        updated_at: now,
+      }).eq('id', post.id)
+      console.log(`[scheduler] Published: ${post.title}`)
+    }
+  } catch (err) {
+    console.error('[scheduler]', err.message)
+  }
+}
+setInterval(publishScheduledPosts, 60 * 1000)
 
 app.listen(PORT, () => {
   console.log(`doITbetter labs running on port ${PORT}`)

@@ -74,7 +74,7 @@ async function enrichIP(ip) {
 const SLACK_WEBHOOK_URL = process.env.SLACK_WEBHOOK_URL || ''
 
 // Companies that are always bots/infrastructure — never alert
-const BOT_COMPANIES = /cloudflare|amazon\.com|amazon tech|aws|google|microsoft|digitalocean|linode|vultr|hetzner|ovh|oracle|akamai|fastly|rackspace|ibm|heroku|railway|netlify|vercel|render|fly\.io|github|gitlab|bitbucket|semrush|ahrefs|moz\.com|hubspot|datadog|newrelic|pingdom|uptimerobot|statuspage/i
+const BOT_COMPANIES = /cloudflare|amazon\.com|amazon tech|aws|google|microsoft|digitalocean|linode|vultr|hetzner|ovh|oracle|akamai|fastly|rackspace|ibm|heroku|railway|netlify|vercel|render|fly\.io|github|gitlab|bitbucket|semrush|ahrefs|moz\.com|hubspot|datadog|newrelic|pingdom|uptimerobot|statuspage|imaqliq|data-center/i
 
 // Residential ISPs — not identifiable, don't alert
 const ISP_KEYWORDS = /comcast|spectrum|verizon|at.t|t-mobile|cox|charter|xfinity|centurylink|frontier|windstream|optimum|mediacom|suddenlink|residential|cable|telecom|broadband|wireless|mobile|cellular/i

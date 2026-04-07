@@ -575,7 +575,7 @@ Generate a JSON response with EXACTLY this structure (no markdown, no code fence
   ],
   "projectType": "website|webapp|mobile|integration",
   "projectTypeLabel": "Standalone Website|Web Application|Native Mobile App|Integration Platform",
-  "estimatedRange": "$999/yr|$2K-$8K|$5K-$15K|$10K-$30K+|$3K-$12K",
+  "estimatedRange": "$199/yr|$2K-$8K|$5K-$15K|$10K-$30K+|$3K-$12K",
   "recommendation": "2-3 sentences explaining why this project type is the right fit for what they described. Reference their specific business, customers, and needs. Be direct and specific, not generic.",
   "technicalConsiderations": [
     {"title": "Consideration Title", "detail": "A realistic technical detail sentence about how this would be implemented for their specific use case", "questions": ["A specific discovery question we would ask the client about this topic", "A second question drilling into their current setup or requirements"]}

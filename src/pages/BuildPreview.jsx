@@ -96,7 +96,7 @@ function classifyProject(description) {
     };
   return {
     type: "Standalone Website",
-    price: "$999/yr",
+    price: "$199/yr",
     key: "website",
   };
 }

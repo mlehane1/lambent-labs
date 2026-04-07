@@ -71,7 +71,7 @@ const includedItems = [
   {
     icon: "📅",
     title: "12 Months Included",
-    desc: "Your first year of hosting is included in the $999. Renewals at $299/year.",
+    desc: "Your first year of hosting is included in the $199. Renewals at $199/year.",
   },
   {
     icon: "🔄",
@@ -136,7 +136,7 @@ const faqItems = [
   },
   {
     q: "What happens after the first year?",
-    a: "Hosting renews at $299/year. You can cancel anytime — we'll export your site and hand it over. No lock-in.",
+    a: "Hosting renews at $199/year. You can cancel anytime — we'll export your site and hand it over. No lock-in.",
   },
 ];
 
@@ -147,7 +147,7 @@ export default function Websites() {
 
   useEffect(() => {
     document.title =
-      "Professional Website Design — Built in a Week, Hosted for a Year | $999 | doITbetter labs";
+      "Professional Website Design — Built in a Week, Hosted for a Year | $199 | doITbetter labs";
     let meta = document.querySelector('meta[name="description"]');
     if (!meta) {
       meta = document.createElement("meta");
@@ -155,7 +155,7 @@ export default function Websites() {
       document.head.appendChild(meta);
     }
     meta.content =
-      "A custom-designed, SEO-optimized website built in one week and hosted for a full year. $999 all-in. No templates, no DIY builders, no hidden fees. doITbetter labs.";
+      "A custom-designed, SEO-optimized website built in one week and hosted for a full year. $199 all-in. No templates, no DIY builders, no hidden fees. doITbetter labs.";
   }, []);
 
   const handleSubmit = async (e) => {
@@ -180,7 +180,7 @@ export default function Websites() {
         form.name,
         form.email,
         "[Website Package] " + form.message,
-        "Landing Page — $999 Website"
+        "Landing Page — $199 Website"
       );
       setStatus("sent");
       setForm({ name: "", email: "", message: "" });
@@ -254,7 +254,7 @@ export default function Websites() {
               color: "var(--primary-llt)",
             })}
           >
-            CUSTOM DESIGN &middot; SEO &middot; HOSTING &middot; $999/YEAR
+            CUSTOM DESIGN &middot; SEO &middot; HOSTING &middot; $199/YEAR
           </span>
         </div>
 
@@ -266,7 +266,7 @@ export default function Websites() {
           })}
         >
           A Professional Website. Built in a Week. Hosted for a Year.{" "}
-          <span style={{ color: "var(--accent)" }}>$999.</span>
+          <span style={{ color: "var(--accent)" }}>$199.</span>
         </h1>
 
         <p
@@ -505,7 +505,7 @@ export default function Websites() {
           })}
         >
           No surprise add-ons. No nickel-and-diming. Here's exactly what you get
-          for $999.
+          for $199.
         </p>
 
         <div
@@ -565,7 +565,7 @@ export default function Websites() {
                 color: "var(--accent)",
               })}
             >
-              $999
+              $199
             </div>
             <p
               style={body({
@@ -582,7 +582,7 @@ export default function Websites() {
                 marginBottom: "2rem",
               })}
             >
-              Then <strong style={{ color: "var(--text-hi)" }}>$299/year</strong>{" "}
+              Then <strong style={{ color: "var(--text-hi)" }}>$199/year</strong>{" "}
               to renew hosting
             </p>
 
@@ -629,7 +629,7 @@ export default function Websites() {
                   },
                   {
                     name: "Us",
-                    price: "$999",
+                    price: "$199",
                     note: "all-in, done in a week",
                     highlight: true,
                   },

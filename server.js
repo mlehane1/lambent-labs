@@ -773,9 +773,71 @@ ${dynamicUrls}
 </urlset>`)
 })
 
-// ── SPA fallback with SEO injection for blog posts ──────────────────────────
+// ── Static page SEO overrides ───────────────────────────────────────────────
+const PAGE_SEO = {
+  '/solutions/websites': {
+    title: '$199 Custom Website — Designed, Built & Hosted in One Week | doITbetter labs',
+    description: 'Get a custom-designed, mobile-responsive, SEO-optimized website for $199/year. No templates, no page builders, no hidden fees. Built by real developers in one week.',
+    structuredData: {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      "name": "$199 Custom Website Package",
+      "description": "A custom-designed, mobile-responsive, SEO-optimized website built in one week and hosted for a full year.",
+      "brand": { "@type": "Organization", "name": "doITbetter labs" },
+      "offers": {
+        "@type": "Offer",
+        "price": "199",
+        "priceCurrency": "USD",
+        "priceValidUntil": "2027-12-31",
+        "availability": "https://schema.org/InStock",
+        "url": SITE_URL + "/solutions/websites",
+      }
+    }
+  },
+  '/solutions/case-management': {
+    title: 'Custom Case Management Software | doITbetter labs',
+    description: 'Replace spreadsheets and clunky tools with custom case management software tailored to your workflow. Built fast, priced fair.',
+  },
+  '/solutions/small-business': {
+    title: 'Small Business Software Solutions | doITbetter labs',
+    description: 'Custom software for small businesses — web apps, automation, integrations. From idea to production in as little as 2 weeks.',
+  },
+  '/solutions/franchise': {
+    title: 'Franchise Software Solutions | doITbetter labs',
+    description: 'Custom software for franchise operations — multi-location dashboards, reporting, compliance tools. Built to scale.',
+  },
+  '/solutions/white-glove': {
+    title: 'White-Glove Software Development | doITbetter labs',
+    description: 'Premium custom software development with dedicated project management, priority support, and hands-on collaboration.',
+  },
+  '/build': {
+    title: 'Preview Your Project — Free AI-Powered Site Preview | doITbetter labs',
+    description: 'Describe your business and see a live preview of your custom website or app in seconds. Free, powered by AI.',
+  },
+  '/blog': {
+    title: 'Blog — AI, Software Development & Business Strategy | doITbetter labs',
+    description: 'Practical insights on AI, custom software, and digital strategy for small and mid-size businesses. No fluff.',
+  },
+  '/privacy': {
+    title: 'Privacy Policy | doITbetter labs',
+    description: 'How doITbetter labs collects, uses, and protects your data. Our privacy policy covers analytics, visitor tracking, and third-party services.',
+  },
+}
+
+// ── SPA fallback with SEO injection ─────────────────────────────────────────
 app.get('*', async (req, res) => {
   const html = htmlTemplate || readFileSync(join(__dirname, 'dist', 'index.html'), 'utf-8')
+
+  // Static page SEO overrides
+  const pageSeo = PAGE_SEO[req.path] || PAGE_SEO[req.path.replace(/\/$/, '')]
+  if (pageSeo) {
+    return res.send(injectSEO(html, {
+      title: pageSeo.title,
+      description: pageSeo.description,
+      url: `${SITE_URL}${req.path}`,
+      structuredData: pageSeo.structuredData,
+    }))
+  }
 
   // Dynamic blog post — inject real meta tags for crawlers
   const blogMatch = req.path.match(/^\/blog\/([a-z0-9-]+)\/?$/)

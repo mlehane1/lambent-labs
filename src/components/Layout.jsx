@@ -13,6 +13,7 @@ const navLinks = [
       { label: "Case Management", to: "/solutions/case-management" },
       { label: "Franchise", to: "/solutions/franchise" },
       { label: "White-Glove", to: "/solutions/white-glove" },
+      { label: "Data Extraction", to: "/solutions/data-extraction" },
     ],
   },
   { label: "Build Preview", to: "/build" },

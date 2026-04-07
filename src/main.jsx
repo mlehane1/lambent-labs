@@ -21,6 +21,7 @@ import DynamicBlogPost from './pages/DynamicBlogPost.jsx'
 import AdsLanding from './pages/AdsLanding.jsx'
 import Websites from './pages/Websites.jsx'
 import BuildPreview from './pages/BuildPreview.jsx'
+import DataExtraction from './pages/DataExtraction.jsx'
 import PrivacyPolicy from './pages/PrivacyPolicy.jsx'
 import CookieConsent from './components/CookieConsent.jsx'
 import './index.css'
@@ -46,6 +47,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           <Route path="/solutions/white-glove" element={<WhiteGlove />} />
           <Route path="/solutions/franchise" element={<Franchise />} />
           <Route path="/solutions/websites" element={<Websites />} />
+          <Route path="/solutions/data-extraction" element={<DataExtraction />} />
           <Route path="/build" element={<BuildPreview />} />
           <Route path="/get-quote" element={<AdsLanding />} />
           <Route path="/blog" element={<BlogIndex />} />

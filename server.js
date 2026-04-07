@@ -734,7 +734,7 @@ ${inspirationUrl ? '  - The client admires ' + inspirationUrl + ' — try to mat
 app.get('/sitemap.xml', async (req, res) => {
   const staticPages = [
     '', '/solutions/case-management', '/solutions/small-business',
-    '/solutions/white-glove', '/solutions/franchise', '/solutions/websites',
+    '/solutions/white-glove', '/solutions/franchise', '/solutions/websites', '/solutions/data-extraction',
     '/build', '/blog', '/privacy',
     '/blog/custom-software-cost', '/blog/build-vs-buy',
     '/blog/ai-accelerated-development', '/blog/franchise-software-signs',
@@ -809,6 +809,10 @@ const PAGE_SEO = {
   '/solutions/white-glove': {
     title: 'White-Glove Software Development | doITbetter labs',
     description: 'Premium custom software development with dedicated project management, priority support, and hands-on collaboration.',
+  },
+  '/solutions/data-extraction': {
+    title: 'Automated Invoice & Document Data Extraction | doITbetter labs',
+    description: 'Eliminate manual data entry from invoices, purchase orders, and vendor documents. AI-powered extraction with reusable templates. Built for fleet management, logistics, and any business drowning in paper.',
   },
   '/build': {
     title: 'Preview Your Project — Free AI-Powered Site Preview | doITbetter labs',

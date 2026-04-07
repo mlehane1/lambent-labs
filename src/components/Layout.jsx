@@ -9,7 +9,7 @@ const navLinks = [
     label: "Solutions",
     children: [
       { label: "$199 Websites", to: "/solutions/websites" },
-      { label: "Small Business", to: "/solutions/small-business" },
+      { label: "SMB Solutions", to: "/solutions/small-business" },
       { label: "Case Management", to: "/solutions/case-management" },
       { label: "Franchise", to: "/solutions/franchise" },
       { label: "White-Glove", to: "/solutions/white-glove" },

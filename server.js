@@ -72,37 +72,109 @@ async function enrichIP(ip) {
 
 // ── Slack webhook for high-value visitor alerts ─────────────────────────────
 const SLACK_WEBHOOK_URL = process.env.SLACK_WEBHOOK_URL || ''
-const HIGH_VALUE_PAGES = ['/solutions/', '/build', '/contact']
-const ISP_KEYWORDS = /comcast|spectrum|verizon|at.t|t-mobile|cox|charter|xfinity|centurylink|frontier|windstream|optimum|mediacom|suddenlink|residential/i
 
-async function sendSlackAlert(visitor) {
+// Companies that are always bots/infrastructure — never alert
+const BOT_COMPANIES = /cloudflare|amazon\.com|amazon tech|aws|google|microsoft|digitalocean|linode|vultr|hetzner|ovh|oracle|akamai|fastly|rackspace|ibm|heroku|railway|netlify|vercel|render|fly\.io|github|gitlab|bitbucket|semrush|ahrefs|moz\.com|hubspot|datadog|newrelic|pingdom|uptimerobot|statuspage/i
+
+// Residential ISPs — not identifiable, don't alert
+const ISP_KEYWORDS = /comcast|spectrum|verizon|at.t|t-mobile|cox|charter|xfinity|centurylink|frontier|windstream|optimum|mediacom|suddenlink|residential|cable|telecom|broadband|wireless|mobile|cellular/i
+
+// Pages that signal real buying intent
+const INTENT_PAGES = ['/solutions/', '/build', '/get-quote', '/blog/custom-software-cost', '/blog/build-vs-buy']
+
+// Track which sessions we've already alerted on
+const alertedSessions = new Set()
+
+// Pending sessions waiting for enough signal before alerting
+// Map<sessionId, { timer, events[], visitor }>
+const pendingSessions = new Map()
+
+function isRealBusiness(company) {
+  if (!company) return false
+  if (BOT_COMPANIES.test(company)) return false
+  if (ISP_KEYWORDS.test(company)) return false
+  return true
+}
+
+function evaluateSession(sessionId) {
+  const session = pendingSessions.get(sessionId)
+  if (!session || alertedSessions.has(sessionId)) return
+
+  const { visitor, events } = session
+  const isBusiness = isRealBusiness(visitor.company)
+  const pages = [...new Set(events.filter(e => e.event_type === 'page_view').map(e => e.page_path))]
+  const hasIntentPage = pages.some(p => INTENT_PAGES.some(ip => p.startsWith(ip)))
+  const hasFormEvent = events.some(e => e.event_type === 'form_start' || e.event_type === 'form_submit')
+  const hasDeepScroll = events.some(e => e.event_type === 'scroll_depth' && e.event_data?.depth >= 75)
+  const ctaClicks = events.filter(e => e.event_type === 'cta_click')
+
+  // Score the session
+  let score = 0
+  let reasons = []
+  if (isBusiness) { score += 3; reasons.push('identified business') }
+  if (hasIntentPage) { score += 3; reasons.push('viewed intent page') }
+  if (pages.length >= 2) { score += 2; reasons.push(`${pages.length} pages`) }
+  if (hasFormEvent) { score += 4; reasons.push('interacted with form') }
+  if (hasDeepScroll) { score += 1; reasons.push('deep scroll') }
+  if (ctaClicks.length > 0) { score += 2; reasons.push(`${ctaClicks.length} CTA click(s)`) }
+  if (visitor.utm_source) { score += 1; reasons.push('came from campaign') }
+  if (visitor.referrer && !visitor.referrer.includes('doitbetterlabs.com')) { score += 1; reasons.push('external referrer') }
+
+  // Only alert if score >= 4 (real engagement, not a drive-by)
+  if (score < 4) return
+
+  alertedSessions.add(sessionId)
+  pendingSessions.delete(sessionId)
+  sendSlackAlert(visitor, events, pages, reasons, score)
+}
+
+async function sendSlackAlert(visitor, events, pages, reasons, score) {
   if (!SLACK_WEBHOOK_URL) return
-  const isHighValue = HIGH_VALUE_PAGES.some(p => visitor.first_page.startsWith(p))
-  const isBusiness = visitor.company && !ISP_KEYWORDS.test(visitor.company)
 
-  // Only alert for business visitors OR high-value page visits
-  if (!isBusiness && !isHighValue) return
+  const journey = pages.map((p, i) => `${i + 1}. ${p}`).join('\n')
+  const ctaClicks = events.filter(e => e.event_type === 'cta_click').map(e => e.event_data?.cta).filter(Boolean)
+  const formEvents = events.filter(e => e.event_type === 'form_start' || e.event_type === 'form_submit')
+  const scoreEmoji = score >= 8 ? '🔥' : score >= 6 ? '⭐' : '👀'
 
   const blocks = [
     {
       type: 'header',
-      text: { type: 'plain_text', text: isBusiness ? '🏢 Business Visitor' : '👀 High-Value Page Visit' }
+      text: { type: 'plain_text', text: `${scoreEmoji} Engaged Visitor (score: ${score})` }
     },
     {
       type: 'section',
       fields: [
-        { type: 'mrkdwn', text: `*Company:*\n${visitor.company || 'Unknown (residential)'}` },
-        { type: 'mrkdwn', text: `*Page:*\n${visitor.first_page}` },
-        { type: 'mrkdwn', text: `*Location:*\n${[visitor.city, visitor.region, visitor.country].filter(Boolean).join(', ')}` },
+        { type: 'mrkdwn', text: `*Company:*\n${visitor.company || '_Unknown_'}` },
+        { type: 'mrkdwn', text: `*Location:*\n${[visitor.city, visitor.region, visitor.country].filter(Boolean).join(', ') || '_Unknown_'}` },
         { type: 'mrkdwn', text: `*Referrer:*\n${visitor.referrer || 'Direct'}` },
+        { type: 'mrkdwn', text: `*Why alerting:*\n${reasons.join(', ')}` },
       ]
+    },
+    {
+      type: 'section',
+      text: { type: 'mrkdwn', text: `*Page journey:*\n${journey}` }
     }
   ]
+
+  if (ctaClicks.length > 0) {
+    blocks.push({
+      type: 'section',
+      text: { type: 'mrkdwn', text: `*CTA clicks:* ${ctaClicks.join(', ')}` }
+    })
+  }
+
+  if (formEvents.length > 0) {
+    const formSummary = formEvents.map(e => `${e.event_type === 'form_submit' ? '✅ Submitted' : '✏️ Started'}: ${e.event_data?.form || 'form'}`).join('\n')
+    blocks.push({
+      type: 'section',
+      text: { type: 'mrkdwn', text: `*Form activity:*\n${formSummary}` }
+    })
+  }
 
   if (visitor.utm_source) {
     blocks.push({
       type: 'context',
-      elements: [{ type: 'mrkdwn', text: `UTM: ${visitor.utm_source}/${visitor.utm_medium || '—'}/${visitor.utm_campaign || '—'}` }]
+      elements: [{ type: 'mrkdwn', text: `UTM: ${visitor.utm_source} / ${visitor.utm_medium || '—'} / ${visitor.utm_campaign || '—'}` }]
     })
   }
 
@@ -116,6 +188,43 @@ async function sendSlackAlert(visitor) {
     console.error('[slack-alert]', err.message)
   }
 }
+
+// Called from /api/track — accumulates events and evaluates after a delay
+function trackSessionEvent(sessionId, event, visitor) {
+  if (!SLACK_WEBHOOK_URL || alertedSessions.has(sessionId)) return
+
+  let session = pendingSessions.get(sessionId)
+  if (!session) {
+    session = { visitor, events: [], timer: null }
+    pendingSessions.set(sessionId, session)
+  }
+  if (visitor) session.visitor = { ...session.visitor, ...visitor }
+  session.events.push(event)
+
+  // Re-evaluate on every event; also set a 2-min timeout to catch
+  // sessions that are "good enough" even if no more events come in
+  evaluateSession(sessionId)
+  clearTimeout(session.timer)
+  session.timer = setTimeout(() => {
+    evaluateSession(sessionId)
+    pendingSessions.delete(sessionId) // clean up either way
+  }, 2 * 60 * 1000)
+}
+
+// Clean up stale pending sessions every 10 minutes
+setInterval(() => {
+  const cutoff = Date.now() - 10 * 60 * 1000
+  for (const [id, s] of pendingSessions) {
+    if (s.events.length && s.events[s.events.length - 1]._ts < cutoff) {
+      pendingSessions.delete(id)
+    }
+  }
+  // Cap alertedSessions memory (keep last 5000)
+  if (alertedSessions.size > 5000) {
+    const iter = alertedSessions.values()
+    for (let i = 0; i < 2500; i++) { alertedSessions.delete(iter.next().value) }
+  }
+}, 10 * 60 * 1000)
 
 async function logVisitor(sessionId, ip, req, query) {
   if (!supabase) return
@@ -136,8 +245,8 @@ async function logVisitor(sessionId, ip, req, query) {
     }
     await supabase.from('visitors').insert(visitor)
 
-    // Fire Slack alert in background (don't block response)
-    sendSlackAlert(visitor)
+    // Seed the session tracker with visitor info (alert fires later based on behavior)
+    trackSessionEvent(sessionId, { event_type: 'page_view', page_path: req.path, event_data: {}, _ts: Date.now() }, visitor)
   } catch (err) {
     console.error('[visitor-log]', err.message)
   }
@@ -232,6 +341,9 @@ app.post('/api/track', async (req, res) => {
   } catch (err) {
     console.error('[track]', err.message)
   }
+
+  // Feed event into Slack alert system
+  trackSessionEvent(session_id, { event_type, page_path, event_data: event_data || {}, _ts: Date.now() }, null)
 
   res.status(204).end()
 })

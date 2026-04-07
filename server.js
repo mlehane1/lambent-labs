@@ -387,7 +387,7 @@ app.get('/api/admin/blog', requireAdmin, async (req, res) => {
   if (!supabase) return res.json([])
   const { data, error } = await supabase
     .from('blog_posts')
-    .select('id, slug, title, status, excerpt, tags, read_time, published_at, created_at, updated_at')
+    .select('id, slug, title, status, excerpt, tags, read_time, published_at, scheduled_at, created_at, updated_at')
     .order('updated_at', { ascending: false })
   if (error) return res.status(500).json({ error: error.message })
   res.json(data || [])

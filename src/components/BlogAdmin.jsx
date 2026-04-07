@@ -243,10 +243,10 @@ export default function BlogAdmin({ onClose, adminPassword }) {
                       <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
                         <span style={{
                           fontSize: "0.68rem", fontWeight: 600, padding: "2px 8px", borderRadius: 4,
-                          background: p.status === "published" ? "rgba(21,203,136,0.15)" : "rgba(139,92,246,0.15)",
-                          color: p.status === "published" ? "var(--accent)" : "#8B5CF6",
+                          background: p.status === "published" ? "rgba(21,203,136,0.15)" : p.status === "scheduled" ? "rgba(234,179,8,0.15)" : "rgba(139,92,246,0.15)",
+                          color: p.status === "published" ? "var(--accent)" : p.status === "scheduled" ? "#CA8A04" : "#8B5CF6",
                         }}>
-                          {p.status}
+                          {p.status}{p.status === "scheduled" && p.scheduled_at ? " — " + new Date(p.scheduled_at).toLocaleDateString() : ""}
                         </span>
                         <span style={{ color: "var(--text-hi)", fontFamily: "'Outfit', sans-serif", fontWeight: 600, fontSize: "0.92rem", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                           {p.title}
@@ -342,13 +342,45 @@ export default function BlogAdmin({ onClose, adminPassword }) {
                   </div>
                 )}
 
+                {/* Schedule */}
+                <div style={{
+                  padding: 12, background: "rgba(139,92,246,0.06)",
+                  border: "1px solid rgba(139,92,246,0.15)", borderRadius: 10,
+                }}>
+                  <label style={labelStyle}>Schedule Publish Date (optional)</label>
+                  <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                    <input
+                      type="datetime-local"
+                      value={editingPost.scheduled_at ? editingPost.scheduled_at.slice(0, 16) : ""}
+                      onChange={(e) => setEditingPost({ ...editingPost, scheduled_at: e.target.value ? new Date(e.target.value).toISOString() : null })}
+                      style={{ ...fieldStyle, flex: 1 }}
+                    />
+                    {editingPost.scheduled_at && (
+                      <button onClick={() => setEditingPost({ ...editingPost, scheduled_at: null })} style={{ ...btnStyle("transparent", "1px solid var(--border)"), fontSize: "0.75rem" }}>
+                        Clear
+                      </button>
+                    )}
+                  </div>
+                  {editingPost.status === "scheduled" && editingPost.scheduled_at && (
+                    <p style={{ fontSize: "0.75rem", color: "#8B5CF6", margin: "6px 0 0", fontFamily: "'DM Sans', sans-serif" }}>
+                      Scheduled for {new Date(editingPost.scheduled_at).toLocaleString()}
+                    </p>
+                  )}
+                </div>
+
                 {/* Actions */}
-                <div style={{ display: "flex", gap: 10, paddingTop: 8 }}>
+                <div style={{ display: "flex", gap: 10, paddingTop: 8, flexWrap: "wrap" }}>
                   <button onClick={() => savePost("draft")} disabled={saving} style={btnStyle("rgba(21,88,203,0.4)", "1px solid rgba(21,88,203,0.5)")}>
                     {saving ? "Saving..." : "Save Draft"}
                   </button>
+                  <button onClick={() => {
+                    if (!editingPost.scheduled_at) { alert("Set a date above first"); return; }
+                    savePost("scheduled");
+                  }} disabled={saving} style={btnStyle("rgba(139,92,246,0.4)", "1px solid rgba(139,92,246,0.5)")}>
+                    {saving ? "Scheduling..." : "Schedule"}
+                  </button>
                   <button onClick={() => savePost("published")} disabled={saving} style={btnStyle("var(--accent)")}>
-                    {saving ? "Publishing..." : "Publish"}
+                    {saving ? "Publishing..." : "Publish Now"}
                   </button>
                   <button onClick={() => setPreview(!preview)} style={btnStyle("transparent", "1px solid var(--border)")}>
                     {preview ? "Hide Preview" : "Preview"}

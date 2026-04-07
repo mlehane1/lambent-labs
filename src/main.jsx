@@ -24,6 +24,7 @@ import BuildPreview from './pages/BuildPreview.jsx'
 import DataExtraction from './pages/DataExtraction.jsx'
 import PrivacyPolicy from './pages/PrivacyPolicy.jsx'
 import CookieConsent from './components/CookieConsent.jsx'
+import ThemeSwitcher from './components/ThemeSwitcher.jsx'
 import './index.css'
 
 function PageViewTracker() {
@@ -70,6 +71,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         </Route>
       </Routes>
       <CookieConsent />
+      <ThemeSwitcher />
     </BrowserRouter>
   </React.StrictMode>
 )

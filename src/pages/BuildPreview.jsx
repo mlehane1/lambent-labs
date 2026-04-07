@@ -287,6 +287,8 @@ export default function BuildPreview() {
   const [logoUrl, setLogoUrl] = useState("");
   const [mood, setMood] = useState("");
   const [inspirationUrl, setInspirationUrl] = useState("");
+  const [gateEmail, setGateEmail] = useState("");
+  const [gateEmailCaptured, setGateEmailCaptured] = useState(false);
 
   // AI-generated preview data
   const [aiData, setAiData] = useState(null);
@@ -363,11 +365,23 @@ export default function BuildPreview() {
 
   async function handleGenerate(e) {
     e.preventDefault();
+    if (!gateEmailCaptured) return; // safety check
     setAiError(false);
     setFade(false);
     await new Promise(r => setTimeout(r, 300));
     setState("loading");
     setFade(true);
+
+    // Save email as a lead (fire-and-forget)
+    try {
+      const leadMsg = "[Build Preview] " + businessName + " (" + industry + ") — " + needDescription.slice(0, 200);
+      fetch(SUPABASE_URL + "/rest/v1/leads", {
+        method: "POST",
+        headers: { apikey: SUPABASE_ANON_KEY, Authorization: "Bearer " + SUPABASE_ANON_KEY, "Content-Type": "application/json", Prefer: "return=minimal" },
+        body: JSON.stringify({ name: businessName, email: gateEmail, message: leadMsg }),
+      });
+      sendLeadNotification(businessName, gateEmail, leadMsg, "Build Preview Gate");
+    } catch (_) { /* fire-and-forget */ }
 
     try {
       const res = await fetch("/api/generate-preview", {
@@ -828,7 +842,51 @@ export default function BuildPreview() {
               />
             </div>
 
-            <button type="submit" style={btnPrimary({ alignSelf: "center", marginTop: "0.5rem" })}>
+            {/* Email gate */}
+            <div
+              style={{
+                padding: "1.25rem 1.5rem",
+                background: "linear-gradient(135deg, rgba(21,88,203,0.06), rgba(21,203,136,0.04))",
+                border: "1px solid rgba(21,88,203,0.15)",
+                borderRadius: 12,
+                marginTop: "0.5rem",
+              }}
+            >
+              <label style={{ ...labelStyle, marginBottom: 4 }}>
+                Your email address
+              </label>
+              <p
+                style={{
+                  fontFamily: "'DM Sans', sans-serif",
+                  fontSize: "0.8rem",
+                  color: "var(--text-lo)",
+                  margin: "0 0 0.75rem",
+                  lineHeight: 1.5,
+                }}
+              >
+                We&#39;ll send your preview results here and follow up with a free consultation if you&#39;re interested.
+              </p>
+              <div style={{ display: "flex", gap: "0.75rem", alignItems: "center" }}>
+                <input
+                  required
+                  type="email"
+                  value={gateEmail}
+                  onChange={(e) => { setGateEmail(e.target.value); setGateEmailCaptured(e.target.value.includes("@") && e.target.value.includes(".")); }}
+                  placeholder="you@company.com"
+                  style={inputStyle({ flex: 1, margin: 0 })}
+                />
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={!gateEmailCaptured}
+              style={{
+                ...btnPrimary({ alignSelf: "center", marginTop: "0.5rem" }),
+                opacity: gateEmailCaptured ? 1 : 0.45,
+                cursor: gateEmailCaptured ? "pointer" : "not-allowed",
+              }}
+            >
               Generate Preview
             </button>
           </form>

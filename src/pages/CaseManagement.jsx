@@ -61,44 +61,46 @@ const ctaBtn = {
 
 const painPoints = [
   {
-    icon: "📋",
-    title: "Drowning in Spreadsheets",
-    desc: "Your team is tracking cases across Excel files, email threads, and sticky notes. Things slip through the cracks. Nobody knows what's current. One wrong sort and you lose a week of work.",
+    icon: "🔀",
+    title: "Your Process Doesn't Match Their Process",
+    desc: "Every department has a workflow. Every vendor has a workflow. Every client has a workflow. But none of them were designed to talk to each other. You end up bridging the gap manually — copying data between systems, reformatting spreadsheets, chasing status updates across three different portals. The work isn't hard. It's just relentless, and it never stops.",
+  },
+  {
+    icon: "🌀",
+    title: "Lost in the Cycle",
+    desc: "Most processes aren't linear. They branch. They loop. A case gets approved, then sent back for revision, then escalated, then put on hold pending vendor input, then reactivated with new requirements. Your spreadsheet has no idea what state anything is in. Neither does your team — not without digging through email chains and Slack threads to reconstruct the timeline.",
   },
   {
     icon: "🧩",
-    title: "Off-the-Shelf Doesn't Fit",
-    desc: "You're paying enterprise prices for a tool built for someone else's workflow. Half the features you'll never touch. The one thing you actually need? \"Submit a feature request.\"",
-  },
-  {
-    icon: "🔍",
-    title: "No Visibility",
-    desc: "Your manager asks how many cases are open. You spend 20 minutes pulling numbers. You can't see bottlenecks, can't spot trends, and can't report on outcomes without a manual deep dive.",
+    title: "Too Many Handoffs, No Single Source of Truth",
+    desc: "Your internal team hands a case to a vendor. The vendor updates their system but not yours. Your client calls asking for status and nobody has a straight answer. Each handoff is a chance for something to get lost, delayed, or duplicated. And when things go wrong, nobody can trace where the breakdown happened.",
   },
 ];
 
 const features = [
-  { icon: "📝", label: "Custom intake forms and workflows", desc: "Forms that match your exact process — no workarounds, no \"just put it in the notes field.\"" },
-  { icon: "👁️", label: "Role-based dashboards", desc: "Managers see the big picture. Caseworkers see their caseload. Clients see their status. Everyone gets exactly what they need." },
-  { icon: "🔔", label: "Automated status updates & notifications", desc: "Cases move forward automatically. Stakeholders get notified. Nothing sits in limbo." },
-  { icon: "📁", label: "Document management & e-signatures", desc: "Upload, organize, and sign documents without leaving the platform. No more email attachments." },
-  { icon: "📊", label: "Reporting and analytics", desc: "Real-time dashboards, exportable reports, and trend analysis — built around the metrics that matter to you." },
-  { icon: "🔗", label: "API integrations with existing systems", desc: "Connect to your CRM, billing system, email, calendar — whatever you're already using." },
+  { icon: "🔀", label: "Choose-your-own-adventure workflows", desc: "Processes branch, loop, and change direction. We build workflows that handle every path — approvals, rejections, escalations, re-reviews, holds, and edge cases. Your process, no matter how many endings it has." },
+  { icon: "🔗", label: "Vendor integration — your way", desc: "Option A: We build your vendors their own intake forms and portals so they update your system directly. Option B: We integrate with their existing systems via API and pull updates automatically. Option C: We build a hybrid — however your vendor relationship actually works." },
+  { icon: "📝", label: "Custom intake forms per stakeholder", desc: "Different intake forms for different sources — internal requests, vendor submissions, client applications, partner referrals. Each one captures exactly the data that workflow needs. No generic catch-all forms." },
+  { icon: "📊", label: "Real-time status across every cycle", desc: "Every case, every iteration, every branch — visible in one dashboard. See what's in progress, what's stuck, what's waiting on a vendor, and what just completed. No more digging through email to figure out where things stand." },
+  { icon: "🔔", label: "Automated handoffs and escalations", desc: "When a step completes, the next person (or system) is notified automatically. If something sits too long, it escalates. If a vendor misses a deadline, you know immediately — not two weeks later." },
+  { icon: "🔄", label: "Data exchange without the copy-paste", desc: "Move data between your systems and your vendors' systems without manual re-entry. CSV imports, API syncs, webhook triggers, scheduled pulls — whatever the integration needs to look like." },
+  { icon: "📁", label: "Document flow tied to process state", desc: "The right documents show up at the right stage. Contracts go out when a case is approved. Compliance docs get requested when onboarding kicks off. Nothing gets missed because the process itself manages the paperwork." },
+  { icon: "🛡️", label: "Audit trail for every decision", desc: "Every state change, every handoff, every approval and rejection — logged with who, when, and why. When an auditor or a manager asks what happened, you have the answer in seconds." },
 ];
 
 const industries = [
-  { icon: "⚖️", name: "Law Firms", desc: "Matter tracking, client portals, deadline management, and billing integration." },
-  { icon: "🛡️", name: "Insurance", desc: "Claims processing, adjuster workflows, policy lookups, and compliance tracking." },
-  { icon: "🏥", name: "Healthcare", desc: "Patient case coordination, referral management, and HIPAA-compliant documentation." },
-  { icon: "🤝", name: "Social Services", desc: "Client intake, service plans, outcome tracking, and multi-agency collaboration." },
-  { icon: "🏛️", name: "Government", desc: "Constituent case tracking, FOIA requests, permitting workflows, and audit trails." },
-  { icon: "🏢", name: "Property Management", desc: "Maintenance requests, tenant communications, lease tracking, and vendor coordination." },
+  { icon: "🚛", name: "Fleet & Logistics", desc: "Vendor management across maintenance shops, fuel suppliers, parts distributors. Track work orders, reconcile invoices, manage compliance across dozens of vendors with different processes." },
+  { icon: "⚖️", name: "Law Firms", desc: "Matter tracking that handles branching workflows — discovery, depositions, motions, settlements. Each case takes a different path. Your system should handle all of them." },
+  { icon: "🛡️", name: "Insurance", desc: "Claims that branch into investigations, subrogation, appeals, and settlements. Vendor coordination with adjusters, repair shops, and medical providers — each on their own timeline." },
+  { icon: "🏥", name: "Healthcare", desc: "Patient care coordination across providers, labs, pharmacies, and insurers. Referral workflows that branch based on diagnosis, authorization, and specialist availability." },
+  { icon: "🏗️", name: "Construction & Trades", desc: "Subcontractor management, permit workflows, inspection cycles, change orders. Every project is a different path through the same set of processes." },
+  { icon: "🏛️", name: "Government & Compliance", desc: "Multi-agency workflows where cases move between departments, require vendor input, and branch based on regulatory requirements. Full audit trails for every decision." },
 ];
 
 const stats = [
   { value: "2 weeks", label: "to first working prototype" },
-  { value: "60%", label: "less than enterprise CM licenses" },
-  { value: "100%", label: "custom to your workflow" },
+  { value: "60%", label: "less than enterprise licenses" },
+  { value: "100%", label: "built around your process" },
   { value: "0", label: "shelfware risk" },
 ];
 
@@ -107,7 +109,7 @@ export default function CaseManagement() {
   const [status, setStatus] = useState("idle"); // idle | sending | sent | error
 
   useEffect(() => {
-    document.title = "Custom Case Management Software | doITbetter labs";
+    document.title = "Custom Process & Case Management Software | doITbetter labs";
     let meta = document.querySelector('meta[name="description"]');
     if (!meta) {
       meta = document.createElement("meta");
@@ -115,7 +117,7 @@ export default function CaseManagement() {
       document.head.appendChild(meta);
     }
     meta.content =
-      "Custom case management software built for law firms, insurance, healthcare, social services, and government agencies. Replace spreadsheets with a system designed around your workflow.";
+      "Your process doesn't fit their process. We build custom workflow and case management software that handles branching processes, vendor integration, and multi-stakeholder handoffs — so nothing gets lost.";
   }, []);
 
   async function handleSubmit(e) {
@@ -217,9 +219,9 @@ export default function CaseManagement() {
             margin: "0 auto 1.5rem",
           }}
         >
-          Custom Case Management Software{" "}
+          Your Process Has{" "}
           <span style={gradientText}>
-            Built for How You Actually Work
+            a Dozen Endings. Your Software Should Handle All of Them.
           </span>
         </h1>
 
@@ -227,13 +229,14 @@ export default function CaseManagement() {
           style={{
             ...body,
             fontSize: "1.15rem",
-            maxWidth: 620,
+            maxWidth: 660,
             margin: "0 auto 2.5rem",
           }}
         >
-          Ditch the spreadsheets. Stop forcing your process into off-the-shelf software.
-          We build case management systems that fit your workflow from day one — not the
-          other way around.
+          Every department, every vendor, every client has their own process. What happens when
+          those processes don&#39;t align? You end up bridging the gap manually. We build
+          workflow and case management systems that handle the branching, the handoffs, and the
+          chaos — so your team can stop managing spreadsheets and start managing outcomes.
         </p>
 
         <a href="#contact-cta" style={ctaBtn}>
@@ -252,7 +255,7 @@ export default function CaseManagement() {
             marginBottom: "0.75rem",
           }}
         >
-          Sound Familiar?
+          Where Processes Break Down
         </h2>
         <p
           style={{
@@ -263,8 +266,8 @@ export default function CaseManagement() {
             fontSize: "1.05rem",
           }}
         >
-          These are the problems we hear every week from teams still running on
-          duct-taped systems.
+          The gap between your process and everyone else&#39;s process is where
+          things break, get lost, or cost money.
         </p>
 
         <div
@@ -276,7 +279,7 @@ export default function CaseManagement() {
         >
           {painPoints.map((p) => (
             <div key={p.title} style={card}>
-              <div style={{ fontSize: "2rem", marginBottom: "0.75rem" }}>{p.icon}</div>
+              <div style={{ fontSize: "2rem", marginBottom: "0.75rem", textAlign: "center" }}>{p.icon}</div>
               <h3
                 style={{
                   ...headingSm,
@@ -304,19 +307,20 @@ export default function CaseManagement() {
             marginBottom: "0.75rem",
           }}
         >
-          What We Build
+          How We Solve It
         </h2>
         <p
           style={{
             ...body,
             textAlign: "center",
-            maxWidth: 560,
+            maxWidth: 620,
             margin: "0 auto 3rem",
             fontSize: "1.05rem",
           }}
         >
-          Every system is custom, but here's what a typical case management
-          platform includes.
+          We don&#39;t give you a rigid tool and tell you to adjust. We build
+          a system around your actual process — every branch, every handoff,
+          every vendor interaction.
         </p>
 
         <div
@@ -389,7 +393,7 @@ export default function CaseManagement() {
               marginBottom: "0.75rem",
             }}
           >
-            Industries We Serve
+            Every Industry Has This Problem
           </h2>
           <p
             style={{

@@ -374,7 +374,7 @@ export default function SmallBusiness() {
                 }),
               }}
             >
-              <div style={{ fontSize: "1.8rem", marginBottom: "0.75rem" }}>{ex.icon}</div>
+              <div style={{ fontSize: "1.8rem", marginBottom: "0.75rem", textAlign: "center" }}>{ex.icon}</div>
               <h3
                 style={{
                   ...heading({ fontSize: "1.05rem", fontWeight: 700, marginBottom: "0.5rem" }),

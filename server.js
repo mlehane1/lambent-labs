@@ -796,8 +796,8 @@ const PAGE_SEO = {
     }
   },
   '/solutions/case-management': {
-    title: 'Custom Case Management Software | doITbetter labs',
-    description: 'Replace spreadsheets and clunky tools with custom case management software tailored to your workflow. Built fast, priced fair.',
+    title: 'Custom Process & Case Management Software | doITbetter labs',
+    description: 'Your process doesn\'t fit their process. We build custom workflow and case management software that handles branching processes, vendor integration, and multi-stakeholder handoffs.',
   },
   '/solutions/small-business': {
     title: 'Small Business Software Solutions | doITbetter labs',

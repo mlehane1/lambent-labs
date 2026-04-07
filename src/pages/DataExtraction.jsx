@@ -291,7 +291,7 @@ export default function DataExtraction() {
         >
           {painPoints.map((p) => (
             <div key={p.title} style={card}>
-              <div style={{ fontSize: "2rem", marginBottom: "0.75rem" }}>{p.icon}</div>
+              <div style={{ fontSize: "2rem", marginBottom: "0.75rem", textAlign: "center" }}>{p.icon}</div>
               <h3
                 style={{
                   ...headingSm,

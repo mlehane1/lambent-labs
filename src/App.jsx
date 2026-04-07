@@ -529,7 +529,7 @@ export default function App() {
                   {[
                     { label: "$199 Websites", to: "/solutions/websites" },
                     { label: "SMB Solutions", to: "/solutions/small-business" },
-                    { label: "Case Management", to: "/solutions/case-management" },
+                    { label: "Process & Case Mgmt", to: "/solutions/case-management" },
                     { label: "Data Extraction", to: "/solutions/data-extraction" },
                     { label: "Franchise", to: "/solutions/franchise" },
                     { label: "White-Glove", to: "/solutions/white-glove" },
@@ -611,7 +611,7 @@ export default function App() {
                 {[
                   { label: "$199 Websites", to: "/solutions/websites" },
                   { label: "SMB Solutions", to: "/solutions/small-business" },
-                  { label: "Case Management", to: "/solutions/case-management" },
+                  { label: "Process & Case Mgmt", to: "/solutions/case-management" },
                   { label: "Data Extraction", to: "/solutions/data-extraction" },
                   { label: "Franchise", to: "/solutions/franchise" },
                   { label: "White-Glove", to: "/solutions/white-glove" },

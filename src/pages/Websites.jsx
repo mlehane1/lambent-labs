@@ -523,7 +523,7 @@ export default function Websites() {
                 transition: "border-color 0.25s, transform 0.25s",
               })}
             >
-              <div style={{ fontSize: "1.8rem", marginBottom: "0.75rem" }}>
+              <div style={{ fontSize: "1.8rem", marginBottom: "0.75rem", textAlign: "center" }}>
                 {item.icon}
               </div>
               <h3

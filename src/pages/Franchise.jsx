@@ -310,7 +310,7 @@ export default function Franchise() {
           >
             {painPoints.map((p) => (
               <div key={p.title} style={cardBase}>
-                <span style={{ fontSize: "2rem", display: "block", marginBottom: "1rem" }}>{p.icon}</span>
+                <span style={{ fontSize: "2rem", display: "block", marginBottom: "1rem", textAlign: "center" }}>{p.icon}</span>
                 <h3
                   style={{
                     ...headingStyle,
@@ -456,7 +456,7 @@ export default function Franchise() {
                   transition: "border-color 0.25s",
                 }}
               >
-                <span style={{ fontSize: "2rem", display: "block", marginBottom: "0.75rem" }}>{ind.icon}</span>
+                <span style={{ fontSize: "2rem", display: "block", marginBottom: "0.75rem", textAlign: "center" }}>{ind.icon}</span>
                 <h4
                   style={{
                     ...headingStyle,

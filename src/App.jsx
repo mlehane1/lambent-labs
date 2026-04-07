@@ -1092,7 +1092,7 @@ export default function App() {
           paddingTop: "24px", borderTop: "1px solid rgba(12,52,121,0.15)",
           display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: "8px",
         }}>
-          <span>&copy; {new Date().getFullYear()} doITbetter labs. All rights reserved.</span>
+          <span>&copy; {new Date().getFullYear()} doITbetter labs. All rights reserved. | <Link to="/privacy" style={{ color: "inherit", textDecoration: "underline" }}>Privacy Policy</Link></span>
           <span style={{ fontSize: "0.72rem", opacity: 0.5 }}>React &middot; Node.js &middot; PostgreSQL</span>
         </div>
       </footer>

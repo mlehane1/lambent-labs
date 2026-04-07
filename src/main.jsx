@@ -21,6 +21,8 @@ import DynamicBlogPost from './pages/DynamicBlogPost.jsx'
 import AdsLanding from './pages/AdsLanding.jsx'
 import Websites from './pages/Websites.jsx'
 import BuildPreview from './pages/BuildPreview.jsx'
+import PrivacyPolicy from './pages/PrivacyPolicy.jsx'
+import CookieConsent from './components/CookieConsent.jsx'
 import './index.css'
 
 function PageViewTracker() {
@@ -56,8 +58,10 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           <Route path="/blog/ai-cost-collapse" element={<AICostCollapse />} />
           <Route path="/blog/ai-agents-guide" element={<AIAgentsGuide />} />
           <Route path="/blog/:slug" element={<DynamicBlogPost />} />
+          <Route path="/privacy" element={<PrivacyPolicy />} />
         </Route>
       </Routes>
+      <CookieConsent />
     </BrowserRouter>
   </React.StrictMode>
 )

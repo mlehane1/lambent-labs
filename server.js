@@ -70,11 +70,58 @@ async function enrichIP(ip) {
   } catch { return {} }
 }
 
+// ── Slack webhook for high-value visitor alerts ─────────────────────────────
+const SLACK_WEBHOOK_URL = process.env.SLACK_WEBHOOK_URL || ''
+const HIGH_VALUE_PAGES = ['/solutions/', '/build', '/contact']
+const ISP_KEYWORDS = /comcast|spectrum|verizon|at.t|t-mobile|cox|charter|xfinity|centurylink|frontier|windstream|optimum|mediacom|suddenlink|residential/i
+
+async function sendSlackAlert(visitor) {
+  if (!SLACK_WEBHOOK_URL) return
+  const isHighValue = HIGH_VALUE_PAGES.some(p => visitor.first_page.startsWith(p))
+  const isBusiness = visitor.company && !ISP_KEYWORDS.test(visitor.company)
+
+  // Only alert for business visitors OR high-value page visits
+  if (!isBusiness && !isHighValue) return
+
+  const blocks = [
+    {
+      type: 'header',
+      text: { type: 'plain_text', text: isBusiness ? '🏢 Business Visitor' : '👀 High-Value Page Visit' }
+    },
+    {
+      type: 'section',
+      fields: [
+        { type: 'mrkdwn', text: `*Company:*\n${visitor.company || 'Unknown (residential)'}` },
+        { type: 'mrkdwn', text: `*Page:*\n${visitor.first_page}` },
+        { type: 'mrkdwn', text: `*Location:*\n${[visitor.city, visitor.region, visitor.country].filter(Boolean).join(', ')}` },
+        { type: 'mrkdwn', text: `*Referrer:*\n${visitor.referrer || 'Direct'}` },
+      ]
+    }
+  ]
+
+  if (visitor.utm_source) {
+    blocks.push({
+      type: 'context',
+      elements: [{ type: 'mrkdwn', text: `UTM: ${visitor.utm_source}/${visitor.utm_medium || '—'}/${visitor.utm_campaign || '—'}` }]
+    })
+  }
+
+  try {
+    await fetch(SLACK_WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ blocks }),
+    })
+  } catch (err) {
+    console.error('[slack-alert]', err.message)
+  }
+}
+
 async function logVisitor(sessionId, ip, req, query) {
   if (!supabase) return
   try {
     const enriched = await enrichIP(ip)
-    await supabase.from('visitors').insert({
+    const visitor = {
       session_id: sessionId,
       ip,
       user_agent: req.headers['user-agent'] || null,
@@ -86,11 +133,27 @@ async function logVisitor(sessionId, ip, req, query) {
       utm_term: query.get('utm_term') || null,
       first_page: req.path,
       ...enriched,
-    })
+    }
+    await supabase.from('visitors').insert(visitor)
+
+    // Fire Slack alert in background (don't block response)
+    sendSlackAlert(visitor)
   } catch (err) {
     console.error('[visitor-log]', err.message)
   }
 }
+
+// ── Probe/scanner path blocking ─────────────────────────────────────────────
+// Return 404 for paths that vulnerability scanners probe — don't waste bandwidth
+// serving the full SPA HTML and don't pollute visitor logs
+const PROBE_PATTERNS = /\.(env|yml|yaml|log|bak|old|php|sql|conf|ini|cfg|config)$|\/\.(?:env|aws|git|svn|vscode|bitbucket)|\/(?:wp-admin|wp-json|wp-config|wp-login|xmlrpc|actuator|telescope|_profiler|console|phpinfo|info\.php|debug|server-status|\.well-known\/security)/i
+
+app.use((req, res, next) => {
+  if (PROBE_PATTERNS.test(req.path) && !req.path.startsWith('/api/') && req.path !== '/robots.txt') {
+    return res.status(404).end()
+  }
+  next()
+})
 
 // ── Middleware ────────────────────────────────────────────────────────────────
 app.use(cookieParser())
@@ -99,7 +162,7 @@ app.use(express.json())
 // Visitor logging middleware — runs on HTML page requests only
 app.use((req, res, next) => {
   const ua = req.headers['user-agent'] || ''
-  if (req.path.match(/\.(js|css|svg|png|jpg|jpeg|gif|ico|woff2?|ttf|map|json)$/) || req.path.startsWith('/api/') || /bot|crawler|spider|healthcheck|uptime|monitoring|pingdom|statuspage/i.test(ua)) {
+  if (req.path.match(/\.(js|css|svg|png|jpg|jpeg|gif|ico|woff2?|ttf|map|json)$/) || req.path.startsWith('/api/') || /bot|crawler|spider|scan|healthcheck|uptime|monitoring|pingdom|statuspage|leakix|semrush|ahrefs|mj12bot|dotbot|petalbot/i.test(ua)) {
     return next()
   }
 
@@ -467,7 +530,7 @@ app.get('/sitemap.xml', async (req, res) => {
   const staticPages = [
     '', '/solutions/case-management', '/solutions/small-business',
     '/solutions/white-glove', '/solutions/franchise', '/solutions/websites',
-    '/build', '/blog',
+    '/build', '/blog', '/privacy',
     '/blog/custom-software-cost', '/blog/build-vs-buy',
     '/blog/ai-accelerated-development', '/blog/franchise-software-signs',
     '/blog/high-code-low-code-ai', '/blog/ai-trust-gap',
@@ -555,4 +618,5 @@ app.listen(PORT, () => {
   console.log(`doITbetter labs running on port ${PORT}`)
   console.log(`Visitor tracking: ${supabase ? 'ENABLED' : 'DISABLED (missing SUPABASE_URL or SUPABASE_SERVICE_KEY)'}`)
   console.log(`IP enrichment: ${process.env.IPINFO_TOKEN ? 'ENABLED' : 'DISABLED (missing IPINFO_TOKEN)'}`)
+  console.log(`Slack alerts: ${SLACK_WEBHOOK_URL ? 'ENABLED' : 'DISABLED (missing SLACK_WEBHOOK_URL)'}`)
 })

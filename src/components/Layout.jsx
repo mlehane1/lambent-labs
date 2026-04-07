@@ -300,6 +300,10 @@ export default function Layout() {
           }}
         >
           &copy; {new Date().getFullYear()} doITbetter labs. All rights reserved.
+          {" | "}
+          <Link to="/privacy" style={{ color: "var(--text-lo)", textDecoration: "underline" }}>
+            Privacy Policy
+          </Link>
         </div>
       </footer>
     </div>

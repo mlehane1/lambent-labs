@@ -6,6 +6,7 @@ const SUPABASE_URL = "https://ltkapmacmylwfhufuozq.supabase.co";
 const SUPABASE_ANON_KEY =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx0a2FwbWFjbXlsd2ZodWZ1b3pxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUxMzU4OTcsImV4cCI6MjA5MDcxMTg5N30.uNtnYOBwPcIOkX0Yba2U6EJyywbL-lhjRa4sEJ8tj1c";
 
+// These are default helpers — the preview renderer uses aiHeading/aiBody with dynamic fonts
 const heading = (extra = {}) => ({
   fontFamily: "'Outfit', sans-serif",
   fontWeight: 800,
@@ -283,6 +284,9 @@ export default function BuildPreview() {
   const [needDescription, setNeedDescription] = useState("");
   const [customers, setCustomers] = useState("");
   const [services, setServices] = useState("");
+  const [logoUrl, setLogoUrl] = useState("");
+  const [mood, setMood] = useState("");
+  const [inspirationUrl, setInspirationUrl] = useState("");
 
   // AI-generated preview data
   const [aiData, setAiData] = useState(null);
@@ -310,6 +314,30 @@ export default function BuildPreview() {
       );
     }
   }, []);
+
+  // Load AI-suggested Google Fonts dynamically
+  useEffect(() => {
+    if (!aiData) return;
+    const fonts = [];
+    if (aiData.headingFont) fonts.push(aiData.headingFont);
+    if (aiData.bodyFont) fonts.push(aiData.bodyFont);
+    if (fonts.length === 0) return;
+    const id = "ai-google-fonts";
+    let link = document.getElementById(id);
+    if (link) link.remove();
+    link = document.createElement("link");
+    link.id = id;
+    link.rel = "stylesheet";
+    link.href =
+      "https://fonts.googleapis.com/css2?family=" +
+      fonts.map(f => f.replace(/ /g, "+") + ":wght@400;500;600;700;800").join("&family=") +
+      "&display=swap";
+    document.head.appendChild(link);
+    return () => {
+      const el = document.getElementById(id);
+      if (el) el.remove();
+    };
+  }, [aiData]);
 
   // Pre-fill contact message when switching to preview
   useEffect(() => {
@@ -353,6 +381,9 @@ export default function BuildPreview() {
           description: needDescription,
           customers,
           services,
+          logoUrl: logoUrl || undefined,
+          mood: mood || undefined,
+          inspirationUrl: inspirationUrl || undefined,
         }),
       });
 
@@ -449,9 +480,34 @@ export default function BuildPreview() {
       .replace(/[^a-z0-9 ]/g, "")
       .replace(/ /g, "-") + ".com";
 
+  // Dynamic font helpers that use AI-suggested fonts with fallback
+  const hFont = (ai && ai.headingFont) ? "'" + ai.headingFont + "', 'Outfit', sans-serif" : "'Outfit', sans-serif";
+  const bFont = (ai && ai.bodyFont) ? "'" + ai.bodyFont + "', 'DM Sans', sans-serif" : "'DM Sans', sans-serif";
+  const displayLogo = (ai && ai.logoUrl) || logoUrl;
+  const heroImgQuery = (ai && ai.heroImageQuery) ? ai.heroImageQuery : null;
+  const sectionImgs = (ai && ai.sectionImages) ? ai.sectionImages : [];
+
   /* ── Render ── */
 
-  // Loading state
+  // Loading state — animated multi-step progress
+  const [loadingStep, setLoadingStep] = useState(0);
+  const loadingSteps = [
+    { icon: "🔍", label: "Analyzing your business model..." },
+    { icon: "🎨", label: "Designing your visual identity..." },
+    { icon: "📐", label: "Building page layout and structure..." },
+    { icon: "📝", label: "Writing your copy and content..." },
+    { icon: "⚡", label: "Optimizing for your industry..." },
+    { icon: "✨", label: "Finishing touches..." },
+  ];
+
+  useEffect(() => {
+    if (state !== "loading") { setLoadingStep(0); return; }
+    const interval = setInterval(() => {
+      setLoadingStep(prev => prev < loadingSteps.length - 1 ? prev + 1 : prev);
+    }, 2200);
+    return () => clearInterval(interval);
+  }, [state]);
+
   if (state === "loading") {
     return (
       <div
@@ -464,30 +520,99 @@ export default function BuildPreview() {
           background: "var(--bg-deep)",
           opacity: fade ? 1 : 0,
           transition: "opacity 0.3s ease",
+          padding: "2rem",
         }}
       >
-        <div
-          style={{
-            width: 56,
-            height: 56,
-            border: "4px solid var(--border)",
-            borderTopColor: "var(--accent)",
-            borderRadius: "50%",
-            animation: "bpSpin 0.9s linear infinite",
-          }}
-        />
+        <style>{`
+          @keyframes bpSpin { to { transform: rotate(360deg); } }
+          @keyframes bpPulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
+          @keyframes bpSlideIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+        `}</style>
+
+        {/* Animated rings */}
+        <div style={{ position: "relative", width: 80, height: 80, marginBottom: "2rem" }}>
+          <div style={{ position: "absolute", inset: 0, border: "3px solid var(--border)", borderTopColor: "var(--accent)", borderRadius: "50%", animation: "bpSpin 1.2s linear infinite" }} />
+          <div style={{ position: "absolute", inset: 8, border: "3px solid var(--border)", borderBottomColor: primaryColor, borderRadius: "50%", animation: "bpSpin 0.8s linear infinite reverse" }} />
+          <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.5rem" }}>
+            {loadingSteps[loadingStep].icon}
+          </div>
+        </div>
+
+        {/* Current step */}
         <p
-          style={body({
-            marginTop: "1.5rem",
-            fontSize: "1.1rem",
+          key={loadingStep}
+          style={{
+            fontFamily: "'Outfit', sans-serif",
+            fontWeight: 700,
+            fontSize: "1.25rem",
             color: "var(--text-hi)",
-          })}
+            margin: "0 0 2rem",
+            animation: "bpSlideIn 0.4s ease-out",
+            textAlign: "center",
+          }}
         >
-          Analyzing your project...
+          {loadingSteps[loadingStep].label}
         </p>
-        <style>{
-          "@keyframes bpSpin { to { transform: rotate(360deg); } }"
-        }</style>
+
+        {/* Progress steps */}
+        <div style={{ display: "flex", flexDirection: "column", gap: "0.6rem", maxWidth: 320, width: "100%" }}>
+          {loadingSteps.map((step, i) => (
+            <div
+              key={i}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "0.75rem",
+                opacity: i <= loadingStep ? 1 : 0.25,
+                transition: "opacity 0.5s ease",
+              }}
+            >
+              <div
+                style={{
+                  width: 24,
+                  height: 24,
+                  borderRadius: "50%",
+                  background: i < loadingStep ? "var(--accent)" : i === loadingStep ? primaryColor : "var(--border)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: "0.65rem",
+                  color: "#fff",
+                  fontWeight: 700,
+                  transition: "background 0.5s ease",
+                  flexShrink: 0,
+                }}
+              >
+                {i < loadingStep ? "✓" : i + 1}
+              </div>
+              <span
+                style={{
+                  fontFamily: "'DM Sans', sans-serif",
+                  fontSize: "0.85rem",
+                  color: i <= loadingStep ? "var(--text-hi)" : "var(--text-lo)",
+                  fontWeight: i === loadingStep ? 600 : 400,
+                  transition: "color 0.5s ease",
+                }}
+              >
+                {step.label.replace("...", "")}
+              </span>
+            </div>
+          ))}
+        </div>
+
+        <p
+          style={{
+            fontFamily: "'DM Sans', sans-serif",
+            fontSize: "0.82rem",
+            color: "var(--text-lo)",
+            marginTop: "2.5rem",
+            textAlign: "center",
+            maxWidth: 360,
+            lineHeight: 1.5,
+          }}
+        >
+          Our AI is crafting a custom preview tailored to {businessName || "your business"}. This typically takes 10-15 seconds.
+        </p>
       </div>
     );
   }
@@ -613,6 +738,53 @@ export default function BuildPreview() {
                   </span>
                 </div>
               </div>
+            </div>
+
+            {/* Logo URL */}
+            <div>
+              <label style={labelStyle}>Logo URL (optional)</label>
+              <input
+                value={logoUrl}
+                onChange={(e) => setLogoUrl(e.target.value)}
+                placeholder="Paste a URL to your logo (PNG, JPG, or SVG)"
+                style={inputStyle()}
+              />
+            </div>
+
+            {/* Mood / Vibe */}
+            <div>
+              <label style={labelStyle}>Mood / Vibe</label>
+              <select
+                value={mood}
+                onChange={(e) => setMood(e.target.value)}
+                style={inputStyle({
+                  appearance: "none",
+                  backgroundImage:
+                    "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238AABE5' fill='none' stroke-width='1.5'/%3E%3C/svg%3E\")",
+                  backgroundRepeat: "no-repeat",
+                  backgroundPosition: "right 1rem center",
+                  paddingRight: "2.5rem",
+                })}
+              >
+                <option value="">Select a vibe (optional)</option>
+                <option value="Bold & Energetic">Bold &amp; Energetic</option>
+                <option value="Clean & Minimal">Clean &amp; Minimal</option>
+                <option value="Warm & Friendly">Warm &amp; Friendly</option>
+                <option value="Dark & Premium">Dark &amp; Premium</option>
+                <option value="Playful & Fun">Playful &amp; Fun</option>
+                <option value="Corporate & Professional">Corporate &amp; Professional</option>
+              </select>
+            </div>
+
+            {/* Inspiration URL */}
+            <div>
+              <label style={labelStyle}>Inspiration URL (optional)</label>
+              <input
+                value={inspirationUrl}
+                onChange={(e) => setInspirationUrl(e.target.value)}
+                placeholder="Link to a website you admire (optional)"
+                style={inputStyle()}
+              />
             </div>
 
             {/* What do you need */}
@@ -780,29 +952,41 @@ export default function BuildPreview() {
                       zIndex: 10,
                     }}
                   >
-                    <span
-                      style={{
-                        fontFamily: "'Outfit', sans-serif",
-                        fontWeight: 800,
-                        fontSize: "1.35rem",
-                        color: navNameColor,
-                        letterSpacing: "-0.02em",
-                      }}
-                    >
-                      {businessName || "Your Business"}
-                    </span>
+                    {displayLogo ? (
+                      <img
+                        src={displayLogo}
+                        alt={businessName || "Logo"}
+                        style={{
+                          height: 38,
+                          maxWidth: 160,
+                          objectFit: "contain",
+                        }}
+                      />
+                    ) : (
+                      <span
+                        style={{
+                          fontFamily: hFont,
+                          fontWeight: 800,
+                          fontSize: "1.35rem",
+                          color: navNameColor,
+                          letterSpacing: "-0.02em",
+                        }}
+                      >
+                        {businessName || "Your Business"}
+                      </span>
+                    )}
                     <div style={{ display: "flex", gap: "2.5rem", alignItems: "center" }}>
                       {!isMinimal && (
-                        <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "0.95rem", color: isTransparent ? "rgba(255,255,255,0.9)" : "#333", fontWeight: 500 }}>Home</span>
+                        <span style={{ fontFamily: bFont, fontSize: "0.95rem", color: isTransparent ? "rgba(255,255,255,0.9)" : "#333", fontWeight: 500 }}>Home</span>
                       )}
                       {!isMinimal && (
-                        <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "0.95rem", color: navTextColor }}>Services</span>
+                        <span style={{ fontFamily: bFont, fontSize: "0.95rem", color: navTextColor }}>Services</span>
                       )}
                       {!isMinimal && (
-                        <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "0.95rem", color: navTextColor }}>About</span>
+                        <span style={{ fontFamily: bFont, fontSize: "0.95rem", color: navTextColor }}>About</span>
                       )}
                       {!isMinimal && (
-                        <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "0.95rem", color: navTextColor }}>Contact</span>
+                        <span style={{ fontFamily: bFont, fontSize: "0.95rem", color: navTextColor }}>Contact</span>
                       )}
                       <span
                         style={{
@@ -810,7 +994,7 @@ export default function BuildPreview() {
                           padding: "0.55rem 1.5rem",
                           background: isTransparent ? "transparent" : accentColor,
                           color: isTransparent ? "#fff" : "#fff",
-                          fontFamily: "'Outfit', sans-serif",
+                          fontFamily: hFont,
                           fontWeight: 600,
                           fontSize: "0.85rem",
                           borderRadius: 6,
@@ -832,32 +1016,40 @@ export default function BuildPreview() {
                 var secondCta = (ai && ai.secondaryCta) ? ai.secondaryCta : "Learn More";
 
                 if (heroType === "split") {
+                  var splitImgUrl = heroImgQuery ? "https://source.unsplash.com/800x600/?" + encodeURIComponent(heroImgQuery) : null;
                   return (
                     <div style={{ display: "flex", minHeight: 480, position: "relative" }}>
                       <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center", padding: "4rem 3.5rem", background: "#ffffff" }}>
                         {badge && (
-                          <span style={{ display: "inline-block", fontFamily: "'DM Sans', sans-serif", fontSize: "0.75rem", fontWeight: 600, color: primaryColor, background: primaryColor + "14", padding: "0.35rem 1rem", borderRadius: 20, marginBottom: "1.2rem", alignSelf: "flex-start", letterSpacing: "0.03em" }}>{badge}</span>
+                          <span style={{ display: "inline-block", fontFamily: bFont, fontSize: "0.75rem", fontWeight: 600, color: primaryColor, background: primaryColor + "14", padding: "0.35rem 1rem", borderRadius: 20, marginBottom: "1.2rem", alignSelf: "flex-start", letterSpacing: "0.03em" }}>{badge}</span>
                         )}
-                        <h2 style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 800, fontSize: "3rem", color: "#1a1a2e", margin: "0 0 1rem", letterSpacing: "-0.03em", lineHeight: 1.1 }}>
+                        <h2 style={{ fontFamily: hFont, fontWeight: 800, fontSize: "3rem", color: "#1a1a2e", margin: "0 0 1rem", letterSpacing: "-0.03em", lineHeight: 1.1 }}>
                           {businessName || "Your Business Name"}
                         </h2>
-                        <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "1.15rem", color: "#666", margin: "0 0 0.8rem", lineHeight: 1.6, maxWidth: 440 }}>
+                        <p style={{ fontFamily: bFont, fontSize: "1.15rem", color: "#666", margin: "0 0 0.8rem", lineHeight: 1.6, maxWidth: 440 }}>
                           {tagline}
                         </p>
                         {heroSub && (
-                          <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "0.95rem", color: "#999", margin: "0 0 2rem", lineHeight: 1.6, maxWidth: 400 }}>{heroSub}</p>
+                          <p style={{ fontFamily: bFont, fontSize: "0.95rem", color: "#999", margin: "0 0 2rem", lineHeight: 1.6, maxWidth: 400 }}>{heroSub}</p>
                         )}
                         <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
-                          <span style={{ display: "inline-block", padding: "0.9rem 2.2rem", background: primaryColor, color: "#fff", fontFamily: "'Outfit', sans-serif", fontWeight: 700, fontSize: "1rem", borderRadius: 8 }}>{ctaLabel}</span>
-                          <span style={{ display: "inline-block", padding: "0.9rem 2.2rem", background: "transparent", color: primaryColor, fontFamily: "'Outfit', sans-serif", fontWeight: 600, fontSize: "1rem", borderRadius: 8, border: "2px solid " + primaryColor }}>{secondCta}</span>
+                          <span style={{ display: "inline-block", padding: "0.9rem 2.2rem", background: primaryColor, color: "#fff", fontFamily: hFont, fontWeight: 700, fontSize: "1rem", borderRadius: 8 }}>{ctaLabel}</span>
+                          <span style={{ display: "inline-block", padding: "0.9rem 2.2rem", background: "transparent", color: primaryColor, fontFamily: hFont, fontWeight: 600, fontSize: "1rem", borderRadius: 8, border: "2px solid " + primaryColor }}>{secondCta}</span>
                         </div>
                       </div>
-                      <div style={{ flex: 1, background: "linear-gradient(135deg, " + primaryColor + " 0%, " + primaryColor + "cc 50%, " + primaryColor + "99 100%)", position: "relative", overflow: "hidden" }}>
-                        <div style={{ position: "absolute", top: 40, right: 40, width: 200, height: 200, borderRadius: "50%", background: "rgba(255,255,255,0.08)" }} />
-                        <div style={{ position: "absolute", bottom: 60, left: 30, width: 140, height: 140, borderRadius: "50%", background: "rgba(255,255,255,0.06)" }} />
-                        <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", width: 120, height: 120, borderRadius: 20, background: "rgba(255,255,255,0.12)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                          <span style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 800, fontSize: "2.5rem", color: "rgba(255,255,255,0.5)" }}>{(businessName || "B").charAt(0)}</span>
-                        </div>
+                      <div style={{ flex: 1, background: splitImgUrl ? "url(" + splitImgUrl + ") center/cover" : "linear-gradient(135deg, " + primaryColor + " 0%, " + primaryColor + "cc 50%, " + primaryColor + "99 100%)", position: "relative", overflow: "hidden" }}>
+                        {!splitImgUrl && (
+                          <>
+                            <div style={{ position: "absolute", top: 40, right: 40, width: 200, height: 200, borderRadius: "50%", background: "rgba(255,255,255,0.08)" }} />
+                            <div style={{ position: "absolute", bottom: 60, left: 30, width: 140, height: 140, borderRadius: "50%", background: "rgba(255,255,255,0.06)" }} />
+                            <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", width: 120, height: 120, borderRadius: 20, background: "rgba(255,255,255,0.12)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                              <span style={{ fontFamily: hFont, fontWeight: 800, fontSize: "2.5rem", color: "rgba(255,255,255,0.5)" }}>{(businessName || "B").charAt(0)}</span>
+                            </div>
+                          </>
+                        )}
+                        {splitImgUrl && (
+                          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg, " + primaryColor + "33 0%, transparent 100%)" }} />
+                        )}
                       </div>
                     </div>
                   );
@@ -867,56 +1059,151 @@ export default function BuildPreview() {
                   return (
                     <div style={{ padding: "6rem 3.5rem 5rem", background: "#fafafa", textAlign: "center", position: "relative" }}>
                       {badge && (
-                        <span style={{ display: "inline-block", fontFamily: "'DM Sans', sans-serif", fontSize: "0.75rem", fontWeight: 600, color: primaryColor, textTransform: "uppercase", letterSpacing: "0.15em", marginBottom: "1.5rem" }}>{badge}</span>
+                        <span style={{ display: "inline-block", fontFamily: bFont, fontSize: "0.75rem", fontWeight: 600, color: primaryColor, textTransform: "uppercase", letterSpacing: "0.15em", marginBottom: "1.5rem" }}>{badge}</span>
                       )}
-                      <h2 style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 800, fontSize: "3.6rem", color: "#1a1a2e", margin: "0 auto 0.5rem", letterSpacing: "-0.03em", lineHeight: 1.08, maxWidth: 700, position: "relative", display: "inline-block" }}>
+                      <h2 style={{ fontFamily: hFont, fontWeight: 800, fontSize: "3.6rem", color: "#1a1a2e", margin: "0 auto 0.5rem", letterSpacing: "-0.03em", lineHeight: 1.08, maxWidth: 700, position: "relative", display: "inline-block" }}>
                         {businessName || "Your Business Name"}
                       </h2>
                       <div style={{ width: 80, height: 4, background: primaryColor, margin: "1rem auto 1.5rem", borderRadius: 2 }} />
-                      <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "1.25rem", color: "#777", margin: "0 auto 1rem", maxWidth: 550, lineHeight: 1.6 }}>
+                      <p style={{ fontFamily: bFont, fontSize: "1.25rem", color: "#777", margin: "0 auto 1rem", maxWidth: 550, lineHeight: 1.6 }}>
                         {tagline}
                       </p>
                       {heroSub && (
-                        <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "0.95rem", color: "#aaa", margin: "0 auto 2.5rem", maxWidth: 480, lineHeight: 1.6 }}>{heroSub}</p>
+                        <p style={{ fontFamily: bFont, fontSize: "0.95rem", color: "#aaa", margin: "0 auto 2.5rem", maxWidth: 480, lineHeight: 1.6 }}>{heroSub}</p>
                       )}
                       <div style={{ display: "flex", gap: "1rem", justifyContent: "center" }}>
-                        <span style={{ display: "inline-block", padding: "0.9rem 2.5rem", background: primaryColor, color: "#fff", fontFamily: "'Outfit', sans-serif", fontWeight: 700, fontSize: "1rem", borderRadius: 8 }}>{ctaLabel}</span>
+                        <span style={{ display: "inline-block", padding: "0.9rem 2.5rem", background: primaryColor, color: "#fff", fontFamily: hFont, fontWeight: 700, fontSize: "1rem", borderRadius: 8 }}>{ctaLabel}</span>
                       </div>
                     </div>
                   );
                 }
 
                 if (heroType === "fullwidth") {
+                  var fullImgUrl = heroImgQuery ? "https://source.unsplash.com/1400x700/?" + encodeURIComponent(heroImgQuery) : null;
+                  var fullBg = fullImgUrl
+                    ? "linear-gradient(180deg, " + primaryColor + "cc 0%, " + primaryColor + "ee 100%), url(" + fullImgUrl + ") center/cover"
+                    : primaryColor;
                   return (
-                    <div style={{ padding: "6rem 3.5rem 5.5rem", background: primaryColor, textAlign: "center", position: "relative", overflow: "hidden" }}>
+                    <div style={{ padding: "6rem 3.5rem 5.5rem", background: fullBg, textAlign: "center", position: "relative", overflow: "hidden" }}>
                       <div style={{ position: "absolute", top: -80, right: -80, width: 350, height: 350, borderRadius: "50%", background: "rgba(255,255,255,0.05)", pointerEvents: "none" }} />
                       <div style={{ position: "absolute", bottom: -40, left: -60, width: 280, height: 280, borderRadius: "50%", background: "rgba(0,0,0,0.08)", pointerEvents: "none" }} />
                       {badge && (
-                        <span style={{ display: "inline-block", fontFamily: "'DM Sans', sans-serif", fontSize: "0.75rem", fontWeight: 700, color: primaryColor, background: "#ffffff", padding: "0.4rem 1.2rem", borderRadius: 20, marginBottom: "1.5rem", letterSpacing: "0.05em", textTransform: "uppercase", position: "relative" }}>{badge}</span>
+                        <span style={{ display: "inline-block", fontFamily: bFont, fontSize: "0.75rem", fontWeight: 700, color: primaryColor, background: "#ffffff", padding: "0.4rem 1.2rem", borderRadius: 20, marginBottom: "1.5rem", letterSpacing: "0.05em", textTransform: "uppercase", position: "relative" }}>{badge}</span>
                       )}
-                      <h2 style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 800, fontSize: "5rem", color: "#ffffff", margin: "0 0 1rem", letterSpacing: "-0.04em", lineHeight: 1.0, position: "relative" }}>
+                      <h2 style={{ fontFamily: hFont, fontWeight: 800, fontSize: "5rem", color: "#ffffff", margin: "0 0 1rem", letterSpacing: "-0.04em", lineHeight: 1.0, position: "relative" }}>
                         {businessName || "Your Business Name"}
                       </h2>
-                      <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "1.3rem", color: "rgba(255,255,255,0.85)", margin: "0 auto 1rem", maxWidth: 600, lineHeight: 1.5, position: "relative" }}>
+                      <p style={{ fontFamily: bFont, fontSize: "1.3rem", color: "rgba(255,255,255,0.85)", margin: "0 auto 1rem", maxWidth: 600, lineHeight: 1.5, position: "relative" }}>
                         {tagline}
                       </p>
                       {heroSub && (
-                        <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "0.95rem", color: "rgba(255,255,255,0.6)", margin: "0 auto 2.5rem", maxWidth: 500, lineHeight: 1.6, position: "relative" }}>{heroSub}</p>
+                        <p style={{ fontFamily: bFont, fontSize: "0.95rem", color: "rgba(255,255,255,0.6)", margin: "0 auto 2.5rem", maxWidth: 500, lineHeight: 1.6, position: "relative" }}>{heroSub}</p>
                       )}
                       <div style={{ display: "flex", gap: "1rem", justifyContent: "center", position: "relative" }}>
-                        <span style={{ display: "inline-block", padding: "1.1rem 2.8rem", background: "#ffffff", color: "#1a1a2e", fontFamily: "'Outfit', sans-serif", fontWeight: 700, fontSize: "1.1rem", borderRadius: 8, boxShadow: "0 4px 24px rgba(0,0,0,0.15)" }}>{ctaLabel}</span>
-                        <span style={{ display: "inline-block", padding: "1.1rem 2.8rem", background: "transparent", color: "#fff", fontFamily: "'Outfit', sans-serif", fontWeight: 600, fontSize: "1.1rem", borderRadius: 8, border: "2px solid rgba(255,255,255,0.4)" }}>{secondCta}</span>
+                        <span style={{ display: "inline-block", padding: "1.1rem 2.8rem", background: "#ffffff", color: "#1a1a2e", fontFamily: hFont, fontWeight: 700, fontSize: "1.1rem", borderRadius: 8, boxShadow: "0 4px 24px rgba(0,0,0,0.15)" }}>{ctaLabel}</span>
+                        <span style={{ display: "inline-block", padding: "1.1rem 2.8rem", background: "transparent", color: "#fff", fontFamily: hFont, fontWeight: 600, fontSize: "1.1rem", borderRadius: 8, border: "2px solid rgba(255,255,255,0.4)" }}>{secondCta}</span>
+                      </div>
+                    </div>
+                  );
+                }
+
+                if (heroType === "editorial") {
+                  var heroImgUrl = heroImgQuery ? "https://source.unsplash.com/1200x600/?" + encodeURIComponent(heroImgQuery) : null;
+                  return (
+                    <div style={{ padding: "7rem 3.5rem 6rem", background: heroImgUrl ? "linear-gradient(180deg, rgba(245,243,240,0.92) 0%, rgba(245,243,240,0.85) 100%), url(" + heroImgUrl + ") center/cover" : "#f5f3f0", textAlign: "left", position: "relative" }}>
+                      {badge && (
+                        <span style={{ display: "inline-block", fontFamily: bFont, fontSize: "0.72rem", fontWeight: 600, color: primaryColor, textTransform: "uppercase", letterSpacing: "0.18em", marginBottom: "1.5rem" }}>{badge}</span>
+                      )}
+                      <h2 style={{ fontFamily: hFont, fontWeight: 700, fontSize: "4.2rem", color: "#1a1a2e", margin: "0 0 1.2rem", letterSpacing: "-0.04em", lineHeight: 1.05, maxWidth: 700 }}>
+                        {businessName || "Your Business Name"}
+                      </h2>
+                      <div style={{ width: 60, height: 3, background: primaryColor, marginBottom: "1.5rem" }} />
+                      <p style={{ fontFamily: bFont, fontSize: "1.2rem", color: "#555", margin: "0 0 1rem", lineHeight: 1.7, maxWidth: 520 }}>
+                        {tagline}
+                      </p>
+                      {heroSub && (
+                        <p style={{ fontFamily: bFont, fontSize: "0.95rem", color: "#888", margin: "0 0 2.5rem", lineHeight: 1.6, maxWidth: 480 }}>{heroSub}</p>
+                      )}
+                      <div style={{ display: "flex", gap: "1rem" }}>
+                        <span style={{ display: "inline-block", padding: "0.9rem 2.2rem", background: primaryColor, color: "#fff", fontFamily: hFont, fontWeight: 700, fontSize: "1rem", borderRadius: 4 }}>{ctaLabel}</span>
+                        <span style={{ display: "inline-block", padding: "0.9rem 2.2rem", background: "transparent", color: "#1a1a2e", fontFamily: hFont, fontWeight: 600, fontSize: "1rem", borderRadius: 4, borderBottom: "2px solid " + primaryColor }}>{secondCta}</span>
+                      </div>
+                    </div>
+                  );
+                }
+
+                if (heroType === "asymmetric") {
+                  var heroImgUrl2 = heroImgQuery ? "https://source.unsplash.com/800x600/?" + encodeURIComponent(heroImgQuery) : null;
+                  return (
+                    <div style={{ display: "flex", minHeight: 520, position: "relative", overflow: "hidden", background: "#ffffff" }}>
+                      <div style={{ flex: "1 1 55%", display: "flex", flexDirection: "column", justifyContent: "center", padding: "4rem 3.5rem 4rem 5rem", position: "relative", zIndex: 2 }}>
+                        {badge && (
+                          <span style={{ display: "inline-block", fontFamily: bFont, fontSize: "0.75rem", fontWeight: 600, color: accentColor, background: accentColor + "14", padding: "0.35rem 1rem", borderRadius: 20, marginBottom: "1.2rem", alignSelf: "flex-start" }}>{badge}</span>
+                        )}
+                        <h2 style={{ fontFamily: hFont, fontWeight: 800, fontSize: "3.2rem", color: "#1a1a2e", margin: "0 0 1rem", letterSpacing: "-0.03em", lineHeight: 1.08 }}>
+                          {businessName || "Your Business Name"}
+                        </h2>
+                        <p style={{ fontFamily: bFont, fontSize: "1.15rem", color: "#666", margin: "0 0 0.8rem", lineHeight: 1.6, maxWidth: 420 }}>
+                          {tagline}
+                        </p>
+                        {heroSub && (
+                          <p style={{ fontFamily: bFont, fontSize: "0.95rem", color: "#999", margin: "0 0 2rem", lineHeight: 1.6, maxWidth: 400 }}>{heroSub}</p>
+                        )}
+                        <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
+                          <span style={{ display: "inline-block", padding: "0.9rem 2.2rem", background: primaryColor, color: "#fff", fontFamily: hFont, fontWeight: 700, fontSize: "1rem", borderRadius: 8 }}>{ctaLabel}</span>
+                          <span style={{ display: "inline-block", padding: "0.9rem 2.2rem", background: "transparent", color: primaryColor, fontFamily: hFont, fontWeight: 600, fontSize: "1rem", borderRadius: 8, border: "2px solid " + primaryColor }}>{secondCta}</span>
+                        </div>
+                      </div>
+                      <div style={{ flex: "1 1 45%", position: "relative" }}>
+                        {heroImgUrl2 ? (
+                          <div style={{ position: "absolute", top: 30, right: -20, bottom: 30, left: -40, borderRadius: 16, background: "url(" + heroImgUrl2 + ") center/cover", boxShadow: "0 20px 60px rgba(0,0,0,0.15)" }} />
+                        ) : (
+                          <div style={{ position: "absolute", top: 30, right: -20, bottom: 30, left: -40, borderRadius: 16, background: "linear-gradient(135deg, " + primaryColor + " 0%, " + accentColor + " 100%)", boxShadow: "0 20px 60px rgba(0,0,0,0.15)" }} />
+                        )}
+                        <div style={{ position: "absolute", top: -20, right: 60, width: 100, height: 100, borderRadius: "50%", background: accentColor + "22", zIndex: 1 }} />
+                        <div style={{ position: "absolute", bottom: 0, left: -60, width: 80, height: 80, borderRadius: 12, background: primaryColor + "18", zIndex: 1 }} />
+                      </div>
+                    </div>
+                  );
+                }
+
+                if (heroType === "video-style") {
+                  var heroImgUrl3 = heroImgQuery ? "https://source.unsplash.com/1400x700/?" + encodeURIComponent(heroImgQuery) : null;
+                  var bgStyle = heroImgUrl3
+                    ? "linear-gradient(180deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.7) 100%), url(" + heroImgUrl3 + ") center/cover"
+                    : "linear-gradient(180deg, " + primaryColor + "dd 0%, #1a1a2e 100%)";
+                  return (
+                    <div style={{ padding: "7rem 3.5rem 6.5rem", background: bgStyle, textAlign: "center", position: "relative", overflow: "hidden" }}>
+                      {badge && (
+                        <span style={{ display: "inline-block", fontFamily: bFont, fontSize: "0.72rem", fontWeight: 700, color: "#fff", background: "rgba(255,255,255,0.15)", padding: "0.4rem 1.3rem", borderRadius: 20, marginBottom: "1.8rem", letterSpacing: "0.1em", textTransform: "uppercase", backdropFilter: "blur(4px)", position: "relative" }}>{badge}</span>
+                      )}
+                      <h2 style={{ fontFamily: hFont, fontWeight: 800, fontSize: "3.8rem", color: "#ffffff", margin: "0 0 1rem", letterSpacing: "-0.03em", lineHeight: 1.08, position: "relative", textShadow: "0 2px 20px rgba(0,0,0,0.3)" }}>
+                        {businessName || "Your Business Name"}
+                      </h2>
+                      <p style={{ fontFamily: bFont, fontSize: "1.25rem", color: "rgba(255,255,255,0.9)", margin: "0 auto 1rem", maxWidth: 580, lineHeight: 1.6, position: "relative" }}>
+                        {tagline}
+                      </p>
+                      {heroSub && (
+                        <p style={{ fontFamily: bFont, fontSize: "0.95rem", color: "rgba(255,255,255,0.6)", margin: "0 auto 2.5rem", maxWidth: 500, lineHeight: 1.6, position: "relative" }}>{heroSub}</p>
+                      )}
+                      <div style={{ display: "flex", gap: "1rem", justifyContent: "center", position: "relative" }}>
+                        <span style={{ display: "inline-block", padding: "1rem 2.5rem", background: accentColor, color: "#fff", fontFamily: hFont, fontWeight: 700, fontSize: "1.05rem", borderRadius: 8, boxShadow: "0 4px 24px rgba(0,0,0,0.3)" }}>{ctaLabel}</span>
+                        <span style={{ display: "inline-block", padding: "1rem 2.5rem", background: "rgba(255,255,255,0.1)", color: "#fff", fontFamily: hFont, fontWeight: 600, fontSize: "1.05rem", borderRadius: 8, border: "1px solid rgba(255,255,255,0.3)", backdropFilter: "blur(4px)" }}>{secondCta}</span>
                       </div>
                     </div>
                   );
                 }
 
                 /* Default: gradient */
+                var gradImgUrl = heroImgQuery ? "https://source.unsplash.com/1400x700/?" + encodeURIComponent(heroImgQuery) : null;
+                var gradBg = gradImgUrl
+                  ? "linear-gradient(160deg, " + primaryColor + "ee 0%, " + primaryColor + "cc 40%, " + primaryColor + "88 70%, rgba(255,255,255,0.9) 100%), url(" + gradImgUrl + ") center/cover"
+                  : "linear-gradient(160deg, " + primaryColor + " 0%, " + primaryColor + "dd 40%, " + primaryColor + "88 70%, #ffffff 100%)";
                 return (
                   <div
                     style={{
                       padding: "5.5rem 3.5rem 5rem",
-                      background: "linear-gradient(160deg, " + primaryColor + " 0%, " + primaryColor + "dd 40%, " + primaryColor + "88 70%, #ffffff 100%)",
+                      background: gradBg,
                       textAlign: "center",
                       position: "relative",
                       overflow: "hidden",
@@ -925,20 +1212,20 @@ export default function BuildPreview() {
                     <div style={{ position: "absolute", top: "-120px", right: "-80px", width: 400, height: 400, borderRadius: "50%", background: "rgba(255,255,255,0.06)", pointerEvents: "none" }} />
                     <div style={{ position: "absolute", bottom: "-60px", left: "-40px", width: 250, height: 250, borderRadius: "50%", background: "rgba(255,255,255,0.04)", pointerEvents: "none" }} />
                     {badge && (
-                      <span style={{ display: "inline-block", fontFamily: "'DM Sans', sans-serif", fontSize: "0.75rem", fontWeight: 700, color: "#fff", background: "rgba(255,255,255,0.18)", padding: "0.4rem 1.2rem", borderRadius: 20, marginBottom: "1.5rem", letterSpacing: "0.05em", textTransform: "uppercase", position: "relative" }}>{badge}</span>
+                      <span style={{ display: "inline-block", fontFamily: bFont, fontSize: "0.75rem", fontWeight: 700, color: "#fff", background: "rgba(255,255,255,0.18)", padding: "0.4rem 1.2rem", borderRadius: 20, marginBottom: "1.5rem", letterSpacing: "0.05em", textTransform: "uppercase", position: "relative" }}>{badge}</span>
                     )}
-                    <h2 style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 800, fontSize: "3.4rem", color: "#fff", margin: "0 0 1.2rem", letterSpacing: "-0.03em", lineHeight: 1.1, position: "relative" }}>
+                    <h2 style={{ fontFamily: hFont, fontWeight: 800, fontSize: "3.4rem", color: "#fff", margin: "0 0 1.2rem", letterSpacing: "-0.03em", lineHeight: 1.1, position: "relative" }}>
                       {businessName || "Your Business Name"}
                     </h2>
-                    <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "1.35rem", color: "rgba(255,255,255,0.92)", margin: "0 auto 1.2rem", maxWidth: 600, lineHeight: 1.5, position: "relative" }}>
+                    <p style={{ fontFamily: bFont, fontSize: "1.35rem", color: "rgba(255,255,255,0.92)", margin: "0 auto 1.2rem", maxWidth: 600, lineHeight: 1.5, position: "relative" }}>
                       {tagline}
                     </p>
                     {heroSub && (
-                      <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "1rem", color: "rgba(255,255,255,0.65)", margin: "0 auto 2.2rem", maxWidth: 520, lineHeight: 1.6, position: "relative" }}>{heroSub}</p>
+                      <p style={{ fontFamily: bFont, fontSize: "1rem", color: "rgba(255,255,255,0.65)", margin: "0 auto 2.2rem", maxWidth: 520, lineHeight: 1.6, position: "relative" }}>{heroSub}</p>
                     )}
                     <div style={{ position: "relative", display: "flex", gap: "1rem", justifyContent: "center", flexWrap: "wrap" }}>
-                      <span style={{ display: "inline-block", padding: "1rem 2.5rem", background: accentColor, color: "#fff", fontFamily: "'Outfit', sans-serif", fontWeight: 700, fontSize: "1.05rem", borderRadius: 8, boxShadow: "0 4px 20px rgba(0,0,0,0.2)" }}>{ctaLabel}</span>
-                      <span style={{ display: "inline-block", padding: "1rem 2.5rem", background: "rgba(255,255,255,0.15)", color: "#fff", fontFamily: "'Outfit', sans-serif", fontWeight: 600, fontSize: "1.05rem", borderRadius: 8, border: "1px solid rgba(255,255,255,0.3)" }}>{secondCta}</span>
+                      <span style={{ display: "inline-block", padding: "1rem 2.5rem", background: accentColor, color: "#fff", fontFamily: hFont, fontWeight: 700, fontSize: "1.05rem", borderRadius: 8, boxShadow: "0 4px 20px rgba(0,0,0,0.2)" }}>{ctaLabel}</span>
+                      <span style={{ display: "inline-block", padding: "1rem 2.5rem", background: "rgba(255,255,255,0.15)", color: "#fff", fontFamily: hFont, fontWeight: 600, fontSize: "1.05rem", borderRadius: 8, border: "1px solid rgba(255,255,255,0.3)" }}>{secondCta}</span>
                     </div>
                   </div>
                 );
@@ -967,8 +1254,8 @@ export default function BuildPreview() {
                             <span style={{ display: "inline-block", width: 1, height: 36, background: isColored ? "rgba(255,255,255,0.25)" : "#e0e0e0", margin: "0 2.5rem" }} />
                           )}
                           <div style={{ textAlign: "center" }}>
-                            <div style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 800, fontSize: "1.6rem", color: isColored ? "#ffffff" : "#1a1a2e", lineHeight: 1.2 }}>{stat.value}</div>
-                            <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "0.78rem", color: isColored ? "rgba(255,255,255,0.7)" : "#999", marginTop: "0.2rem", fontWeight: 500, letterSpacing: "0.02em" }}>{stat.label}</div>
+                            <div style={{ fontFamily: hFont, fontWeight: 800, fontSize: "1.6rem", color: isColored ? "#ffffff" : "#1a1a2e", lineHeight: 1.2 }}>{stat.value}</div>
+                            <div style={{ fontFamily: bFont, fontSize: "0.78rem", color: isColored ? "rgba(255,255,255,0.7)" : "#999", marginTop: "0.2rem", fontWeight: 500, letterSpacing: "0.02em" }}>{stat.label}</div>
                           </div>
                         </div>
                       );
@@ -993,15 +1280,16 @@ export default function BuildPreview() {
                   cardStyle = { background: "#ffffff", borderRadius: 8, padding: "0", border: "1px solid #e0e0e0", overflow: "hidden" };
                 }
 
+                var svcImgQuery = sectionImgs.find(function(s) { return s.section === "services"; });
                 return (
                   <div style={{ padding: "4.5rem 3.5rem", background: "#ffffff" }}>
-                    <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "0.8rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.12em", color: accentColor, textAlign: "center", margin: "0 0 0.5rem" }}>
+                    <p style={{ fontFamily: bFont, fontSize: "0.8rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.12em", color: accentColor, textAlign: "center", margin: "0 0 0.5rem" }}>
                       Our Expertise
                     </p>
-                    <h3 style={{ fontFamily: "'Outfit', sans-serif", fontWeight: layout === "elegant" ? 600 : 800, fontSize: "2.2rem", color: "#1a1a2e", textAlign: "center", margin: "0 0 0.75rem", letterSpacing: "-0.02em" }}>
+                    <h3 style={{ fontFamily: hFont, fontWeight: layout === "elegant" ? 600 : 800, fontSize: "2.2rem", color: "#1a1a2e", textAlign: "center", margin: "0 0 0.75rem", letterSpacing: "-0.02em" }}>
                       What We Offer
                     </h3>
-                    <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "1.05rem", color: "#888", textAlign: "center", margin: "0 auto 3rem", maxWidth: 480, lineHeight: 1.6 }}>
+                    <p style={{ fontFamily: bFont, fontSize: "1.05rem", color: "#888", textAlign: "center", margin: "0 auto 3rem", maxWidth: 480, lineHeight: 1.6 }}>
                       {"Tailored solutions designed to help " + (businessName || "your business") + " thrive."}
                     </p>
                     <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: layout === "clean" ? "0" : "1.5rem" }}>
@@ -1009,13 +1297,19 @@ export default function BuildPreview() {
                         var desc = serviceDescriptions[svc] || ("Professional " + svc.toLowerCase() + " services tailored to your needs.");
                         var descColor = serviceDescriptions[svc] ? "#777" : "#999";
 
+                        var svcThumbUrl = svcImgQuery ? "https://source.unsplash.com/400x250/?" + encodeURIComponent(svcImgQuery.query + " " + svc.toLowerCase().split(" ")[0]) : null;
+                        var thumbEl = svcThumbUrl ? (
+                          <div style={{ width: "100%", height: 120, background: "url(" + svcThumbUrl + ") center/cover", borderRadius: 0 }} />
+                        ) : null;
+
                         if (layout === "warm") {
                           return (
                             <div key={i} style={cardStyle}>
-                              <div style={{ height: 4, background: "linear-gradient(90deg, " + primaryColor + ", " + accentColor + ")" }} />
+                              {thumbEl}
+                              {!thumbEl && <div style={{ height: 4, background: "linear-gradient(90deg, " + primaryColor + ", " + accentColor + ")" }} />}
                               <div style={{ padding: "1.8rem 1.6rem" }}>
-                                <p style={{ fontFamily: "'Outfit', sans-serif", color: "#1a1a2e", fontSize: "1.1rem", margin: "0 0 0.6rem", fontWeight: 700 }}>{svc}</p>
-                                <p style={{ fontFamily: "'DM Sans', sans-serif", color: descColor, fontSize: "0.88rem", margin: 0, lineHeight: 1.6 }}>{desc}</p>
+                                <p style={{ fontFamily: hFont, color: "#1a1a2e", fontSize: "1.1rem", margin: "0 0 0.6rem", fontWeight: 700 }}>{svc}</p>
+                                <p style={{ fontFamily: bFont, color: descColor, fontSize: "0.88rem", margin: 0, lineHeight: 1.6 }}>{desc}</p>
                               </div>
                             </div>
                           );
@@ -1023,19 +1317,43 @@ export default function BuildPreview() {
                         if (layout === "bold") {
                           return (
                             <div key={i} style={cardStyle}>
+                              {thumbEl}
                               <div style={{ padding: "1.5rem 1.6rem" }}>
-                                <p style={{ fontFamily: "'Outfit', sans-serif", color: primaryColor, fontSize: "1.15rem", margin: "0 0 0.5rem", fontWeight: 800, letterSpacing: "-0.01em" }}>{svc}</p>
-                                <p style={{ fontFamily: "'DM Sans', sans-serif", color: descColor, fontSize: "0.88rem", margin: 0, lineHeight: 1.6 }}>{desc}</p>
+                                <p style={{ fontFamily: hFont, color: primaryColor, fontSize: "1.15rem", margin: "0 0 0.5rem", fontWeight: 800, letterSpacing: "-0.01em" }}>{svc}</p>
+                                <p style={{ fontFamily: bFont, color: descColor, fontSize: "0.88rem", margin: 0, lineHeight: 1.6 }}>{desc}</p>
                               </div>
                             </div>
                           );
                         }
-                        if (layout === "clean") {
+                        if (layout === "clean" || layout === "startup") {
                           return (
                             <div key={i} style={cardStyle}>
+                              {thumbEl}
                               <div style={{ padding: "1.8rem 1.2rem" }}>
-                                <p style={{ fontFamily: "'Outfit', sans-serif", color: "#1a1a2e", fontSize: "1.05rem", margin: "0 0 0.5rem", fontWeight: 600 }}>{svc}</p>
-                                <p style={{ fontFamily: "'DM Sans', sans-serif", color: descColor, fontSize: "0.85rem", margin: 0, lineHeight: 1.7 }}>{desc}</p>
+                                <p style={{ fontFamily: hFont, color: "#1a1a2e", fontSize: "1.05rem", margin: "0 0 0.5rem", fontWeight: 600 }}>{svc}</p>
+                                <p style={{ fontFamily: bFont, color: descColor, fontSize: "0.85rem", margin: 0, lineHeight: 1.7 }}>{desc}</p>
+                              </div>
+                            </div>
+                          );
+                        }
+                        if (layout === "magazine") {
+                          return (
+                            <div key={i} style={{ ...cardStyle, borderRadius: 0, borderBottom: "2px solid " + primaryColor }}>
+                              {thumbEl}
+                              <div style={{ padding: "1.6rem 1.4rem" }}>
+                                <p style={{ fontFamily: hFont, color: "#1a1a2e", fontSize: "1.2rem", margin: "0 0 0.5rem", fontWeight: 700, letterSpacing: "-0.01em" }}>{svc}</p>
+                                <p style={{ fontFamily: bFont, color: descColor, fontSize: "0.88rem", margin: 0, lineHeight: 1.7 }}>{desc}</p>
+                              </div>
+                            </div>
+                          );
+                        }
+                        if (layout === "artisan") {
+                          return (
+                            <div key={i} style={{ ...cardStyle, borderRadius: 12, background: "#faf8f5", border: "1px solid #e8e2d8" }}>
+                              {thumbEl && <div style={{ width: "100%", height: 120, background: "url(" + svcThumbUrl + ") center/cover", borderRadius: "12px 12px 0 0" }} />}
+                              <div style={{ padding: "1.8rem 1.6rem" }}>
+                                <p style={{ fontFamily: hFont, color: "#3a3020", fontSize: "1.1rem", margin: "0 0 0.6rem", fontWeight: 700 }}>{svc}</p>
+                                <p style={{ fontFamily: bFont, color: descColor, fontSize: "0.88rem", margin: 0, lineHeight: 1.7 }}>{desc}</p>
                               </div>
                             </div>
                           );
@@ -1043,10 +1361,11 @@ export default function BuildPreview() {
                         /* elegant */
                         return (
                           <div key={i} style={cardStyle}>
+                            {thumbEl}
                             <div style={{ padding: "2rem 1.8rem" }}>
-                              <p style={{ fontFamily: "'Outfit', sans-serif", color: "#1a1a2e", fontSize: "1.1rem", margin: "0 0 0.7rem", fontWeight: 500, letterSpacing: "0.01em" }}>{svc}</p>
+                              <p style={{ fontFamily: hFont, color: "#1a1a2e", fontSize: "1.1rem", margin: "0 0 0.7rem", fontWeight: 500, letterSpacing: "0.01em" }}>{svc}</p>
                               <div style={{ width: 30, height: 1, background: primaryColor, marginBottom: "0.8rem" }} />
-                              <p style={{ fontFamily: "'DM Sans', sans-serif", color: descColor, fontSize: "0.88rem", margin: 0, lineHeight: 1.7 }}>{desc}</p>
+                              <p style={{ fontFamily: bFont, color: descColor, fontSize: "0.88rem", margin: 0, lineHeight: 1.7 }}>{desc}</p>
                             </div>
                           </div>
                         );
@@ -1061,14 +1380,14 @@ export default function BuildPreview() {
                 <div style={{ padding: "4rem 3.5rem", background: "#f7f8fa", textAlign: "center" }}>
                   <div style={{ maxWidth: 640, margin: "0 auto" }}>
                     <span style={{ fontFamily: "Georgia, serif", fontSize: "5rem", lineHeight: 1, color: primaryColor, display: "block", marginBottom: "-1rem", opacity: 0.6 }}>&ldquo;</span>
-                    <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "1.15rem", color: "#444", lineHeight: 1.8, fontStyle: "italic", margin: "0 0 1.5rem" }}>
+                    <p style={{ fontFamily: bFont, fontSize: "1.15rem", color: "#444", lineHeight: 1.8, fontStyle: "italic", margin: "0 0 1.5rem" }}>
                       {ai.testimonial.quote}
                     </p>
-                    <p style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 700, fontSize: "0.95rem", color: "#1a1a2e", margin: "0 0 0.2rem" }}>
+                    <p style={{ fontFamily: hFont, fontWeight: 700, fontSize: "0.95rem", color: "#1a1a2e", margin: "0 0 0.2rem" }}>
                       {ai.testimonial.author || "Happy Customer"}
                     </p>
                     {ai.testimonial.role && (
-                      <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "0.82rem", color: "#999", margin: 0 }}>
+                      <p style={{ fontFamily: bFont, fontSize: "0.82rem", color: "#999", margin: 0 }}>
                         {ai.testimonial.role}
                       </p>
                     )}
@@ -1084,13 +1403,13 @@ export default function BuildPreview() {
                 }}
               >
                 <div style={{ maxWidth: 700, margin: "0 auto", textAlign: "center" }}>
-                  <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "0.8rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.12em", color: accentColor, margin: "0 0 0.5rem" }}>
+                  <p style={{ fontFamily: bFont, fontSize: "0.8rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.12em", color: accentColor, margin: "0 0 0.5rem" }}>
                     About Us
                   </p>
-                  <h3 style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 800, fontSize: "2rem", color: "#1a1a2e", margin: "0 0 1.5rem", letterSpacing: "-0.02em" }}>
+                  <h3 style={{ fontFamily: hFont, fontWeight: 800, fontSize: "2rem", color: "#1a1a2e", margin: "0 0 1.5rem", letterSpacing: "-0.02em" }}>
                     {"Why Choose " + (businessName || "Us")}
                   </h3>
-                  <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "1.05rem", color: "#555", lineHeight: 1.8, margin: 0 }}>
+                  <p style={{ fontFamily: bFont, fontSize: "1.05rem", color: "#555", lineHeight: 1.8, margin: 0 }}>
                     {aboutBlurb || ("At " + (businessName || "our company") + ", we are committed to delivering exceptional results for every client. With years of experience in " + (industry || "our field").toLowerCase() + ", our team brings the expertise and dedication your project deserves.")}
                   </p>
                 </div>
@@ -1099,28 +1418,28 @@ export default function BuildPreview() {
               {/* ══════ Contact Section ══════ */}
               <div style={{ padding: "4.5rem 3.5rem", background: "#ffffff" }}>
                 <div style={{ maxWidth: 520, margin: "0 auto" }}>
-                  <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "0.8rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.12em", color: accentColor, textAlign: "center", margin: "0 0 0.5rem" }}>
+                  <p style={{ fontFamily: bFont, fontSize: "0.8rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.12em", color: accentColor, textAlign: "center", margin: "0 0 0.5rem" }}>
                     Contact
                   </p>
-                  <h3 style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 800, fontSize: "2rem", color: "#1a1a2e", textAlign: "center", margin: "0 0 0.5rem", letterSpacing: "-0.02em" }}>
+                  <h3 style={{ fontFamily: hFont, fontWeight: 800, fontSize: "2rem", color: "#1a1a2e", textAlign: "center", margin: "0 0 0.5rem", letterSpacing: "-0.02em" }}>
                     Get In Touch
                   </h3>
-                  <p style={{ fontFamily: "'DM Sans', sans-serif", color: "#888", textAlign: "center", margin: "0 0 2.5rem", fontSize: "1rem", lineHeight: 1.6 }}>
+                  <p style={{ fontFamily: bFont, color: "#888", textAlign: "center", margin: "0 0 2.5rem", fontSize: "1rem", lineHeight: 1.6 }}>
                     {"Ready to work with " + (businessName || "us") + "? Send us a message and we will get back to you within 24 hours."}
                   </p>
                   <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
                     <div style={{ display: "flex", gap: "1rem" }}>
-                      <div style={{ flex: 1, background: "#f7f8fa", border: "1px solid #e0e2e8", borderRadius: 8, padding: "0.85rem 1rem", fontFamily: "'DM Sans', sans-serif", fontSize: "0.9rem", color: "#aaa" }}>
+                      <div style={{ flex: 1, background: "#f7f8fa", border: "1px solid #e0e2e8", borderRadius: 8, padding: "0.85rem 1rem", fontFamily: bFont, fontSize: "0.9rem", color: "#aaa" }}>
                         Your Name
                       </div>
-                      <div style={{ flex: 1, background: "#f7f8fa", border: "1px solid #e0e2e8", borderRadius: 8, padding: "0.85rem 1rem", fontFamily: "'DM Sans', sans-serif", fontSize: "0.9rem", color: "#aaa" }}>
+                      <div style={{ flex: 1, background: "#f7f8fa", border: "1px solid #e0e2e8", borderRadius: 8, padding: "0.85rem 1rem", fontFamily: bFont, fontSize: "0.9rem", color: "#aaa" }}>
                         Email Address
                       </div>
                     </div>
-                    <div style={{ background: "#f7f8fa", border: "1px solid #e0e2e8", borderRadius: 8, padding: "0.85rem 1rem", fontFamily: "'DM Sans', sans-serif", fontSize: "0.9rem", color: "#aaa", height: 100 }}>
+                    <div style={{ background: "#f7f8fa", border: "1px solid #e0e2e8", borderRadius: 8, padding: "0.85rem 1rem", fontFamily: bFont, fontSize: "0.9rem", color: "#aaa", height: 100 }}>
                       Tell us about your project...
                     </div>
-                    <span style={{ display: "inline-block", padding: "0.9rem 2rem", background: accentColor, color: "#fff", fontFamily: "'Outfit', sans-serif", fontWeight: 700, fontSize: "1rem", borderRadius: 8, textAlign: "center", boxShadow: "0 2px 12px " + accentColor + "44" }}>
+                    <span style={{ display: "inline-block", padding: "0.9rem 2rem", background: accentColor, color: "#fff", fontFamily: hFont, fontWeight: 700, fontSize: "1rem", borderRadius: 8, textAlign: "center", boxShadow: "0 2px 12px " + accentColor + "44" }}>
                       Send Message
                     </span>
                   </div>
@@ -1129,10 +1448,10 @@ export default function BuildPreview() {
 
               {/* ══════ Footer ══════ */}
               <div style={{ padding: "2.5rem 3.5rem", background: "#1a1a2e", textAlign: "center" }}>
-                <p style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 700, fontSize: "1.1rem", color: "#ffffff", margin: "0 0 0.4rem" }}>
+                <p style={{ fontFamily: hFont, fontWeight: 700, fontSize: "1.1rem", color: "#ffffff", margin: "0 0 0.4rem" }}>
                   {businessName || "Your Business"}
                 </p>
-                <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "0.8rem", color: "rgba(255,255,255,0.4)", margin: 0 }}>
+                <p style={{ fontFamily: bFont, fontSize: "0.8rem", color: "rgba(255,255,255,0.4)", margin: 0 }}>
                   {"\u00A9 2026 " + (businessName || "Your Business") + ". All rights reserved."}
                 </p>
               </div>
@@ -1248,63 +1567,148 @@ export default function BuildPreview() {
             textAlign: "center",
           })}
         >
-          Technical Considerations
+          What We&#39;ll Build Together
         </h3>
+        <p
+          style={body({
+            textAlign: "center",
+            fontSize: "1rem",
+            maxWidth: 640,
+            margin: "0 auto 2.5rem",
+            color: "var(--text-mid)",
+            lineHeight: 1.7,
+          })}
+        >
+          Every project starts with the right questions. Below are the key areas we&#39;ll explore during your free consultation &#8212; designed to make sure we build exactly what {businessName || "your business"} needs.
+        </p>
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
-            gap: "1rem",
+            gridTemplateColumns: "repeat(auto-fill, minmax(340px, 1fr))",
+            gap: "1.25rem",
           }}
         >
-          {techItems.map((item, i) => (
+          {techItems.map((item, i) => {
+            var visibleQs = (item.questions || []).filter(function(q) { return q.startsWith("[visible] "); });
+            var deepQs = (item.questions || []).filter(function(q) { return q.startsWith("[deep] "); });
+            return (
             <div
               key={i}
               style={card({
-                padding: "1.25rem 1.5rem",
+                padding: "1.5rem 1.75rem",
                 position: "relative",
                 overflow: "hidden",
+                borderLeft: "3px solid var(--accent)",
               })}
             >
+              {/* Topic number badge */}
               <div
                 style={{
+                  position: "absolute",
+                  top: "1rem",
+                  right: "1rem",
+                  width: 28,
+                  height: 28,
+                  borderRadius: "50%",
+                  background: "var(--accent)",
+                  opacity: 0.15,
                   display: "flex",
                   alignItems: "center",
-                  justifyContent: "space-between",
-                  marginBottom: "0.75rem",
+                  justifyContent: "center",
+                }}
+              />
+              <span
+                style={{
+                  position: "absolute",
+                  top: "1.15rem",
+                  right: "1.2rem",
+                  fontFamily: "'Outfit', sans-serif",
+                  fontWeight: 700,
+                  fontSize: "0.7rem",
+                  color: "var(--accent)",
                 }}
               >
-                <span
-                  style={{
-                    fontFamily: "'Outfit', sans-serif",
-                    fontWeight: 700,
-                    fontSize: "0.95rem",
-                    color: "var(--text-hi)",
-                  }}
-                >
-                  {item.title}
-                </span>
-                <span style={{ fontSize: "0.85rem", opacity: 0.5 }}>
-                  &#128274;
-                </span>
-              </div>
+                {String(i + 1).padStart(2, "0")}
+              </span>
+
+              {/* Title */}
+              <h4
+                style={{
+                  fontFamily: "'Outfit', sans-serif",
+                  fontWeight: 700,
+                  fontSize: "1.05rem",
+                  color: "var(--text-hi)",
+                  margin: "0 0 0.6rem",
+                  paddingRight: "2rem",
+                }}
+              >
+                {item.title}
+              </h4>
+
+              {/* Detail — what we'll address */}
               <p
                 style={{
                   fontFamily: "'DM Sans', sans-serif",
-                  fontSize: "0.85rem",
-                  lineHeight: 1.6,
+                  fontSize: "0.88rem",
+                  lineHeight: 1.65,
                   color: "var(--text-mid)",
-                  margin: 0,
-                  filter: "blur(5px)",
-                  userSelect: "none",
+                  margin: "0 0 1rem",
                 }}
               >
                 {item.detail}
               </p>
-              {item.questions && item.questions.length > 0 && (
+
+              {/* Visible questions — practical, approachable */}
+              {visibleQs.length > 0 && (
+                <div style={{ marginBottom: deepQs.length > 0 ? "0.75rem" : 0 }}>
+                  <span
+                    style={{
+                      fontFamily: "'Outfit', sans-serif",
+                      fontSize: "0.7rem",
+                      fontWeight: 700,
+                      color: "var(--accent)",
+                      letterSpacing: "0.1em",
+                      textTransform: "uppercase",
+                      display: "block",
+                      marginBottom: "0.5rem",
+                    }}
+                  >
+                    Questions We&#39;ll Start With
+                  </span>
+                  {visibleQs.map(function(q, qi) {
+                    var text = q.replace(/^\[visible\] /, "");
+                    return (
+                      <div
+                        key={qi}
+                        style={{
+                          display: "flex",
+                          alignItems: "flex-start",
+                          gap: "0.5rem",
+                          marginBottom: "0.4rem",
+                        }}
+                      >
+                        <span style={{ color: "var(--accent)", fontSize: "0.7rem", marginTop: "0.2rem", flexShrink: 0 }}>&#9679;</span>
+                        <p
+                          style={{
+                            fontFamily: "'DM Sans', sans-serif",
+                            fontSize: "0.85rem",
+                            lineHeight: 1.55,
+                            color: "var(--text-mid)",
+                            margin: 0,
+                          }}
+                        >
+                          {text}
+                        </p>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+
+              {/* Deep questions — blurred, tease expertise */}
+              {deepQs.length > 0 && (
                 <div
                   style={{
-                    marginTop: "0.75rem",
                     paddingTop: "0.75rem",
                     borderTop: "1px solid var(--border)",
                   }}
@@ -1312,56 +1716,89 @@ export default function BuildPreview() {
                   <span
                     style={{
                       fontFamily: "'Outfit', sans-serif",
-                      fontSize: "0.72rem",
-                      fontWeight: 600,
-                      color: "var(--accent)",
-                      letterSpacing: "0.08em",
+                      fontSize: "0.7rem",
+                      fontWeight: 700,
+                      color: "var(--primary, #1558CB)",
+                      letterSpacing: "0.1em",
                       textTransform: "uppercase",
-                      display: "block",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "0.4rem",
                       marginBottom: "0.5rem",
                     }}
                   >
-                    Discovery Questions
+                    <span style={{ fontSize: "0.8rem" }}>&#128274;</span>
+                    Deep-Dive Questions (Unlocked in Consultation)
                   </span>
-                  {item.questions.map(function(q, qi) {
-                    var isVisible = q.startsWith("[visible] ");
-                    var text = q.replace(/^\[(visible|deep)\] /, "");
+                  {deepQs.map(function(q, qi) {
+                    var text = q.replace(/^\[deep\] /, "");
                     return (
-                      <p
+                      <div
                         key={qi}
                         style={{
-                          fontFamily: "'DM Sans', sans-serif",
-                          fontSize: "0.78rem",
-                          lineHeight: 1.5,
-                          color: isVisible ? "var(--text-mid)" : "var(--text-mid)",
-                          margin: "0 0 0.4rem",
-                          paddingLeft: "0.75rem",
-                          borderLeft: isVisible ? "2px solid var(--accent)" : "2px solid var(--primary)",
-                          filter: isVisible ? "none" : "blur(4px)",
-                          userSelect: isVisible ? "auto" : "none",
+                          display: "flex",
+                          alignItems: "flex-start",
+                          gap: "0.5rem",
+                          marginBottom: "0.4rem",
                         }}
                       >
-                        {text}
-                      </p>
+                        <span style={{ color: "var(--primary, #1558CB)", fontSize: "0.7rem", marginTop: "0.2rem", flexShrink: 0 }}>&#9679;</span>
+                        <p
+                          style={{
+                            fontFamily: "'DM Sans', sans-serif",
+                            fontSize: "0.85rem",
+                            lineHeight: 1.55,
+                            color: "var(--text-mid)",
+                            margin: 0,
+                            filter: "blur(3.5px)",
+                            userSelect: "none",
+                          }}
+                        >
+                          {text}
+                        </p>
+                      </div>
                     );
                   })}
                 </div>
               )}
             </div>
-          ))}
+          );})}
         </div>
-        <p
-          style={body({
+        <div
+          style={{
             textAlign: "center",
-            fontSize: "0.9rem",
-            marginTop: "1.5rem",
-            color: "var(--text-lo)",
-            fontStyle: "italic",
-          })}
+            marginTop: "2rem",
+            padding: "1.5rem",
+            borderRadius: 12,
+            background: "rgba(21, 88, 203, 0.06)",
+            border: "1px solid rgba(21, 88, 203, 0.12)",
+            maxWidth: 640,
+            marginLeft: "auto",
+            marginRight: "auto",
+          }}
         >
-          These technical considerations are part of our discovery process.
-          We&#39;ll walk through each one with you on a free consultation call.
-        </p>
+          <p
+            style={{
+              fontFamily: "'Outfit', sans-serif",
+              fontWeight: 700,
+              fontSize: "1rem",
+              color: "var(--text-hi)",
+              margin: "0 0 0.4rem",
+            }}
+          >
+            {techItems.length} topics, {techItems.reduce(function(sum, item) { return sum + (item.questions ? item.questions.length : 0); }, 0)} tailored questions
+          </p>
+          <p
+            style={body({
+              fontSize: "0.88rem",
+              color: "var(--text-mid)",
+              margin: 0,
+              lineHeight: 1.6,
+            })}
+          >
+            These aren&#39;t generic templates &#8212; they&#39;re specific to what {businessName || "you"} described. On a free consultation call, we&#39;ll walk through each one to make sure nothing gets missed.
+          </p>
+        </div>
       </div>
 
       {/* ─ Section D: CTA + Contact Form ─ */}

@@ -544,7 +544,7 @@ app.post('/api/generate-preview', async (req, res) => {
     return res.status(500).json({ error: 'API key not configured' })
   }
 
-  const { businessName, industry, primaryColor, accentColor, description, customers, services } = req.body
+  const { businessName, industry, primaryColor, accentColor, description, customers, services, logoUrl, mood, inspirationUrl } = req.body
 
   if (!businessName || !description) {
     return res.status(400).json({ error: 'Business name and description are required' })
@@ -553,7 +553,7 @@ app.post('/api/generate-preview', async (req, res) => {
   try {
     const client = new Anthropic({ apiKey })
 
-    const prompt = `You are a senior web developer and business consultant at a software agency. A potential client just described their project. Based on their input, generate a comprehensive project analysis.
+    const prompt = `You are a senior web developer, designer, and business consultant at a top creative agency. A potential client just described their project. Based on their input, generate a comprehensive project analysis with a DISTINCTIVE, non-generic design direction.
 
 CLIENT INPUT:
 - Business Name: ${businessName}
@@ -562,7 +562,7 @@ CLIENT INPUT:
 - Accent Color: ${accentColor}
 - What they need: ${description}
 - Their customers: ${customers}
-- Their services/offerings: ${services}
+- Their services/offerings: ${services}${logoUrl ? '\n- Logo URL: ' + logoUrl : ''}${mood ? '\n- Desired Mood/Vibe: ' + mood : ''}${inspirationUrl ? '\n- Inspiration Website: ' + inspirationUrl : ''}
 
 Generate a JSON response with EXACTLY this structure (no markdown, no code fences, just valid JSON):
 
@@ -582,14 +582,23 @@ Generate a JSON response with EXACTLY this structure (no markdown, no code fence
   ],
   "ctaText": "A compelling call-to-action button text (3-5 words)",
   "secondaryCta": "A secondary action text (e.g. 'View Our Menu', 'See Our Work', 'Learn More')",
-  "layoutStyle": "bold|elegant|clean|warm",
-  "heroStyle": "gradient|split|centered|fullwidth",
+  "layoutStyle": "bold|elegant|clean|warm|magazine|startup|artisan",
+  "heroStyle": "gradient|split|centered|fullwidth|editorial|asymmetric|video-style",
   "navStyle": "transparent|solid|minimal",
   "testimonial": {"quote": "A realistic-sounding customer testimonial for this type of business", "author": "A realistic first name and last initial", "role": "Customer title like 'Regular Customer' or 'Client since 2023'"},
   "stats": [
     {"value": "A realistic metric", "label": "Short label"}
   ],
-  "featureHighlight": "One standout feature or differentiator for the hero area (e.g. 'Free Delivery on Orders Over $30', 'No Contracts Ever', 'Licensed & Insured')"
+  "featureHighlight": "One standout feature or differentiator for the hero area (e.g. 'Free Delivery on Orders Over $30', 'No Contracts Ever', 'Licensed & Insured')",
+  "headingFont": "A specific Google Font name for headings (e.g. 'Playfair Display', 'Space Grotesk', 'Sora', 'Fraunces')",
+  "bodyFont": "A specific Google Font name for body text (e.g. 'Inter', 'Source Sans 3', 'Nunito', 'Karla')",
+  "logoUrl": "${logoUrl || ''}",
+  "unsplashKeywords": ["keyword1", "keyword2", "keyword3"],
+  "heroImageQuery": "A specific Unsplash search query for the hero background image (e.g. 'modern coffee shop interior warm lighting')",
+  "sectionImages": [
+    {"section": "services", "query": "A specific Unsplash search query relevant to their services"},
+    {"section": "about", "query": "A specific Unsplash search query for the about section"}
+  ]
 }
 
 Rules:
@@ -602,15 +611,39 @@ Rules:
 - The recommendation must reference their SPECIFIC business and customers, not be generic
 - The tagline should feel custom to their brand, not a template
 - All text should be professional but approachable — not salesy or buzzwordy
-- layoutStyle: "bold" for fitness/sports/energy brands, "elegant" for professional services/luxury, "clean" for tech/saas/modern, "warm" for food/family/community businesses
-- heroStyle: "gradient" uses brand color gradient background, "split" puts text left and a colored block right, "centered" is minimal centered text on white, "fullwidth" is big bold text edge to edge
+- DESIGN CREATIVITY IS CRITICAL:
+  - Do NOT default to "gradient" as heroStyle — use the full range of hero styles. Match it to the mood/vibe.
+  - Choose headingFont and bodyFont as a SPECIFIC pairing from Google Fonts. Do NOT use Outfit or DM Sans. Pick fonts that match the brand personality: serif fonts for premium/editorial brands, geometric sans for tech/modern, rounded sans for friendly/warm, display fonts for bold/energetic.
+  - Examples of good pairings: "Playfair Display" + "Source Sans 3", "Space Grotesk" + "Inter", "Fraunces" + "Nunito", "Sora" + "Karla", "Libre Baskerville" + "Raleway", "Josefin Sans" + "Lato"
+  - unsplashKeywords should be 3 specific, descriptive keywords that would find great stock photos for this business (not generic words like "business" or "office")
+  - heroImageQuery should be a descriptive 4-6 word Unsplash search query that would return a compelling hero photo specific to this business
+  - sectionImages should have 2-3 entries with specific queries for services and about sections
+${mood ? '  - The client specified a "' + mood + '" vibe — let this strongly influence your font choices, layout style, hero style, and overall design direction' : ''}
+${inspirationUrl ? '  - The client admires ' + inspirationUrl + ' — try to match its general aesthetic and layout approach' : ''}
+- layoutStyle choices:
+  - "bold" for fitness/sports/energy brands — strong contrast, heavy type
+  - "elegant" for professional services/luxury — refined spacing, thin borders
+  - "clean" for tech/saas/modern — lots of whitespace, minimal borders
+  - "warm" for food/family/community — rounded corners, soft shadows
+  - "magazine" for editorial/media/content-heavy — grid layouts, mixed type sizes, editorial feel
+  - "startup" for SaaS/startup/innovation — generous whitespace, centered layouts, big headlines
+  - "artisan" for handcrafted/local/boutique — textured feel, organic shapes, earthy tones
+- heroStyle choices:
+  - "gradient" uses brand color gradient background
+  - "split" puts text left and a colored block right
+  - "centered" is minimal centered text on white
+  - "fullwidth" is big bold text edge to edge
+  - "editorial" is large serif headline over muted background with understated elegance
+  - "asymmetric" is off-center layout with overlapping elements and dynamic composition
+  - "video-style" is dark overlay with centered text as if layered over video/photography
 - navStyle: "transparent" overlays on hero, "solid" is white with shadow, "minimal" is just logo and hamburger
 - stats should have exactly 3-4 items with realistic numbers for this specific industry (e.g. restaurant: "500+ Orders/Week", gym: "200+ Members")
-- The testimonial should sound authentic for this industry, not generic`
+- The testimonial should sound authentic for this industry, not generic
+- If the client provided a logoUrl, include it in the response as-is`
 
     const response = await client.messages.create({
-      model: 'claude-haiku-4-5',
-      max_tokens: 2000,
+      model: 'claude-sonnet-4-6',
+      max_tokens: 4000,
       messages: [{ role: 'user', content: prompt }],
     })
 

@@ -298,6 +298,64 @@ app.use((req, res, next) => {
 
 app.use(express.static(join(__dirname, 'dist')))
 
+// ── Email verification for Build Preview ────────────────────────────────────
+const verificationCodes = new Map() // email → { code, expires }
+
+app.post('/api/send-verification', async (req, res) => {
+  const { email } = req.body
+  if (!email || !email.includes('@')) return res.status(400).json({ error: 'Valid email required' })
+
+  const code = String(Math.floor(100000 + Math.random() * 900000)) // 6-digit
+  verificationCodes.set(email.toLowerCase(), { code, expires: Date.now() + 10 * 60 * 1000 }) // 10 min TTL
+
+  // Send via EmailJS REST API (uses existing service)
+  try {
+    await fetch('https://api.emailjs.com/api/v1.0/email/send', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        service_id: 'service_xzp77wo',
+        template_id: 'template_cmthcco',
+        user_id: 'sKxPbJbb8JutpwYcg',
+        template_params: {
+          from_name: 'doITbetter labs',
+          from_email: email,
+          message: `Your verification code is: ${code}\n\nEnter this code on the Build Preview page to generate your custom site preview.\n\nThis code expires in 10 minutes.`,
+          source: 'Email Verification',
+        },
+      }),
+    })
+    res.json({ ok: true })
+  } catch (err) {
+    console.error('[verify-send]', err.message)
+    res.status(500).json({ error: 'Failed to send verification email' })
+  }
+})
+
+app.post('/api/verify-code', (req, res) => {
+  const { email, code } = req.body
+  if (!email || !code) return res.status(400).json({ error: 'Email and code required' })
+
+  const entry = verificationCodes.get(email.toLowerCase())
+  if (!entry) return res.status(400).json({ error: 'No code found. Request a new one.' })
+  if (Date.now() > entry.expires) {
+    verificationCodes.delete(email.toLowerCase())
+    return res.status(400).json({ error: 'Code expired. Request a new one.' })
+  }
+  if (entry.code !== code.trim()) return res.status(400).json({ error: 'Invalid code' })
+
+  verificationCodes.delete(email.toLowerCase())
+  res.json({ verified: true })
+})
+
+// Clean up expired codes every 5 minutes
+setInterval(() => {
+  const now = Date.now()
+  for (const [email, entry] of verificationCodes) {
+    if (now > entry.expires) verificationCodes.delete(email)
+  }
+}, 5 * 60 * 1000)
+
 // ── Event tracking endpoint ──────────────────────────────────────────────────
 app.post('/api/track', async (req, res) => {
   if (!supabase) return res.status(503).json({ error: 'Tracking not configured' })

@@ -914,11 +914,34 @@ export default function App() {
 
           {captureStatus === "success" ? (
             <div style={{
-              padding: "16px 24px", borderRadius: "12px",
-              background: "rgba(21,203,136,0.15)", border: "1px solid rgba(21,203,136,0.3)",
-              color: "var(--accent)", fontSize: "0.95rem",
+              padding: "24px 28px", borderRadius: "12px",
+              background: "var(--bg-card)", border: "1px solid var(--border)",
+              textAlign: "left", maxWidth: 540, margin: "0 auto",
             }}>
-              Check your inbox! (And your spam folder, just in case.)
+              <p style={{ color: "var(--accent)", fontSize: "0.95rem", fontWeight: 600, margin: "0 0 16px", textAlign: "center" }}>
+                Here&#39;s your guide:
+              </p>
+              {[
+                { q: "1. How much of the work is custom vs. template-based?", a: "Templates are fine for some things \u2014 but if you're paying for custom development, make sure that's what you're getting. Ask to see examples of their work that aren't just WordPress themes with a logo swap." },
+                { q: "2. Who actually builds it \u2014 and where are they?", a: "Some shops take your money and outsource everything overseas. That's not inherently bad, but you should know. Ask: who writes the code, who designs it, and will I be able to talk to them directly?" },
+                { q: "3. What happens after launch?", a: "The site goes live \u2014 then what? Ask about hosting, maintenance, bug fixes, and content updates. Get the ongoing costs in writing before you sign anything." },
+                { q: "4. Do you own the code?", a: "Some agencies retain ownership of the code or lock you into their platform. If you leave, you should be able to take your site with you. Get this in the contract." },
+                { q: "5. Can you show me a working demo before I commit?", a: "Any good shop should be able to show you something \u2014 a wireframe, a mockup, a prototype \u2014 before you pay in full. If they can't, that's a red flag." },
+              ].map((item, i) => (
+                <div key={i} style={{ marginBottom: i < 4 ? 16 : 0 }}>
+                  <p style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 700, fontSize: "0.9rem", color: "var(--text-hi)", margin: "0 0 4px" }}>
+                    {item.q}
+                  </p>
+                  <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "0.85rem", color: "var(--text-mid)", margin: 0, lineHeight: 1.65 }}>
+                    {item.a}
+                  </p>
+                </div>
+              ))}
+              <div style={{ marginTop: 20, padding: "12px 16px", borderRadius: 8, background: "rgba(21,203,136,0.08)", border: "1px solid rgba(21,203,136,0.15)", textAlign: "center" }}>
+                <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "0.82rem", color: "var(--accent)", margin: 0 }}>
+                  Want to see what we&#39;d build for you? <Link to="/build" style={{ color: "var(--accent)", fontWeight: 700, textDecoration: "underline" }}>Try our free Build Preview tool</Link>
+                </p>
+              </div>
             </div>
           ) : (
             <form onSubmit={handleCaptureSubmit} style={{

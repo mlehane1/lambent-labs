@@ -101,6 +101,7 @@ function evaluateSession(sessionId) {
   if (!session || alertedSessions.has(sessionId)) return
 
   const { visitor, events } = session
+  if (!visitor) return
   const isBusiness = isRealBusiness(visitor.company)
   const pages = [...new Set(events.filter(e => e.event_type === 'page_view').map(e => e.page_path))]
   const hasIntentPage = pages.some(p => INTENT_PAGES.some(ip => p.startsWith(ip)))

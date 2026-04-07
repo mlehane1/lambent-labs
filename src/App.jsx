@@ -285,6 +285,8 @@ export default function App() {
   const [editingContent, setEditingContent] = useState(null);
   const [activeSection, setActiveSection] = useState("home");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [solutionsOpen, setSolutionsOpen] = useState(false);
+  const [mobileSolutionsOpen, setMobileSolutionsOpen] = useState(false);
   const [showVisitorDashboard, setShowVisitorDashboard] = useState(false);
   const [showBlogAdmin, setShowBlogAdmin] = useState(false);
 
@@ -492,19 +494,69 @@ export default function App() {
         </div>
 
         {/* Desktop nav */}
-        <div className="desktop-nav" style={{ display: "flex", gap: "28px", alignItems: "center" }}>
-          {navLinks.map(s => (
-            <a key={s} href={`#${s}`} onClick={() => setActiveSection(s)} style={{
-              color: activeSection === s ? "var(--primary-lt)" : "var(--text-mid)",
+        <div className="desktop-nav" style={{ display: "flex", gap: "24px", alignItems: "center" }}>
+          <a href="#home" onClick={() => setActiveSection("home")} style={{
+            color: activeSection === "home" ? "var(--primary-lt)" : "var(--text-mid)",
+            fontWeight: 500, fontSize: "0.88rem", letterSpacing: "0.04em",
+            transition: "color 0.2s",
+          }}>Home</a>
+          <a href="#services" onClick={() => setActiveSection("services")} style={{
+            color: activeSection === "services" ? "var(--primary-lt)" : "var(--text-mid)",
+            fontWeight: 500, fontSize: "0.88rem", letterSpacing: "0.04em",
+            transition: "color 0.2s",
+          }}>Services</a>
+          {/* Solutions dropdown */}
+          <div
+            style={{ position: "relative" }}
+            onMouseEnter={() => setSolutionsOpen(true)}
+            onMouseLeave={() => setSolutionsOpen(false)}
+          >
+            <button style={{
+              color: "var(--text-mid)", background: "none", border: "none",
               fontWeight: 500, fontSize: "0.88rem", letterSpacing: "0.04em",
-              textTransform: "capitalize", transition: "color 0.2s",
-            }}>{s}</a>
-          ))}
+              cursor: "pointer", display: "flex", alignItems: "center", gap: "4px", padding: 0,
+            }}>
+              Solutions
+              <span style={{ fontSize: "0.55rem", transition: "transform 0.2s", transform: solutionsOpen ? "rotate(180deg)" : "none" }}>&#9660;</span>
+            </button>
+            {solutionsOpen && (
+              <div style={{ position: "absolute", top: "100%", left: "50%", transform: "translateX(-50%)", paddingTop: 8, zIndex: 1001 }}>
+                <div style={{
+                  background: "rgba(2,8,20,0.97)", border: "1px solid var(--border)",
+                  borderRadius: 10, padding: "8px 0", minWidth: 200,
+                  boxShadow: "0 8px 32px rgba(0,0,0,0.4)", backdropFilter: "blur(12px)",
+                }}>
+                  {[
+                    { label: "$199 Websites", to: "/solutions/websites" },
+                    { label: "SMB Solutions", to: "/solutions/small-business" },
+                    { label: "Case Management", to: "/solutions/case-management" },
+                    { label: "Data Extraction", to: "/solutions/data-extraction" },
+                    { label: "Franchise", to: "/solutions/franchise" },
+                    { label: "White-Glove", to: "/solutions/white-glove" },
+                  ].map(item => (
+                    <Link key={item.to} to={item.to} style={{
+                      display: "block", padding: "10px 20px", color: "var(--text-mid)",
+                      textDecoration: "none", fontSize: "0.88rem", fontFamily: "'DM Sans', sans-serif",
+                      transition: "background 0.15s",
+                    }}
+                    onMouseEnter={e => { e.currentTarget.style.background = "rgba(21,88,203,0.1)"; }}
+                    onMouseLeave={e => { e.currentTarget.style.background = "transparent"; }}
+                    >{item.label}</Link>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
           <Link to="/blog" style={{
             color: "var(--text-mid)",
             fontWeight: 500, fontSize: "0.88rem", letterSpacing: "0.04em",
             transition: "color 0.2s",
           }}>Blog</Link>
+          <a href="#contact" onClick={() => setActiveSection("contact")} style={{
+            color: activeSection === "contact" ? "var(--primary-lt)" : "var(--text-mid)",
+            fontWeight: 500, fontSize: "0.88rem", letterSpacing: "0.04em",
+            transition: "color 0.2s",
+          }}>Contact</a>
           <Link to="/build" style={{
             background: "linear-gradient(135deg, var(--primary), var(--accent))",
             color: "white", padding: "8px 20px", borderRadius: "8px",
@@ -535,22 +587,55 @@ export default function App() {
           display: "flex", flexDirection: "column", gap: "8px",
           animation: "fadeInUp 0.2s ease",
         }}>
-          {navLinks.map(s => (
-            <a key={s} href={`#${s}`} onClick={() => { setActiveSection(s); setMobileMenuOpen(false); }} style={{
-              color: activeSection === s ? "var(--primary-lt)" : "var(--text-mid)",
-              fontWeight: 600, fontSize: "1.1rem", letterSpacing: "0.04em",
-              textTransform: "capitalize", padding: "12px 0",
-              borderBottom: "1px solid var(--border)",
-            }}>{s}</a>
-          ))}
-          <Link to="/blog" onClick={() => setMobileMenuOpen(false)} style={{
+          <a href="#home" onClick={() => { setActiveSection("home"); setMobileMenuOpen(false); }} style={{
             color: "var(--text-mid)", fontWeight: 600, fontSize: "1.1rem",
             padding: "12px 0", borderBottom: "1px solid var(--border)",
+          }}>Home</a>
+          <a href="#services" onClick={() => { setActiveSection("services"); setMobileMenuOpen(false); }} style={{
+            color: "var(--text-mid)", fontWeight: 600, fontSize: "1.1rem",
+            padding: "12px 0", borderBottom: "1px solid var(--border)",
+          }}>Services</a>
+          {/* Solutions accordion */}
+          <div>
+            <button onClick={() => setMobileSolutionsOpen(!mobileSolutionsOpen)} style={{
+              color: "var(--text-mid)", fontWeight: 600, fontSize: "1.1rem",
+              padding: "12px 0", background: "none", border: "none", borderBottom: "1px solid var(--border)",
+              width: "100%", textAlign: "left", cursor: "pointer",
+              display: "flex", alignItems: "center", justifyContent: "space-between",
+            }}>
+              Solutions
+              <span style={{ fontSize: "0.7rem", transition: "transform 0.2s", transform: mobileSolutionsOpen ? "rotate(180deg)" : "none" }}>&#9660;</span>
+            </button>
+            {mobileSolutionsOpen && (
+              <div style={{ paddingLeft: 16 }}>
+                {[
+                  { label: "$199 Websites", to: "/solutions/websites" },
+                  { label: "SMB Solutions", to: "/solutions/small-business" },
+                  { label: "Case Management", to: "/solutions/case-management" },
+                  { label: "Data Extraction", to: "/solutions/data-extraction" },
+                  { label: "Franchise", to: "/solutions/franchise" },
+                  { label: "White-Glove", to: "/solutions/white-glove" },
+                ].map(item => (
+                  <Link key={item.to} to={item.to} onClick={() => { setMobileMenuOpen(false); setMobileSolutionsOpen(false); }} style={{
+                    color: "var(--text-lo)", fontWeight: 500, fontSize: "1rem",
+                    padding: "10px 0", borderBottom: "1px solid var(--border)", textDecoration: "none", display: "block",
+                  }}>{item.label}</Link>
+                ))}
+              </div>
+            )}
+          </div>
+          <Link to="/blog" onClick={() => setMobileMenuOpen(false)} style={{
+            color: "var(--text-mid)", fontWeight: 600, fontSize: "1.1rem",
+            padding: "12px 0", borderBottom: "1px solid var(--border)", textDecoration: "none",
           }}>Blog</Link>
+          <a href="#contact" onClick={() => { setActiveSection("contact"); setMobileMenuOpen(false); }} style={{
+            color: "var(--text-mid)", fontWeight: 600, fontSize: "1.1rem",
+            padding: "12px 0", borderBottom: "1px solid var(--border)",
+          }}>Contact</a>
           <Link to="/build" onClick={() => setMobileMenuOpen(false)} style={{
             background: "linear-gradient(135deg, var(--primary), var(--accent))",
             color: "white", padding: "14px 24px", borderRadius: "10px",
-            fontWeight: 600, fontSize: "1rem", textAlign: "center",
+            fontWeight: 600, fontSize: "1rem", textAlign: "center", textDecoration: "none",
             marginTop: "16px",
           }}>Preview Your Project</Link>
         </div>

@@ -11,12 +11,11 @@ const navLinks = [
       { label: "$199 Websites", to: "/solutions/websites" },
       { label: "SMB Solutions", to: "/solutions/small-business" },
       { label: "Case Management", to: "/solutions/case-management" },
+      { label: "Data Extraction", to: "/solutions/data-extraction" },
       { label: "Franchise", to: "/solutions/franchise" },
       { label: "White-Glove", to: "/solutions/white-glove" },
-      { label: "Data Extraction", to: "/solutions/data-extraction" },
     ],
   },
-  { label: "Build Preview", to: "/build" },
   { label: "Blog", to: "/blog" },
   { label: "Contact", to: "/#contact" },
 ];
@@ -211,8 +210,8 @@ export default function Layout() {
               <NavLink key={link.to} to={link.to} label={link.label} current={currentPath} />
             )
           )}
-          <a
-            href="/#contact"
+          <Link
+            to="/build"
             style={{
               background: "linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%)",
               color: "#fff",
@@ -227,8 +226,8 @@ export default function Layout() {
               whiteSpace: "nowrap",
             }}
           >
-            Free Consultation
-          </a>
+            Preview Your Project
+          </Link>
         </div>
 
         {/* Mobile hamburger */}
@@ -291,12 +290,12 @@ export default function Layout() {
               }}>{link.label}</Link>
             )
           )}
-          <a href="/#contact" onClick={() => setMobileOpen(false)} style={{
+          <Link to="/build" onClick={() => setMobileOpen(false)} style={{
             background: "linear-gradient(135deg, var(--primary), var(--accent))",
             color: "white", padding: "14px 24px", borderRadius: "10px",
             fontWeight: 600, fontSize: "1rem", textAlign: "center", textDecoration: "none",
-            marginTop: "16px",
-          }}>Free Consultation</a>
+            display: "block", marginTop: "16px",
+          }}>Preview Your Project</Link>
         </div>
       )}
 

@@ -60,10 +60,10 @@ export default function PrivacyPolicy() {
         Privacy Policy explains how we collect, use, and protect information
         when you visit our website at{" "}
         <a
-          href="https://doitbetter.up.railway.app"
+          href="https://doitbetterlabs.com"
           style={{ color: "var(--accent)" }}
         >
-          doitbetter.up.railway.app
+          doitbetterlabs.com
         </a>{" "}
         (the "Site").
       </p>

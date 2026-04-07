@@ -10,7 +10,7 @@ import { v4 as uuidv4 } from 'uuid'
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const app = express()
 const PORT = process.env.PORT || 3000
-const SITE_URL = 'https://doitbetter.up.railway.app'
+const SITE_URL = 'https://doitbetterlabs.com'
 
 // Read the built HTML template once at startup
 let htmlTemplate = ''

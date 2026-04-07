@@ -6,7 +6,7 @@ When AI generates React code, it has to navigate hundreds of patterns, conventio
 
 For regulated industries and enterprises that need governance, that matters more than flexibility.
 
-I wrote the longer version here: https://doitbetter.up.railway.app/blog/high-code-low-code-ai
+I wrote the longer version here: https://doitbetterlabs.com/blog/high-code-low-code-ai
 
 Agree? Disagree? I want to hear it.
 

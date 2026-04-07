@@ -4,6 +4,6 @@ That same project takes 1-4 weeks today with AI-accelerated development.
 
 We've lived through all three eras. The speed isn't the interesting part — it's WHY it got faster, and what that means for businesses that couldn't afford custom software before.
 
-Full breakdown: https://doitbetter.up.railway.app/blog/high-code-low-code-ai
+Full breakdown: https://doitbetterlabs.com/blog/high-code-low-code-ai
 
 #CustomSoftware #AI #Development #SmallBusiness

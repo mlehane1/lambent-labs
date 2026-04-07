@@ -3,4 +3,4 @@ Allow: /
 Disallow: /api/
 Disallow: /admin
 
-Sitemap: https://doitbetter.up.railway.app/sitemap.xml
+Sitemap: https://doitbetterlabs.com/sitemap.xml

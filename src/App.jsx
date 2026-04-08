@@ -164,7 +164,7 @@ function Modal({ title, onClose, children }) {
 }
 
 // ─── Field ─────────────────────────────────────────────────────────────────────
-function Field({ label, value, onChange, textarea, type = "text", placeholder }) {
+function Field({ label, value, onChange, textarea, type = "text", placeholder, required }) {
   const style = {
     width: "100%", background: "var(--bg-card2)", border: "1px solid var(--border-mid)",
     borderRadius: "8px", padding: "10px 14px", color: "var(--text-hi)",
@@ -179,8 +179,8 @@ function Field({ label, value, onChange, textarea, type = "text", placeholder })
         marginBottom: "6px", letterSpacing: "0.05em", textTransform: "uppercase"
       }}>{label}</label>
       {textarea
-        ? <textarea value={value} onChange={e => onChange(e.target.value)} style={style} placeholder={placeholder} />
-        : <input type={type} value={value} onChange={e => onChange(e.target.value)} style={style} placeholder={placeholder} />
+        ? <textarea value={value} onChange={e => onChange(e.target.value)} style={style} placeholder={placeholder} required={required} />
+        : <input type={type} value={value} onChange={e => onChange(e.target.value)} style={style} placeholder={placeholder} required={required} />
       }
     </div>
   );
@@ -374,6 +374,7 @@ export default function App() {
 
   const handleContactSubmit = async (e) => {
     e.preventDefault();
+    if (!contactName.trim() || !contactEmail.trim() || !contactMessage.trim()) return;
     trackFormSubmit("contact");
     setContactSubmitting(true);
     setContactStatus(null);
@@ -1096,10 +1097,10 @@ export default function App() {
             display: "flex", flexDirection: "column", gap: "16px", textAlign: "left",
           }}>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
-              <Field label="Your Name" value={contactName} onChange={setContactName} placeholder="Jane Smith" />
-              <Field label="Your Email" value={contactEmail} onChange={setContactEmail} type="email" placeholder="jane@company.com" />
+              <Field label="Your Name" value={contactName} onChange={setContactName} placeholder="Jane Smith" required />
+              <Field label="Your Email" value={contactEmail} onChange={setContactEmail} type="email" placeholder="jane@company.com" required />
             </div>
-            <Field label="Tell Us About Your Project" value={contactMessage} onChange={setContactMessage} textarea
+            <Field label="Tell Us About Your Project" value={contactMessage} onChange={setContactMessage} textarea required
               placeholder="I need a web app that... / I want better SEO for... / I need to connect my systems..." />
 
             <button type="submit" disabled={contactSubmitting} style={{

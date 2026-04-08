@@ -449,6 +449,655 @@ export default function WhiteGlove() {
         </div>
       </section>
 
+      {/* ── SAAS COST COMPARISON ────────────────────────────────────────────── */}
+      <section
+        style={{
+          padding: "80px 40px",
+          background: "var(--bg-dark)",
+          borderTop: "1px solid rgba(12,52,121,0.2)",
+          borderBottom: "1px solid rgba(12,52,121,0.2)",
+        }}
+      >
+        <div style={{ maxWidth: "900px", margin: "0 auto" }}>
+          <div style={{ textAlign: "center", marginBottom: "56px" }}>
+            <p
+              style={{
+                color: "var(--accent)",
+                fontSize: "0.8rem",
+                fontWeight: 600,
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+                marginBottom: "12px",
+              }}
+            >
+              The Math Doesn&rsquo;t Lie
+            </p>
+            <h2
+              style={{
+                fontFamily: "'Outfit', sans-serif",
+                fontWeight: 700,
+                fontSize: "clamp(1.8rem, 4vw, 2.6rem)",
+                color: "var(--text-hi)",
+                margin: "0 0 16px",
+                letterSpacing: "-0.02em",
+              }}
+            >
+              SaaS Licensing vs. Custom Software
+            </h2>
+            <p
+              style={{
+                color: "var(--text-mid)",
+                maxWidth: "600px",
+                margin: "0 auto",
+                lineHeight: 1.7,
+                fontSize: "0.95rem",
+              }}
+            >
+              Per-seat pricing looks affordable on day one. But SaaS costs
+              compound every year while custom software pays for itself.
+            </p>
+          </div>
+
+          {/* Comparison Table */}
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: "24px",
+              marginBottom: "40px",
+            }}
+          >
+            {/* SaaS Column */}
+            <div
+              style={{
+                background: "var(--bg-card)",
+                border: "1px solid rgba(248,113,113,0.3)",
+                borderRadius: "16px",
+                padding: "32px 28px",
+              }}
+            >
+              <h3
+                style={{
+                  fontFamily: "'Outfit', sans-serif",
+                  fontWeight: 700,
+                  fontSize: "1.2rem",
+                  color: "#F87171",
+                  margin: "0 0 8px",
+                }}
+              >
+                Typical SaaS Platform
+              </h3>
+              <p
+                style={{
+                  color: "var(--text-lo)",
+                  fontSize: "0.82rem",
+                  margin: "0 0 24px",
+                }}
+              >
+                50 users &times; $45/seat/mo &middot; Annual price increases
+              </p>
+              {[
+                { year: "Year 1", cost: "$27,000", note: "Base pricing" },
+                { year: "Year 2", cost: "$31,050", note: "+15% price hike" },
+                { year: "Year 3", cost: "$35,700", note: "Another increase" },
+              ].map((row) => (
+                <div
+                  key={row.year}
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    padding: "14px 0",
+                    borderBottom: "1px solid var(--border)",
+                  }}
+                >
+                  <div>
+                    <div
+                      style={{
+                        color: "var(--text-hi)",
+                        fontFamily: "'Outfit', sans-serif",
+                        fontWeight: 600,
+                        fontSize: "0.95rem",
+                      }}
+                    >
+                      {row.year}
+                    </div>
+                    <div
+                      style={{
+                        color: "var(--text-lo)",
+                        fontSize: "0.78rem",
+                        marginTop: "2px",
+                      }}
+                    >
+                      {row.note}
+                    </div>
+                  </div>
+                  <div
+                    style={{
+                      fontFamily: "'Outfit', sans-serif",
+                      fontWeight: 700,
+                      fontSize: "1.15rem",
+                      color: "#F87171",
+                    }}
+                  >
+                    {row.cost}
+                  </div>
+                </div>
+              ))}
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  padding: "18px 0 0",
+                  marginTop: "8px",
+                }}
+              >
+                <div
+                  style={{
+                    color: "var(--text-hi)",
+                    fontFamily: "'Outfit', sans-serif",
+                    fontWeight: 700,
+                    fontSize: "1rem",
+                  }}
+                >
+                  3-Year Total
+                </div>
+                <div
+                  style={{
+                    fontFamily: "'Outfit', sans-serif",
+                    fontWeight: 800,
+                    fontSize: "1.4rem",
+                    color: "#F87171",
+                  }}
+                >
+                  $93,750
+                </div>
+              </div>
+            </div>
+
+            {/* Custom Column */}
+            <div
+              style={{
+                background: "var(--bg-card)",
+                border: "1px solid rgba(21,203,136,0.3)",
+                borderRadius: "16px",
+                padding: "32px 28px",
+              }}
+            >
+              <h3
+                style={{
+                  fontFamily: "'Outfit', sans-serif",
+                  fontWeight: 700,
+                  fontSize: "1.2rem",
+                  color: "var(--accent)",
+                  margin: "0 0 8px",
+                }}
+              >
+                Custom Software
+              </h3>
+              <p
+                style={{
+                  color: "var(--text-lo)",
+                  fontSize: "0.82rem",
+                  margin: "0 0 24px",
+                }}
+              >
+                Unlimited users &middot; You own it &middot; Flat maintenance
+              </p>
+              {[
+                { year: "Year 1", cost: "$15,000", note: "Build + deploy" },
+                { year: "Year 2", cost: "$3,600", note: "Maintenance only" },
+                { year: "Year 3", cost: "$3,600", note: "Maintenance only" },
+              ].map((row) => (
+                <div
+                  key={row.year}
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    padding: "14px 0",
+                    borderBottom: "1px solid var(--border)",
+                  }}
+                >
+                  <div>
+                    <div
+                      style={{
+                        color: "var(--text-hi)",
+                        fontFamily: "'Outfit', sans-serif",
+                        fontWeight: 600,
+                        fontSize: "0.95rem",
+                      }}
+                    >
+                      {row.year}
+                    </div>
+                    <div
+                      style={{
+                        color: "var(--text-lo)",
+                        fontSize: "0.78rem",
+                        marginTop: "2px",
+                      }}
+                    >
+                      {row.note}
+                    </div>
+                  </div>
+                  <div
+                    style={{
+                      fontFamily: "'Outfit', sans-serif",
+                      fontWeight: 700,
+                      fontSize: "1.15rem",
+                      color: "var(--accent)",
+                    }}
+                  >
+                    {row.cost}
+                  </div>
+                </div>
+              ))}
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  padding: "18px 0 0",
+                  marginTop: "8px",
+                }}
+              >
+                <div
+                  style={{
+                    color: "var(--text-hi)",
+                    fontFamily: "'Outfit', sans-serif",
+                    fontWeight: 700,
+                    fontSize: "1rem",
+                  }}
+                >
+                  3-Year Total
+                </div>
+                <div
+                  style={{
+                    fontFamily: "'Outfit', sans-serif",
+                    fontWeight: 800,
+                    fontSize: "1.4rem",
+                    color: "var(--accent)",
+                  }}
+                >
+                  $22,200
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Savings callout */}
+          <div
+            style={{
+              textAlign: "center",
+              background:
+                "linear-gradient(135deg, rgba(21,88,203,0.08), rgba(21,203,136,0.08))",
+              border: "1px solid var(--border)",
+              borderRadius: "14px",
+              padding: "28px",
+            }}
+          >
+            <p
+              style={{
+                fontFamily: "'Outfit', sans-serif",
+                fontWeight: 700,
+                fontSize: "1.3rem",
+                color: "var(--accent)",
+                margin: "0 0 4px",
+              }}
+            >
+              Save $71,550 over 3 years
+            </p>
+            <p
+              style={{
+                color: "var(--text-mid)",
+                fontSize: "0.9rem",
+                margin: 0,
+              }}
+            >
+              And that&rsquo;s before you factor in the per-seat price hikes,
+              add-on fees, and workaround labor you eliminate.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* ── UNLIMITED USERS CALLOUT ──────────────────────────────────────────── */}
+      <section style={{ padding: "80px 40px" }}>
+        <div
+          style={{
+            maxWidth: "860px",
+            margin: "0 auto",
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr 1fr",
+            gap: "24px",
+          }}
+        >
+          {[
+            {
+              number: "0",
+              label: "Per-Seat Fees",
+              desc: "Add 5 users or 500. Your cost doesn\u2019t change. Ever.",
+              prefix: "$",
+            },
+            {
+              number: "0",
+              label: "Annual Price Hikes",
+              desc: "You own the software. Nobody\u2019s raising your rate next January.",
+              prefix: "$",
+            },
+            {
+              number: "\u221E",
+              label: "Users Included",
+              desc: "Your team grows. Your software bill doesn\u2019t.",
+              prefix: "",
+            },
+          ].map((item) => (
+            <div
+              key={item.label}
+              style={{
+                background: "var(--bg-card)",
+                border: "1px solid var(--border)",
+                borderRadius: "16px",
+                padding: "36px 28px",
+                textAlign: "center",
+              }}
+            >
+              <div
+                style={{
+                  fontFamily: "'Outfit', sans-serif",
+                  fontWeight: 800,
+                  fontSize: "3rem",
+                  lineHeight: 1,
+                  color: "var(--accent)",
+                  marginBottom: "8px",
+                }}
+              >
+                {item.prefix}
+                {item.number}
+              </div>
+              <div
+                style={{
+                  fontFamily: "'Outfit', sans-serif",
+                  fontWeight: 600,
+                  fontSize: "1rem",
+                  color: "var(--text-hi)",
+                  marginBottom: "8px",
+                }}
+              >
+                {item.label}
+              </div>
+              <p
+                style={{
+                  color: "var(--text-mid)",
+                  fontSize: "0.85rem",
+                  lineHeight: 1.6,
+                  margin: 0,
+                }}
+              >
+                {item.desc}
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── GANTT TIMELINE COMPARISON ────────────────────────────────────────── */}
+      <section
+        style={{
+          padding: "80px 40px",
+          background: "var(--bg-dark)",
+          borderTop: "1px solid rgba(12,52,121,0.2)",
+          borderBottom: "1px solid rgba(12,52,121,0.2)",
+        }}
+      >
+        <div style={{ maxWidth: "960px", margin: "0 auto" }}>
+          <div style={{ textAlign: "center", marginBottom: "56px" }}>
+            <p
+              style={{
+                color: "var(--primary-lt)",
+                fontSize: "0.8rem",
+                fontWeight: 600,
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+                marginBottom: "12px",
+              }}
+            >
+              Speed Matters
+            </p>
+            <h2
+              style={{
+                fontFamily: "'Outfit', sans-serif",
+                fontWeight: 700,
+                fontSize: "clamp(1.8rem, 4vw, 2.6rem)",
+                color: "var(--text-hi)",
+                margin: "0 0 16px",
+                letterSpacing: "-0.02em",
+              }}
+            >
+              Months Become Weeks
+            </h2>
+            <p
+              style={{
+                color: "var(--text-mid)",
+                maxWidth: "560px",
+                margin: "0 auto",
+                lineHeight: 1.7,
+                fontSize: "0.95rem",
+              }}
+            >
+              AI-accelerated development with a focused team means you get to
+              production faster &mdash; and for less.
+            </p>
+          </div>
+
+          {/* Gantt Charts */}
+          {(() => {
+            const tradPhases = [
+              { name: "Requirements", start: 0, width: 12.5, people: "3\u20134", color: "rgba(248,113,113,0.6)" },
+              { name: "Design", start: 10, width: 15, people: "2\u20133", color: "rgba(248,113,113,0.5)" },
+              { name: "Development", start: 22, width: 40, people: "6\u201310", color: "rgba(248,113,113,0.7)" },
+              { name: "QA / Testing", start: 55, width: 20, people: "3\u20134", color: "rgba(248,113,113,0.5)" },
+              { name: "UAT / Fixes", start: 70, width: 15, people: "4\u20135", color: "rgba(248,113,113,0.45)" },
+              { name: "Deployment", start: 82, width: 10, people: "2\u20133", color: "rgba(248,113,113,0.4)" },
+              { name: "Training", start: 90, width: 10, people: "1\u20132", color: "rgba(248,113,113,0.35)" },
+            ];
+            const dibPhases = [
+              { name: "Discovery", start: 0, width: 14, people: "2", color: "rgba(21,203,136,0.6)" },
+              { name: "Design + Build", start: 10, width: 50, people: "2\u20133", color: "rgba(21,203,136,0.7)" },
+              { name: "Test + Deploy", start: 55, width: 30, people: "2", color: "rgba(21,203,136,0.55)" },
+              { name: "Training", start: 82, width: 18, people: "1\u20132", color: "rgba(21,203,136,0.45)" },
+            ];
+            const months = ["Month 1", "Month 2", "Month 3", "Month 4", "Month 5", "Month 6"];
+            const weeks = ["Week 1", "Week 2", "Week 3", "Week 4"];
+            const barH = 36;
+            const barGap = 10;
+
+            const renderGantt = (phases, labels, labelColor, title, subtitle, borderColor) => (
+              <div
+                style={{
+                  background: "var(--bg-card)",
+                  border: `1px solid ${borderColor}`,
+                  borderRadius: "16px",
+                  padding: "28px",
+                  marginBottom: "24px",
+                }}
+              >
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "20px" }}>
+                  <div>
+                    <h3
+                      style={{
+                        fontFamily: "'Outfit', sans-serif",
+                        fontWeight: 700,
+                        fontSize: "1.15rem",
+                        color: labelColor,
+                        margin: "0 0 4px",
+                      }}
+                    >
+                      {title}
+                    </h3>
+                    <p style={{ color: "var(--text-lo)", fontSize: "0.82rem", margin: 0 }}>{subtitle}</p>
+                  </div>
+                </div>
+
+                {/* Time axis */}
+                <div style={{ display: "flex", marginBottom: "12px", paddingLeft: "130px" }}>
+                  {labels.map((l) => (
+                    <div
+                      key={l}
+                      style={{
+                        flex: 1,
+                        fontSize: "0.72rem",
+                        color: "var(--text-lo)",
+                        fontFamily: "'Outfit', sans-serif",
+                        fontWeight: 500,
+                      }}
+                    >
+                      {l}
+                    </div>
+                  ))}
+                </div>
+
+                {/* Bars */}
+                <div style={{ position: "relative" }}>
+                  {phases.map((phase, i) => (
+                    <div
+                      key={phase.name}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        height: barH,
+                        marginBottom: i < phases.length - 1 ? barGap : 0,
+                      }}
+                    >
+                      {/* Label */}
+                      <div
+                        style={{
+                          width: "130px",
+                          flexShrink: 0,
+                          fontSize: "0.82rem",
+                          color: "var(--text-mid)",
+                          fontWeight: 500,
+                          paddingRight: "12px",
+                          textAlign: "right",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        {phase.name}
+                      </div>
+                      {/* Track */}
+                      <div
+                        style={{
+                          flex: 1,
+                          position: "relative",
+                          height: "100%",
+                          background: "rgba(255,255,255,0.02)",
+                          borderRadius: "6px",
+                        }}
+                      >
+                        <div
+                          style={{
+                            position: "absolute",
+                            left: `${phase.start}%`,
+                            width: `${phase.width}%`,
+                            height: "100%",
+                            background: phase.color,
+                            borderRadius: "6px",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            fontSize: "0.72rem",
+                            fontWeight: 600,
+                            color: "#fff",
+                            whiteSpace: "nowrap",
+                            overflow: "hidden",
+                            transition: "width 0.5s ease",
+                          }}
+                        >
+                          {phase.width > 12 && (
+                            <span style={{ opacity: 0.9 }}>{phase.people} people</span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+
+            return (
+              <>
+                {renderGantt(
+                  tradPhases,
+                  months,
+                  "#F87171",
+                  "Traditional Development",
+                  "6+ months \u00B7 8\u201315 people \u00B7 $150K\u2013$500K+",
+                  "rgba(248,113,113,0.3)"
+                )}
+                {renderGantt(
+                  dibPhases,
+                  weeks,
+                  "var(--accent)",
+                  "doITbetter Approach",
+                  "2\u20134 weeks \u00B7 2\u20133 people \u00B7 $5K\u2013$20K",
+                  "rgba(21,203,136,0.3)"
+                )}
+              </>
+            );
+          })()}
+
+          {/* Summary stats */}
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(3, 1fr)",
+              gap: "16px",
+            }}
+          >
+            {[
+              { stat: "10\u00D7", label: "Faster Delivery" },
+              { stat: "5\u00D7", label: "Smaller Team" },
+              { stat: "90%", label: "Lower Cost" },
+            ].map((item) => (
+              <div
+                key={item.label}
+                style={{
+                  textAlign: "center",
+                  background:
+                    "linear-gradient(135deg, rgba(21,88,203,0.06), rgba(21,203,136,0.06))",
+                  border: "1px solid var(--border)",
+                  borderRadius: "12px",
+                  padding: "20px",
+                }}
+              >
+                <div
+                  style={{
+                    fontFamily: "'Outfit', sans-serif",
+                    fontWeight: 800,
+                    fontSize: "1.8rem",
+                    color: "var(--accent)",
+                    lineHeight: 1,
+                    marginBottom: "6px",
+                  }}
+                >
+                  {item.stat}
+                </div>
+                <div
+                  style={{
+                    fontSize: "0.85rem",
+                    color: "var(--text-mid)",
+                    fontWeight: 500,
+                  }}
+                >
+                  {item.label}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ── WHO THIS IS FOR ──────────────────────────────────────────────────── */}
       <section
         style={{

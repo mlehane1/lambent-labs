@@ -39,6 +39,15 @@ const posts = [
     readTime: "8 min read",
   },
   {
+    title: "Why Your SaaS Bill Will Never Stop Growing",
+    slug: "/blog/saas-bill-growing",
+    excerpt:
+      "Per-seat pricing, annual hikes, and add-on fees — SaaS costs compound every year. Here's why custom software is the smarter long-term play.",
+    tags: ["SaaS", "Pricing", "Strategy"],
+    date: "Apr 2026",
+    readTime: "7 min read",
+  },
+  {
     title: "How Much Does Custom Software Actually Cost?",
     slug: "/blog/custom-software-cost",
     excerpt:

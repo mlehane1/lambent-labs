@@ -452,7 +452,7 @@ export default function WhiteGlove() {
       {/* ── SAAS COST COMPARISON ────────────────────────────────────────────── */}
       <section
         style={{
-          padding: "80px 40px",
+          padding: "80px 20px",
           background: "var(--bg-dark)",
           borderTop: "1px solid rgba(12,52,121,0.2)",
           borderBottom: "1px solid rgba(12,52,121,0.2)",
@@ -502,7 +502,7 @@ export default function WhiteGlove() {
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "1fr 1fr",
+              gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 340px), 1fr))",
               gap: "24px",
               marginBottom: "40px",
             }}
@@ -763,13 +763,13 @@ export default function WhiteGlove() {
       </section>
 
       {/* ── UNLIMITED USERS CALLOUT ──────────────────────────────────────────── */}
-      <section style={{ padding: "80px 40px" }}>
+      <section style={{ padding: "80px 20px" }}>
         <div
           style={{
             maxWidth: "860px",
             margin: "0 auto",
             display: "grid",
-            gridTemplateColumns: "1fr 1fr 1fr",
+            gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 240px), 1fr))",
             gap: "24px",
           }}
         >
@@ -845,7 +845,7 @@ export default function WhiteGlove() {
       {/* ── GANTT TIMELINE COMPARISON ────────────────────────────────────────── */}
       <section
         style={{
-          padding: "80px 40px",
+          padding: "80px 20px",
           background: "var(--bg-dark)",
           borderTop: "1px solid rgba(12,52,121,0.2)",
           borderBottom: "1px solid rgba(12,52,121,0.2)",
@@ -894,24 +894,24 @@ export default function WhiteGlove() {
           {/* Gantt Charts */}
           {(() => {
             const tradPhases = [
-              { name: "Requirements", start: 0, width: 12.5, people: "3\u20134", color: "rgba(248,113,113,0.6)" },
-              { name: "Design", start: 10, width: 15, people: "2\u20133", color: "rgba(248,113,113,0.5)" },
-              { name: "Development", start: 22, width: 40, people: "6\u201310", color: "rgba(248,113,113,0.7)" },
-              { name: "QA / Testing", start: 55, width: 20, people: "3\u20134", color: "rgba(248,113,113,0.5)" },
-              { name: "UAT / Fixes", start: 70, width: 15, people: "4\u20135", color: "rgba(248,113,113,0.45)" },
-              { name: "Deployment", start: 82, width: 10, people: "2\u20133", color: "rgba(248,113,113,0.4)" },
-              { name: "Training", start: 90, width: 10, people: "1\u20132", color: "rgba(248,113,113,0.35)" },
+              { name: "Requirements", short: "Reqs", start: 0, width: 12.5, people: "3\u20134", color: "rgba(248,113,113,0.6)" },
+              { name: "Design", short: "Design", start: 10, width: 15, people: "2\u20133", color: "rgba(248,113,113,0.5)" },
+              { name: "Development", short: "Dev", start: 22, width: 40, people: "6\u201310", color: "rgba(248,113,113,0.7)" },
+              { name: "QA / Testing", short: "QA", start: 55, width: 20, people: "3\u20134", color: "rgba(248,113,113,0.5)" },
+              { name: "UAT / Fixes", short: "UAT", start: 70, width: 15, people: "4\u20135", color: "rgba(248,113,113,0.45)" },
+              { name: "Deployment", short: "Deploy", start: 82, width: 10, people: "2\u20133", color: "rgba(248,113,113,0.4)" },
+              { name: "Training", short: "Train", start: 90, width: 10, people: "1\u20132", color: "rgba(248,113,113,0.35)" },
             ];
             const dibPhases = [
-              { name: "Discovery", start: 0, width: 14, people: "2", color: "rgba(21,203,136,0.6)" },
-              { name: "Design + Build", start: 10, width: 50, people: "2\u20133", color: "rgba(21,203,136,0.7)" },
-              { name: "Test + Deploy", start: 55, width: 30, people: "2", color: "rgba(21,203,136,0.55)" },
-              { name: "Training", start: 82, width: 18, people: "1\u20132", color: "rgba(21,203,136,0.45)" },
+              { name: "Discovery", short: "Disc.", start: 0, width: 14, people: "2", color: "rgba(21,203,136,0.6)" },
+              { name: "Design + Build", short: "Build", start: 10, width: 50, people: "2\u20133", color: "rgba(21,203,136,0.7)" },
+              { name: "Test + Deploy", short: "Ship", start: 55, width: 30, people: "2", color: "rgba(21,203,136,0.55)" },
+              { name: "Training", short: "Train", start: 82, width: 18, people: "1\u20132", color: "rgba(21,203,136,0.45)" },
             ];
-            const months = ["Month 1", "Month 2", "Month 3", "Month 4", "Month 5", "Month 6"];
-            const weeks = ["Week 1", "Week 2", "Week 3", "Week 4"];
-            const barH = 36;
-            const barGap = 10;
+            const months = ["M1", "M2", "M3", "M4", "M5", "M6"];
+            const weeks = ["Wk 1", "Wk 2", "Wk 3", "Wk 4"];
+            const barH = 32;
+            const barGap = 8;
 
             const renderGantt = (phases, labels, labelColor, title, subtitle, borderColor) => (
               <div
@@ -919,108 +919,111 @@ export default function WhiteGlove() {
                   background: "var(--bg-card)",
                   border: `1px solid ${borderColor}`,
                   borderRadius: "16px",
-                  padding: "28px",
+                  padding: "clamp(16px, 4vw, 28px)",
                   marginBottom: "24px",
+                  overflowX: "auto",
                 }}
               >
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "20px" }}>
-                  <div>
-                    <h3
-                      style={{
-                        fontFamily: "'Outfit', sans-serif",
-                        fontWeight: 700,
-                        fontSize: "1.15rem",
-                        color: labelColor,
-                        margin: "0 0 4px",
-                      }}
-                    >
-                      {title}
-                    </h3>
-                    <p style={{ color: "var(--text-lo)", fontSize: "0.82rem", margin: 0 }}>{subtitle}</p>
-                  </div>
+                <div style={{ marginBottom: "16px" }}>
+                  <h3
+                    style={{
+                      fontFamily: "'Outfit', sans-serif",
+                      fontWeight: 700,
+                      fontSize: "clamp(0.95rem, 2.5vw, 1.15rem)",
+                      color: labelColor,
+                      margin: "0 0 4px",
+                    }}
+                  >
+                    {title}
+                  </h3>
+                  <p style={{ color: "var(--text-lo)", fontSize: "clamp(0.7rem, 2vw, 0.82rem)", margin: 0 }}>{subtitle}</p>
                 </div>
 
-                {/* Time axis */}
-                <div style={{ display: "flex", marginBottom: "12px", paddingLeft: "130px" }}>
-                  {labels.map((l) => (
-                    <div
-                      key={l}
-                      style={{
-                        flex: 1,
-                        fontSize: "0.72rem",
-                        color: "var(--text-lo)",
-                        fontFamily: "'Outfit', sans-serif",
-                        fontWeight: 500,
-                      }}
-                    >
-                      {l}
-                    </div>
-                  ))}
-                </div>
-
-                {/* Bars */}
-                <div style={{ position: "relative" }}>
-                  {phases.map((phase, i) => (
-                    <div
-                      key={phase.name}
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        height: barH,
-                        marginBottom: i < phases.length - 1 ? barGap : 0,
-                      }}
-                    >
-                      {/* Label */}
+                <div style={{ minWidth: "320px" }}>
+                  {/* Time axis */}
+                  <div style={{ display: "flex", marginBottom: "10px", paddingLeft: "clamp(70px, 15vw, 130px)" }}>
+                    {labels.map((l) => (
                       <div
-                        style={{
-                          width: "130px",
-                          flexShrink: 0,
-                          fontSize: "0.82rem",
-                          color: "var(--text-mid)",
-                          fontWeight: 500,
-                          paddingRight: "12px",
-                          textAlign: "right",
-                          whiteSpace: "nowrap",
-                        }}
-                      >
-                        {phase.name}
-                      </div>
-                      {/* Track */}
-                      <div
+                        key={l}
                         style={{
                           flex: 1,
-                          position: "relative",
-                          height: "100%",
-                          background: "rgba(255,255,255,0.02)",
-                          borderRadius: "6px",
+                          fontSize: "clamp(0.6rem, 1.8vw, 0.72rem)",
+                          color: "var(--text-lo)",
+                          fontFamily: "'Outfit', sans-serif",
+                          fontWeight: 500,
                         }}
                       >
+                        {l}
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Bars */}
+                  <div style={{ position: "relative" }}>
+                    {phases.map((phase, i) => (
+                      <div
+                        key={phase.name}
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          height: barH,
+                          marginBottom: i < phases.length - 1 ? barGap : 0,
+                        }}
+                      >
+                        {/* Label — shows short name on small screens via CSS min() trick */}
                         <div
                           style={{
-                            position: "absolute",
-                            left: `${phase.start}%`,
-                            width: `${phase.width}%`,
-                            height: "100%",
-                            background: phase.color,
-                            borderRadius: "6px",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            fontSize: "0.72rem",
-                            fontWeight: 600,
-                            color: "#fff",
+                            width: "clamp(70px, 15vw, 130px)",
+                            flexShrink: 0,
+                            fontSize: "clamp(0.68rem, 1.8vw, 0.82rem)",
+                            color: "var(--text-mid)",
+                            fontWeight: 500,
+                            paddingRight: "8px",
+                            textAlign: "right",
                             whiteSpace: "nowrap",
                             overflow: "hidden",
-                            transition: "width 0.5s ease",
+                            textOverflow: "ellipsis",
                           }}
                         >
-                          {phase.width > 12 && (
-                            <span style={{ opacity: 0.9 }}>{phase.people} people</span>
-                          )}
+                          {phase.name}
+                        </div>
+                        {/* Track */}
+                        <div
+                          style={{
+                            flex: 1,
+                            position: "relative",
+                            height: "100%",
+                            background: "rgba(255,255,255,0.02)",
+                            borderRadius: "6px",
+                          }}
+                        >
+                          <div
+                            style={{
+                              position: "absolute",
+                              left: `${phase.start}%`,
+                              width: `${phase.width}%`,
+                              height: "100%",
+                              background: phase.color,
+                              borderRadius: "6px",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              fontSize: "clamp(0.58rem, 1.5vw, 0.72rem)",
+                              fontWeight: 600,
+                              color: "#fff",
+                              whiteSpace: "nowrap",
+                              overflow: "hidden",
+                              transition: "width 0.5s ease",
+                            }}
+                          >
+                            {phase.width > 12 && (
+                              <span style={{ opacity: 0.9 }}>{phase.people}</span>
+                            )}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
               </div>
             );
@@ -1051,7 +1054,7 @@ export default function WhiteGlove() {
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(3, 1fr)",
+              gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 140px), 1fr))",
               gap: "16px",
             }}
           >

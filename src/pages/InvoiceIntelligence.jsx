@@ -687,52 +687,13 @@ export default function InvoiceIntelligence() {
         </p>
 
         <div
-          className="ii-bento"
           style={{
             display: "grid",
-            gridTemplateColumns: "1fr 1fr 1fr",
-            gridTemplateRows: "auto auto auto",
+            gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
             gap: "1.25rem",
           }}
         >
-          {/* Hero image cell — spans 2 rows, left column */}
-          <div
-            className="ii-bento-hero"
-            style={{
-              gridColumn: "1",
-              gridRow: "1 / 3",
-              borderRadius: 14,
-              overflow: "hidden",
-              border: "1px solid var(--border)",
-              background: "var(--bg-card)",
-              display: "flex",
-              flexDirection: "column",
-            }}
-          >
-            <div
-              style={{
-                padding: "1.25rem 1.25rem 0.75rem",
-              }}
-            >
-              <h4 style={{ ...headingSm, fontSize: "1rem", color: "var(--text-hi)", margin: 0, marginBottom: "0.3rem" }}>
-                Full Results View
-              </h4>
-              <p style={{ ...body, fontSize: "0.82rem", margin: 0 }}>
-                PDF on the left, structured data on the right. Every field extracted and validated.
-              </p>
-            </div>
-            <div style={{ flex: 1, overflow: "hidden" }}>
-              <img
-                src="/images/invoice-intelligence/02-results-full.png"
-                alt="Full results view showing PDF alongside extracted data table"
-                loading="lazy"
-                style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top left", display: "block" }}
-              />
-            </div>
-          </div>
-
-          {/* Feature cards filling the remaining cells */}
-          {features.slice(0, 2).map((f) => (
+          {features.map((f) => (
             <div
               key={f.label}
               className="ii-lift"
@@ -740,8 +701,8 @@ export default function InvoiceIntelligence() {
                 ...card,
                 ...hoverLift,
                 display: "flex",
-                flexDirection: "column",
-                gap: "0.75rem",
+                gap: "1rem",
+                alignItems: "flex-start",
               }}
             >
               <div
@@ -759,102 +720,12 @@ export default function InvoiceIntelligence() {
               >
                 {f.icon}
               </div>
-              <h4 style={{ ...headingSm, fontSize: "1rem", color: "var(--text-hi)", margin: 0 }}>
-                {f.label}
-              </h4>
-              <p style={{ ...body, fontSize: "0.85rem", margin: 0 }}>{f.desc}</p>
-            </div>
-          ))}
-
-          {/* Mobile screenshot cell */}
-          <div
-            style={{
-              gridColumn: "2",
-              borderRadius: 14,
-              overflow: "hidden",
-              border: "1px solid var(--border)",
-              background: "var(--bg-card)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              padding: "1rem",
-            }}
-          >
-            <img
-              src="/images/invoice-intelligence/06-mobile.png"
-              alt="Invoice Intelligence mobile responsive view"
-              loading="lazy"
-              style={{ maxHeight: 280, width: "auto", maxWidth: "100%", borderRadius: 8, display: "block" }}
-            />
-          </div>
-
-          {/* Remaining feature cards */}
-          {features.slice(2, 4).map((f) => (
-            <div
-              key={f.label}
-              className="ii-lift"
-              style={{
-                ...card,
-                ...hoverLift,
-                display: "flex",
-                flexDirection: "column",
-                gap: "0.75rem",
-              }}
-            >
-              <div
-                style={{
-                  fontSize: "1.5rem",
-                  width: 44,
-                  height: 44,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  background: "var(--bg-card2)",
-                  borderRadius: 10,
-                  flexShrink: 0,
-                }}
-              >
-                {f.icon}
+              <div>
+                <h4 style={{ ...headingSm, fontSize: "1rem", color: "var(--text-hi)", margin: 0, marginBottom: "0.35rem" }}>
+                  {f.label}
+                </h4>
+                <p style={{ ...body, fontSize: "0.85rem", margin: 0 }}>{f.desc}</p>
               </div>
-              <h4 style={{ ...headingSm, fontSize: "1rem", color: "var(--text-hi)", margin: 0 }}>
-                {f.label}
-              </h4>
-              <p style={{ ...body, fontSize: "0.85rem", margin: 0 }}>{f.desc}</p>
-            </div>
-          ))}
-
-          {/* Last two features span the bottom row */}
-          {features.slice(4).map((f) => (
-            <div
-              key={f.label}
-              className="ii-lift"
-              style={{
-                ...card,
-                ...hoverLift,
-                display: "flex",
-                flexDirection: "column",
-                gap: "0.75rem",
-              }}
-            >
-              <div
-                style={{
-                  fontSize: "1.5rem",
-                  width: 44,
-                  height: 44,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  background: "var(--bg-card2)",
-                  borderRadius: 10,
-                  flexShrink: 0,
-                }}
-              >
-                {f.icon}
-              </div>
-              <h4 style={{ ...headingSm, fontSize: "1rem", color: "var(--text-hi)", margin: 0 }}>
-                {f.label}
-              </h4>
-              <p style={{ ...body, fontSize: "0.85rem", margin: 0 }}>{f.desc}</p>
             </div>
           ))}
         </div>

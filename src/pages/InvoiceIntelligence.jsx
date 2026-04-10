@@ -59,6 +59,11 @@ const ctaBtn = {
   transition: "opacity 0.2s, transform 0.2s",
 };
 
+const hoverLift = {
+  transition: "transform 0.3s, box-shadow 0.3s",
+  cursor: "default",
+};
+
 const painPoints = [
   {
     icon: "\u{1F4CB}",
@@ -83,6 +88,14 @@ const steps = [
   { num: "03", title: "Vendor Template Auto-Match", desc: "The system recognizes the vendor format and applies the correct extraction template. Process invoices from any vendor without manual configuration." },
   { num: "04", title: "Handwriting Recognition", desc: "Field work orders with handwritten notes? Our handwritten invoice OCR learns and improves accuracy with every correction your team makes." },
   { num: "05", title: "Validate, Reconcile, Export", desc: "Extracted data is validated against business rules, reconciled across vendors for invoice discrepancy detection, and exported to your system of record." },
+];
+
+const stepImages = [
+  "/images/invoice-intelligence/01-upload.png",
+  "/images/invoice-intelligence/05-header-summary.png",
+  "/images/invoice-intelligence/02-results-full.png",
+  "/images/invoice-intelligence/04-data-table.png",
+  null,
 ];
 
 const features = [
@@ -198,6 +211,57 @@ const faqs = [
   },
 ];
 
+/* ── Browser mockup frame component ── */
+function BrowserMockup({ src, alt, style: outerStyle }) {
+  return (
+    <div
+      style={{
+        borderRadius: 12,
+        overflow: "hidden",
+        border: "1px solid var(--border)",
+        background: "var(--bg-card)",
+        boxShadow: "0 8px 32px rgba(0,0,0,0.3)",
+        ...outerStyle,
+      }}
+    >
+      {/* Title bar */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 6,
+          padding: "10px 14px",
+          background: "var(--bg-dark)",
+          borderBottom: "1px solid var(--border)",
+        }}
+      >
+        <span style={{ width: 12, height: 12, borderRadius: "50%", background: "#ff5f56" }} />
+        <span style={{ width: 12, height: 12, borderRadius: "50%", background: "#ffbd2e" }} />
+        <span style={{ width: 12, height: 12, borderRadius: "50%", background: "#27c93f" }} />
+        <span
+          style={{
+            flex: 1,
+            textAlign: "center",
+            fontFamily: "'DM Sans', sans-serif",
+            fontSize: "0.7rem",
+            color: "var(--text-mid)",
+            opacity: 0.6,
+          }}
+        >
+          Invoice Intelligence
+        </span>
+      </div>
+      {/* Screenshot */}
+      <img
+        src={src}
+        alt={alt}
+        loading="lazy"
+        style={{ width: "100%", display: "block" }}
+      />
+    </div>
+  );
+}
+
 export default function InvoiceIntelligence() {
   const [form, setForm] = useState({ name: "", email: "", message: "" });
   const [status, setStatus] = useState("idle"); // idle | sending | sent | error
@@ -260,12 +324,40 @@ export default function InvoiceIntelligence() {
 
   return (
     <div style={{ background: "var(--bg-deep)" }}>
+      {/* Inject hover keyframes once */}
+      <style>{`
+        .ii-lift:hover {
+          transform: translateY(-4px) !important;
+          box-shadow: 0 12px 32px rgba(0,0,0,0.35) !important;
+        }
+        .ii-hero-img:hover {
+          transform: perspective(1000px) rotateY(-2deg) rotateX(1deg) !important;
+        }
+        .ii-gradient-border {
+          background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+          border-radius: 16px;
+          padding: 2px;
+        }
+        .ii-gradient-border > div {
+          border-radius: 14px;
+        }
+        .ii-step-img:hover {
+          transform: perspective(800px) rotateY(0deg) rotateX(0deg) !important;
+        }
+        @media (max-width: 768px) {
+          .ii-step-row { flex-direction: column !important; }
+          .ii-step-row > * { flex: 1 1 100% !important; min-width: 0 !important; }
+          .ii-bento { grid-template-columns: 1fr !important; grid-template-rows: auto !important; }
+          .ii-bento-hero { grid-column: 1 !important; grid-row: 1 !important; }
+        }
+      `}</style>
+
       {/* ════════════════ HERO ════════════════ */}
       <section
         style={{
           ...section,
           paddingTop: "6rem",
-          paddingBottom: "5rem",
+          paddingBottom: "3rem",
           textAlign: "center",
           position: "relative",
           overflow: "hidden",
@@ -335,6 +427,32 @@ export default function InvoiceIntelligence() {
         <a href="#contact-cta" style={ctaBtn}>
           See It In Action
         </a>
+
+        {/* Hero product screenshot with perspective tilt */}
+        <div
+          className="ii-hero-img"
+          style={{
+            marginTop: "3.5rem",
+            transform: "perspective(1000px) rotateY(-5deg) rotateX(2deg)",
+            transition: "transform 0.5s ease",
+            maxWidth: 960,
+            marginLeft: "auto",
+            marginRight: "auto",
+          }}
+        >
+          <div
+            style={{
+              borderRadius: 14,
+              overflow: "hidden",
+              boxShadow: "0 20px 60px rgba(21,88,203,0.25), 0 0 80px rgba(21,88,203,0.08)",
+            }}
+          >
+            <BrowserMockup
+              src="/images/invoice-intelligence/03-results-wide.png"
+              alt="Invoice Intelligence results view showing PDF on left with extracted data table on right"
+            />
+          </div>
+        </div>
       </section>
 
       {/* ════════════════ PAIN POINTS ════════════════ */}
@@ -371,7 +489,14 @@ export default function InvoiceIntelligence() {
           }}
         >
           {painPoints.map((p) => (
-            <div key={p.title} style={card}>
+            <div
+              key={p.title}
+              className="ii-lift"
+              style={{
+                ...card,
+                ...hoverLift,
+              }}
+            >
               <div style={{ fontSize: "2rem", marginBottom: "0.75rem", textAlign: "center" }}>{p.icon}</div>
               <h3
                 style={{
@@ -415,50 +540,127 @@ export default function InvoiceIntelligence() {
           no manual keying. Invoice data extraction that just works.
         </p>
 
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(190px, 1fr))",
-            gap: "1.25rem",
-          }}
-        >
-          {steps.map((s) => (
-            <div
-              key={s.num}
-              style={{
-                ...card,
-                textAlign: "center",
-                padding: "2rem 1.5rem",
-              }}
-            >
+        <div style={{ display: "flex", flexDirection: "column", gap: "3rem" }}>
+          {steps.map((s, i) => {
+            const hasImage = stepImages[i] !== null;
+            const imageOnRight = i === 0 || i === 1;
+            const isFullWidth = i === 4;
+
+            if (isFullWidth) {
+              return (
+                <div
+                  key={s.num}
+                  style={{
+                    background: "linear-gradient(135deg, rgba(21,88,203,0.08) 0%, rgba(21,203,136,0.08) 100%)",
+                    border: "1px solid var(--border)",
+                    borderRadius: 16,
+                    padding: "3rem 2.5rem",
+                    textAlign: "center",
+                  }}
+                >
+                  <div
+                    style={{
+                      ...heading,
+                      fontSize: "2rem",
+                      ...gradientText,
+                      marginBottom: "0.75rem",
+                    }}
+                  >
+                    {s.num}
+                  </div>
+                  <h4
+                    style={{
+                      ...headingSm,
+                      fontSize: "1.3rem",
+                      color: "var(--text-hi)",
+                      marginBottom: "0.6rem",
+                      marginTop: 0,
+                    }}
+                  >
+                    {s.title}
+                  </h4>
+                  <p style={{ ...body, fontSize: "1rem", margin: 0, maxWidth: 600, marginLeft: "auto", marginRight: "auto" }}>
+                    {s.desc}
+                  </p>
+                </div>
+              );
+            }
+
+            const textBlock = (
               <div
                 style={{
-                  ...heading,
-                  fontSize: "2rem",
-                  ...gradientText,
-                  marginBottom: "0.75rem",
+                  flex: "1 1 40%",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  minWidth: 260,
                 }}
               >
-                {s.num}
+                <div
+                  style={{
+                    ...heading,
+                    fontSize: "2rem",
+                    ...gradientText,
+                    marginBottom: "0.75rem",
+                  }}
+                >
+                  {s.num}
+                </div>
+                <h4
+                  style={{
+                    ...headingSm,
+                    fontSize: "1.2rem",
+                    color: "var(--text-hi)",
+                    marginBottom: "0.6rem",
+                    marginTop: 0,
+                  }}
+                >
+                  {s.title}
+                </h4>
+                <p style={{ ...body, fontSize: "0.95rem", margin: 0 }}>{s.desc}</p>
               </div>
-              <h4
+            );
+
+            const imageBlock = hasImage ? (
+              <div
+                className="ii-step-img"
                 style={{
-                  ...headingSm,
-                  fontSize: "1.05rem",
-                  color: "var(--text-hi)",
-                  marginBottom: "0.5rem",
-                  marginTop: 0,
+                  flex: "1 1 55%",
+                  minWidth: 280,
+                  transform: imageOnRight
+                    ? "perspective(800px) rotateY(-3deg)"
+                    : "perspective(800px) rotateY(3deg)",
+                  transition: "transform 0.4s ease",
                 }}
               >
-                {s.title}
-              </h4>
-              <p style={{ ...body, fontSize: "0.88rem", margin: 0 }}>{s.desc}</p>
-            </div>
-          ))}
+                <BrowserMockup
+                  src={stepImages[i]}
+                  alt={s.title}
+                  style={{ boxShadow: "0 8px 32px rgba(0,0,0,0.25)" }}
+                />
+              </div>
+            ) : null;
+
+            return (
+              <div
+                key={s.num}
+                className="ii-step-row"
+                style={{
+                  display: "flex",
+                  gap: "2.5rem",
+                  alignItems: "center",
+                  flexDirection: imageOnRight ? "row" : "row-reverse",
+                }}
+              >
+                {textBlock}
+                {imageBlock}
+              </div>
+            );
+          })}
         </div>
       </section>
 
-      {/* ════════════════ KEY CAPABILITIES ════════════════ */}
+      {/* ════════════════ KEY CAPABILITIES (Bento Grid) ════════════════ */}
       <section style={{ ...section }}>
         <h2
           style={{
@@ -485,26 +687,66 @@ export default function InvoiceIntelligence() {
         </p>
 
         <div
+          className="ii-bento"
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
+            gridTemplateColumns: "1fr 1fr 1fr",
+            gridTemplateRows: "auto auto auto",
             gap: "1.25rem",
           }}
         >
-          {features.map((f) => (
+          {/* Hero image cell — spans 2 rows, left column */}
+          <div
+            className="ii-bento-hero"
+            style={{
+              gridColumn: "1",
+              gridRow: "1 / 3",
+              borderRadius: 14,
+              overflow: "hidden",
+              border: "1px solid var(--border)",
+              background: "var(--bg-card)",
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            <div
+              style={{
+                padding: "1.25rem 1.25rem 0.75rem",
+              }}
+            >
+              <h4 style={{ ...headingSm, fontSize: "1rem", color: "var(--text-hi)", margin: 0, marginBottom: "0.3rem" }}>
+                Full Results View
+              </h4>
+              <p style={{ ...body, fontSize: "0.82rem", margin: 0 }}>
+                PDF on the left, structured data on the right. Every field extracted and validated.
+              </p>
+            </div>
+            <div style={{ flex: 1, overflow: "hidden" }}>
+              <img
+                src="/images/invoice-intelligence/02-results-full.png"
+                alt="Full results view showing PDF alongside extracted data table"
+                loading="lazy"
+                style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top left", display: "block" }}
+              />
+            </div>
+          </div>
+
+          {/* Feature cards filling the remaining cells */}
+          {features.slice(0, 2).map((f) => (
             <div
               key={f.label}
+              className="ii-lift"
               style={{
                 ...card,
+                ...hoverLift,
                 display: "flex",
-                gap: "1rem",
-                alignItems: "flex-start",
+                flexDirection: "column",
+                gap: "0.75rem",
               }}
             >
               <div
                 style={{
                   fontSize: "1.5rem",
-                  flexShrink: 0,
                   width: 44,
                   height: 44,
                   display: "flex",
@@ -512,24 +754,107 @@ export default function InvoiceIntelligence() {
                   justifyContent: "center",
                   background: "var(--bg-card2)",
                   borderRadius: 10,
+                  flexShrink: 0,
                 }}
               >
                 {f.icon}
               </div>
-              <div>
-                <h4
-                  style={{
-                    ...headingSm,
-                    fontSize: "1rem",
-                    color: "var(--text-hi)",
-                    marginBottom: "0.35rem",
-                    marginTop: 0,
-                  }}
-                >
-                  {f.label}
-                </h4>
-                <p style={{ ...body, fontSize: "0.88rem", margin: 0 }}>{f.desc}</p>
+              <h4 style={{ ...headingSm, fontSize: "1rem", color: "var(--text-hi)", margin: 0 }}>
+                {f.label}
+              </h4>
+              <p style={{ ...body, fontSize: "0.85rem", margin: 0 }}>{f.desc}</p>
+            </div>
+          ))}
+
+          {/* Mobile screenshot cell */}
+          <div
+            style={{
+              gridColumn: "2",
+              borderRadius: 14,
+              overflow: "hidden",
+              border: "1px solid var(--border)",
+              background: "var(--bg-card)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              padding: "1rem",
+            }}
+          >
+            <img
+              src="/images/invoice-intelligence/06-mobile.png"
+              alt="Invoice Intelligence mobile responsive view"
+              loading="lazy"
+              style={{ maxHeight: 280, width: "auto", maxWidth: "100%", borderRadius: 8, display: "block" }}
+            />
+          </div>
+
+          {/* Remaining feature cards */}
+          {features.slice(2, 4).map((f) => (
+            <div
+              key={f.label}
+              className="ii-lift"
+              style={{
+                ...card,
+                ...hoverLift,
+                display: "flex",
+                flexDirection: "column",
+                gap: "0.75rem",
+              }}
+            >
+              <div
+                style={{
+                  fontSize: "1.5rem",
+                  width: 44,
+                  height: 44,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  background: "var(--bg-card2)",
+                  borderRadius: 10,
+                  flexShrink: 0,
+                }}
+              >
+                {f.icon}
               </div>
+              <h4 style={{ ...headingSm, fontSize: "1rem", color: "var(--text-hi)", margin: 0 }}>
+                {f.label}
+              </h4>
+              <p style={{ ...body, fontSize: "0.85rem", margin: 0 }}>{f.desc}</p>
+            </div>
+          ))}
+
+          {/* Last two features span the bottom row */}
+          {features.slice(4).map((f) => (
+            <div
+              key={f.label}
+              className="ii-lift"
+              style={{
+                ...card,
+                ...hoverLift,
+                display: "flex",
+                flexDirection: "column",
+                gap: "0.75rem",
+              }}
+            >
+              <div
+                style={{
+                  fontSize: "1.5rem",
+                  width: 44,
+                  height: 44,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  background: "var(--bg-card2)",
+                  borderRadius: 10,
+                  flexShrink: 0,
+                }}
+              >
+                {f.icon}
+              </div>
+              <h4 style={{ ...headingSm, fontSize: "1rem", color: "var(--text-hi)", margin: 0 }}>
+                {f.label}
+              </h4>
+              <p style={{ ...body, fontSize: "0.85rem", margin: 0 }}>{f.desc}</p>
             </div>
           ))}
         </div>
@@ -569,117 +894,128 @@ export default function InvoiceIntelligence() {
             marginBottom: "2rem",
           }}
         >
-          {pricingTiers.map((tier) => (
-            <div
-              key={tier.name}
-              style={{
-                ...card,
-                textAlign: "center",
-                padding: "2.5rem 2rem",
-                border: tier.highlighted
-                  ? "2px solid var(--accent)"
-                  : "1px solid var(--border)",
-                position: "relative",
-              }}
-            >
-              {tier.highlighted && (
-                <div
-                  style={{
-                    position: "absolute",
-                    top: -14,
-                    left: "50%",
-                    transform: "translateX(-50%)",
-                    ...headingSm,
-                    fontWeight: 600,
-                    fontSize: "0.72rem",
-                    textTransform: "uppercase",
-                    letterSpacing: "0.1em",
-                    color: "#fff",
-                    background: "linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%)",
-                    borderRadius: 100,
-                    padding: "4px 16px",
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  Most Popular
-                </div>
-              )}
-              <h3
-                style={{
-                  ...headingSm,
-                  fontSize: "1.3rem",
-                  color: "var(--text-hi)",
-                  marginBottom: "0.5rem",
-                  marginTop: 0,
-                }}
-              >
-                {tier.name}
-              </h3>
+          {pricingTiers.map((tier) => {
+            const inner = (
               <div
                 style={{
-                  ...heading,
-                  fontSize: "2.4rem",
-                  ...gradientText,
-                  marginBottom: "0.25rem",
+                  ...card,
+                  textAlign: "center",
+                  padding: "2.5rem 2rem",
+                  border: tier.highlighted ? "none" : "1px solid var(--border)",
+                  position: "relative",
+                  background: tier.highlighted ? "var(--bg-card)" : "var(--bg-card)",
+                  height: "100%",
+                  boxSizing: "border-box",
                 }}
               >
-                {tier.price}
-              </div>
-              <div
-                style={{
-                  ...body,
-                  fontSize: "0.85rem",
-                  color: "var(--text-mid)",
-                  marginBottom: "1.5rem",
-                }}
-              >
-                {tier.period}
-              </div>
-              <ul
-                style={{
-                  listStyle: "none",
-                  padding: 0,
-                  margin: "0 0 2rem",
-                  textAlign: "left",
-                }}
-              >
-                {tier.features.map((feat) => (
-                  <li
-                    key={feat}
+                {tier.highlighted && (
+                  <div
                     style={{
-                      ...body,
-                      fontSize: "0.9rem",
-                      padding: "0.4rem 0",
-                      borderBottom: "1px solid var(--border)",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "0.5rem",
+                      position: "absolute",
+                      top: -14,
+                      left: "50%",
+                      transform: "translateX(-50%)",
+                      ...headingSm,
+                      fontWeight: 600,
+                      fontSize: "0.72rem",
+                      textTransform: "uppercase",
+                      letterSpacing: "0.1em",
+                      color: "#fff",
+                      background: "linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%)",
+                      borderRadius: 100,
+                      padding: "4px 16px",
+                      whiteSpace: "nowrap",
                     }}
                   >
-                    <span style={{ color: "var(--accent)", fontWeight: 700 }}>{"\u2713"}</span>
-                    {feat}
-                  </li>
-                ))}
-              </ul>
-              <a
-                href="#contact-cta"
-                style={{
-                  ...ctaBtn,
-                  width: "100%",
-                  textAlign: "center",
-                  display: "block",
-                  boxSizing: "border-box",
-                  background: tier.highlighted
-                    ? "linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%)"
-                    : "transparent",
-                  border: tier.highlighted ? "none" : "1px solid var(--border-mid)",
-                  color: tier.highlighted ? "#fff" : "var(--text-hi)",
-                }}
-              >
-                {tier.cta}
-              </a>
-            </div>
-          ))}
+                    Most Popular
+                  </div>
+                )}
+                <h3
+                  style={{
+                    ...headingSm,
+                    fontSize: "1.3rem",
+                    color: "var(--text-hi)",
+                    marginBottom: "0.5rem",
+                    marginTop: 0,
+                  }}
+                >
+                  {tier.name}
+                </h3>
+                <div
+                  style={{
+                    ...heading,
+                    fontSize: "2.4rem",
+                    ...gradientText,
+                    marginBottom: "0.25rem",
+                  }}
+                >
+                  {tier.price}
+                </div>
+                <div
+                  style={{
+                    ...body,
+                    fontSize: "0.85rem",
+                    color: "var(--text-mid)",
+                    marginBottom: "1.5rem",
+                  }}
+                >
+                  {tier.period}
+                </div>
+                <ul
+                  style={{
+                    listStyle: "none",
+                    padding: 0,
+                    margin: "0 0 2rem",
+                    textAlign: "left",
+                  }}
+                >
+                  {tier.features.map((feat) => (
+                    <li
+                      key={feat}
+                      style={{
+                        ...body,
+                        fontSize: "0.9rem",
+                        padding: "0.4rem 0",
+                        borderBottom: "1px solid var(--border)",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "0.5rem",
+                      }}
+                    >
+                      <span style={{ color: "var(--accent)", fontWeight: 700 }}>{"\u2713"}</span>
+                      {feat}
+                    </li>
+                  ))}
+                </ul>
+                <a
+                  href="#contact-cta"
+                  style={{
+                    ...ctaBtn,
+                    width: "100%",
+                    textAlign: "center",
+                    display: "block",
+                    boxSizing: "border-box",
+                    background: tier.highlighted
+                      ? "linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%)"
+                      : "transparent",
+                    border: tier.highlighted ? "none" : "1px solid var(--border-mid)",
+                    color: tier.highlighted ? "#fff" : "var(--text-hi)",
+                  }}
+                >
+                  {tier.cta}
+                </a>
+              </div>
+            );
+
+            if (tier.highlighted) {
+              return (
+                <div key={tier.name} className="ii-gradient-border">
+                  {inner}
+                </div>
+              );
+            }
+            return <div key={tier.name}>{inner}</div>;
+          })}
         </div>
 
         <p
@@ -714,9 +1050,32 @@ export default function InvoiceIntelligence() {
           background: "var(--bg-dark)",
           maxWidth: "none",
           padding: "5rem clamp(1rem, 5vw, 4rem)",
+          position: "relative",
+          overflow: "hidden",
         }}
       >
-        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+        {/* Background product screenshot with low opacity */}
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            backgroundImage: "url(/images/invoice-intelligence/04-data-table.png)",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            opacity: 0.06,
+            pointerEvents: "none",
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            background: "linear-gradient(180deg, var(--bg-dark) 0%, rgba(0,0,0,0.7) 50%, var(--bg-dark) 100%)",
+            pointerEvents: "none",
+          }}
+        />
+
+        <div style={{ maxWidth: 1100, margin: "0 auto", position: "relative", zIndex: 1 }}>
           <h2
             style={{
               ...heading,
@@ -771,8 +1130,10 @@ export default function InvoiceIntelligence() {
             {caseStudyStats.map((s) => (
               <div
                 key={s.label}
+                className="ii-lift"
                 style={{
                   ...card,
+                  ...hoverLift,
                   textAlign: "center",
                   padding: "2.5rem 1.5rem",
                   background: "var(--bg-card2)",
@@ -839,8 +1200,10 @@ export default function InvoiceIntelligence() {
           {audiences.map((a) => (
             <div
               key={a.title}
+              className="ii-lift"
               style={{
                 ...card,
+                ...hoverLift,
                 textAlign: "center",
                 padding: "2rem 1.5rem",
               }}

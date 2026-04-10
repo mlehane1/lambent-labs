@@ -656,7 +656,7 @@ export default function InvoiceIntelligence() {
                       gap: "0.5rem",
                     }}
                   >
-                    <span style={{ color: "var(--accent)", fontWeight: 700 }}>&check;</span>
+                    <span style={{ color: "var(--accent)", fontWeight: 700 }}>{"\u2713"}</span>
                     {feat}
                   </li>
                 ))}

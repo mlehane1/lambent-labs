@@ -3,6 +3,15 @@ import { Link } from "react-router-dom";
 
 const posts = [
   {
+    title: "Why Invoice Processing Is Still Broken in 2026 — And What AI Finally Makes Possible",
+    slug: "/blog/invoice-processing-broken",
+    excerpt:
+      "Manual invoice processing costs $15-40 per invoice with a 1-4% error rate. AI-powered extraction with vendor templates and handwriting recognition finally makes full automation real.",
+    tags: ["Invoice Processing", "AI", "Automation"],
+    date: "Apr 2026",
+    readTime: "8 min read",
+  },
+  {
     title: "76% of Americans Don't Trust AI. Here's What That Means for Your Business.",
     slug: "/blog/ai-trust-gap",
     excerpt:

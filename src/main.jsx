@@ -18,11 +18,13 @@ import AITrustGap from './pages/blog/AITrustGap.jsx'
 import AICostCollapse from './pages/blog/AICostCollapse.jsx'
 import AIAgentsGuide from './pages/blog/AIAgentsGuide.jsx'
 import SaaSBillGrowing from './pages/blog/SaaSBillGrowing.jsx'
+import InvoiceProcessingBroken from './pages/blog/InvoiceProcessingBroken.jsx'
 import DynamicBlogPost from './pages/DynamicBlogPost.jsx'
 import AdsLanding from './pages/AdsLanding.jsx'
 import Websites from './pages/Websites.jsx'
 import BuildPreview from './pages/BuildPreview.jsx'
 import DataExtraction from './pages/DataExtraction.jsx'
+import InvoiceIntelligence from './pages/InvoiceIntelligence.jsx'
 import PrivacyPolicy from './pages/PrivacyPolicy.jsx'
 import CookieConsent from './components/CookieConsent.jsx'
 import ThemeSwitcher from './components/ThemeSwitcher.jsx'
@@ -56,6 +58,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           <Route path="/solutions/franchise" element={<Franchise />} />
           <Route path="/solutions/websites" element={<Websites />} />
           <Route path="/solutions/data-extraction" element={<DataExtraction />} />
+          <Route path="/solutions/invoice-intelligence" element={<InvoiceIntelligence />} />
           <Route path="/build" element={<BuildPreview />} />
           <Route path="/get-quote" element={<AdsLanding />} />
           <Route path="/blog" element={<BlogIndex />} />
@@ -68,6 +71,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           <Route path="/blog/ai-cost-collapse" element={<AICostCollapse />} />
           <Route path="/blog/ai-agents-guide" element={<AIAgentsGuide />} />
           <Route path="/blog/saas-bill-growing" element={<SaaSBillGrowing />} />
+          <Route path="/blog/invoice-processing-broken" element={<InvoiceProcessingBroken />} />
           <Route path="/blog/:slug" element={<DynamicBlogPost />} />
           <Route path="/privacy" element={<PrivacyPolicy />} />
         </Route>

@@ -847,14 +847,14 @@ export default function BuildPreview() {
               />
             </div>
 
-            {/* Email verification gate */}
+            {/* Email capture gate */}
             <div
               style={{
                 padding: "1.25rem 1.5rem",
-                background: verificationVerified
+                background: gateEmailCaptured
                   ? "rgba(21,203,136,0.06)"
                   : "linear-gradient(135deg, rgba(21,88,203,0.06), rgba(21,203,136,0.04))",
-                border: verificationVerified
+                border: gateEmailCaptured
                   ? "1px solid rgba(21,203,136,0.2)"
                   : "1px solid rgba(21,88,203,0.15)",
                 borderRadius: 12,
@@ -862,7 +862,7 @@ export default function BuildPreview() {
               }}
             >
               <label style={{ ...labelStyle, marginBottom: 4 }}>
-                {verificationVerified ? "Email verified" : "Verify your email to generate a preview"}
+                Enter your email to generate a preview
               </label>
               <p
                 style={{
@@ -873,15 +873,12 @@ export default function BuildPreview() {
                   lineHeight: 1.5,
                 }}
               >
-                {verificationVerified
-                  ? "You\u2019re all set! Hit Generate Preview below."
-                  : "We\u2019ll send a 6-digit code to confirm your email. Your preview results will also be sent here."}
+                Your preview results will be sent to this address.
               </p>
 
-              {!verificationVerified && (
+              {true && (
                 <>
-                  {/* Step 1: Enter email and send code */}
-                  <div style={{ display: "flex", gap: "0.75rem", alignItems: "center", marginBottom: verificationSent ? "0.75rem" : 0 }}>
+                  <div style={{ display: "flex", gap: "0.75rem", alignItems: "center" }}>
                     <input
                       type="email"
                       required
@@ -889,125 +886,23 @@ export default function BuildPreview() {
                       onChange={(e) => {
                         setGateEmail(e.target.value);
                         setGateEmailCaptured(e.target.value.includes("@") && e.target.value.includes("."));
-                        if (verificationSent) { setVerificationSent(false); setVerificationCode(""); setVerificationError(""); }
                       }}
                       placeholder="you@company.com"
-                      disabled={verificationSent}
-                      style={inputStyle({ flex: 1, margin: 0, opacity: verificationSent ? 0.6 : 1 })}
+                      style={inputStyle({ flex: 1, margin: 0 })}
                     />
-                    {!verificationSent && (
-                      <button
-                        type="button"
-                        disabled={!gateEmailCaptured || verificationSending}
-                        onClick={async () => {
-                          setVerificationSending(true);
-                          setVerificationError("");
-                          try {
-                            const res = await fetch("/api/send-verification", {
-                              method: "POST",
-                              headers: { "Content-Type": "application/json" },
-                              body: JSON.stringify({ email: gateEmail }),
-                            });
-                            if (res.ok) {
-                              setVerificationSent(true);
-                            } else {
-                              const d = await res.json();
-                              setVerificationError(d.error || "Failed to send code");
-                            }
-                          } catch { setVerificationError("Network error. Try again."); }
-                          setVerificationSending(false);
-                        }}
-                        style={{
-                          ...btnPrimary({ fontSize: "0.85rem", padding: "0.7rem 1.25rem", whiteSpace: "nowrap" }),
-                          opacity: (!gateEmailCaptured || verificationSending) ? 0.45 : 1,
-                          cursor: (!gateEmailCaptured || verificationSending) ? "not-allowed" : "pointer",
-                        }}
-                      >
-                        {verificationSending ? "Sending..." : "Send Code"}
-                      </button>
-                    )}
-                    {verificationSent && (
-                      <button
-                        type="button"
-                        onClick={() => { setVerificationSent(false); setVerificationCode(""); setVerificationError(""); }}
-                        style={{
-                          ...btnPrimary({ fontSize: "0.78rem", padding: "0.6rem 1rem", whiteSpace: "nowrap", background: "transparent", border: "1px solid var(--border)", color: "var(--text-mid)" }),
-                        }}
-                      >
-                        Change
-                      </button>
-                    )}
                   </div>
 
-                  {/* Step 2: Enter code */}
-                  {verificationSent && (
-                    <div style={{ display: "flex", gap: "0.75rem", alignItems: "center" }}>
-                      <input
-                        type="text"
-                        inputMode="numeric"
-                        maxLength={6}
-                        value={verificationCode}
-                        onChange={(e) => setVerificationCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
-                        placeholder="Enter 6-digit code"
-                        style={inputStyle({ flex: 1, margin: 0, letterSpacing: "0.2em", textAlign: "center", fontSize: "1.1rem", fontWeight: 700 })}
-                      />
-                      <button
-                        type="button"
-                        disabled={verificationCode.length !== 6 || verificationSending}
-                        onClick={async () => {
-                          setVerificationSending(true);
-                          setVerificationError("");
-                          try {
-                            const res = await fetch("/api/verify-code", {
-                              method: "POST",
-                              headers: { "Content-Type": "application/json" },
-                              body: JSON.stringify({ email: gateEmail, code: verificationCode }),
-                            });
-                            const d = await res.json();
-                            if (res.ok && d.verified) {
-                              setVerificationVerified(true);
-                            } else {
-                              setVerificationError(d.error || "Invalid code");
-                            }
-                          } catch { setVerificationError("Network error. Try again."); }
-                          setVerificationSending(false);
-                        }}
-                        style={{
-                          ...btnPrimary({ fontSize: "0.85rem", padding: "0.7rem 1.25rem", whiteSpace: "nowrap" }),
-                          opacity: (verificationCode.length !== 6 || verificationSending) ? 0.45 : 1,
-                          cursor: (verificationCode.length !== 6 || verificationSending) ? "not-allowed" : "pointer",
-                        }}
-                      >
-                        {verificationSending ? "Verifying..." : "Verify"}
-                      </button>
-                    </div>
-                  )}
-
-                  {verificationError && (
-                    <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "0.8rem", color: "#F87171", margin: "0.5rem 0 0" }}>
-                      {verificationError}
-                    </p>
-                  )}
                 </>
-              )}
-
-              {verificationVerified && (
-                <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                  <span style={{ color: "var(--accent)", fontSize: "1.1rem" }}>&#10003;</span>
-                  <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "0.88rem", color: "var(--accent)", fontWeight: 600 }}>
-                    {gateEmail}
-                  </span>
-                </div>
               )}
             </div>
 
             <button
               type="submit"
-              disabled={!verificationVerified}
+              disabled={!gateEmailCaptured}
               style={{
                 ...btnPrimary({ alignSelf: "center", marginTop: "0.5rem" }),
-                opacity: verificationVerified ? 1 : 0.45,
-                cursor: verificationVerified ? "pointer" : "not-allowed",
+                opacity: gateEmailCaptured ? 1 : 0.45,
+                cursor: gateEmailCaptured ? "pointer" : "not-allowed",
               }}
             >
               Generate Preview

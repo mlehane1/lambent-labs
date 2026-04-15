@@ -532,6 +532,7 @@ export default function App() {
                     { label: "SMB Solutions", to: "/solutions/small-business" },
                     { label: "Process & Case Mgmt", to: "/solutions/case-management" },
                     { label: "Data Extraction", to: "/solutions/data-extraction" },
+                    { label: "Invoice Intelligence", to: "/solutions/invoice-intelligence" },
                     { label: "Franchise", to: "/solutions/franchise" },
                     { label: "White-Glove", to: "/solutions/white-glove" },
                   ].map(item => (
@@ -614,6 +615,7 @@ export default function App() {
                   { label: "SMB Solutions", to: "/solutions/small-business" },
                   { label: "Process & Case Mgmt", to: "/solutions/case-management" },
                   { label: "Data Extraction", to: "/solutions/data-extraction" },
+                  { label: "Invoice Intelligence", to: "/solutions/invoice-intelligence" },
                   { label: "Franchise", to: "/solutions/franchise" },
                   { label: "White-Glove", to: "/solutions/white-glove" },
                 ].map(item => (
